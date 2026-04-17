@@ -274,9 +274,14 @@ public class koneksiDB {
         String s = getVal("NOTIFMAKSIMALNOMINALRESEPRAJAL", false);
         return s.isEmpty() ? "no" : s; 
     }
-    public static String MAKSIMALNOMINALRESEPRAJAL()     { 
+    public static Double MAKSIMALNOMINALRESEPRAJAL()     { 
         String s = getVal("MAKSIMALNOMINALRESEPRAJAL", false);
-        return s.isEmpty() ? "no" : s; 
+        if (s.isEmpty()) return 0.0;
+        try {
+            return Double.parseDouble(s);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
     }
 	
 	
