@@ -1,0 +1,50 @@
+/build/
+/dist/
+/cache/
+/.metadata/
+
+**/nbproject/
+
+#folder tutorial
+**/DocumenPengembangan/
+
+#ignore folder installer driver
+/driverFlexCode/
+
+#ignore proyek proyek php dalam folder khanza
+/edokter/
+/emcu/
+/epasien/
+/esign/
+
+#ignore proyek proyek java yang kecil kecil dalam folder khanza
+/alarm/
+/KhanzaAntrianApotek/
+/KhanzaAntrianLoket/
+/KhanzaAntrianLoket2/
+/KhanzaAntrianPoli/
+/KhanzaCetakAntrianLoket/
+/KhanzaEpasien/
+/KhanzaHMSAnjungan/
+/KhanzaHMSAnjunganFingerPrint/
+/KhanzaHMSAutoVerify/
+/KhanzaHMSAutoVerify2/
+/KhanzaHMSResume/
+/KhanzaHMSServiceAplicare/
+/KhanzaHMSServiceMandiri/
+/KhanzaHMSServiceMobileJKN/
+/KhanzaHMSServiceMobileJKNERM/
+/KhanzaHMSServiceMobileJKNFKTP/
+/KhanzaHMSServicePCare/
+/KhanzaHMSServiceSatuSehat/
+/KhanzaHMSServiceSIRSYankes/
+/KhanzaHMSServiceSPDGT/
+/KhanzaPengenkripsiTeks/
+/KhanzaSecurity16bit/
+/KhanzaUpdater/
+/mandiri/
+/presensi/
+/resumepasien/
+/sim/
+
+
