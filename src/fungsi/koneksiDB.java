@@ -278,10 +278,6 @@ public class koneksiDB {
         String s = getVal("MAKSIMALNOMINALRESEPRAJAL", false);
         return s.isEmpty() ? "no" : s; 
     }
-    public static String TAMPILKANCOPYRESEPDOKTERLAIN()     { 
-        String s = getVal("TAMPILKANCOPYRESEPDOKTERLAIN", false);
-        return s.isEmpty() ? "no" : s; 
-    }
 	
 	
 	
