@@ -8022,6 +8022,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 }
             });
         } 
+        tampil();
     }//GEN-LAST:event_formWindowOpened
 
     private void MnInputResepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnInputResepActionPerformed

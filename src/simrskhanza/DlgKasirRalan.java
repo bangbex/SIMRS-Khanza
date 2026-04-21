@@ -449,7 +449,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         
         if(catatanpasien.getTampilkanCatatan().equals("")){
             catatanpasien.SetCatatanPasien();
-        }
+        }        
     }
     
 
@@ -9079,6 +9079,9 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 }
             });
         } 
+        
+        //tampilkan data secara default ketika dialog dibuka
+        TabRawatMouseClicked(null);
     }
     private void tbKasirRalan2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbKasirRalan2MouseClicked
         if(tabModekasir2.getRowCount()!=0){
