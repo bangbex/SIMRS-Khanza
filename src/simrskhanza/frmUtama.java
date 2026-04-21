@@ -1221,7 +1221,7 @@ public class frmUtama extends javax.swing.JFrame {
         initComponents();
         initKhanza();
         initKhanza2();
-        setIconImage(new ImageIcon(super.getClass().getResource("/picture/yaski24.png")).getImage());
+        setIconImage(new ImageIcon(super.getClass().getResource("/picture/logoandini100x100.png")).getImage());
         
         this.setExtendedState(MAXIMIZED_BOTH);
         //this.setSize(screen.width,screen.height);
@@ -2058,7 +2058,7 @@ public class frmUtama extends javax.swing.JFrame {
 
         tanggal.setEditable(false);
         tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11/03/2026" }));
+        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "18/04/2026" }));
         tanggal.setDisplayFormat("dd/MM/yyyy");
         tanggal.setName("tanggal"); // NOI18N
         tanggal.setOpaque(false);
@@ -7443,8 +7443,8 @@ public class frmUtama extends javax.swing.JFrame {
         jLabel7.setText(" Didesain & dibuat oleh Khanza.Soft Media");
         jLabel7.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel7.setIconTextGap(3);
+        jLabel7.setMaximumSize(new java.awt.Dimension(32767, 32767));
         jLabel7.setName("jLabel7"); // NOI18N
-        jLabel7.setPreferredSize(new java.awt.Dimension(287, 23));
         internalFrame4.add(jLabel7);
 
         getContentPane().add(internalFrame4, java.awt.BorderLayout.PAGE_END);
@@ -7489,7 +7489,7 @@ public class frmUtama extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("Tahoma", 2, 24)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(50, 50, 50));
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/yaski_icon.png"))); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/logoandini100x100.png"))); // NOI18N
         jLabel8.setText("Khanza HMS+, Hospital Management System");
         jLabel8.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel8.setName("jLabel8"); // NOI18N
@@ -23925,7 +23925,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
+    public javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu4;

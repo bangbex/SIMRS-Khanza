@@ -362,6 +362,38 @@ public final class DlgReg extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         initRegistrasi();
+        
+        //  enablekan tombol Andini_BtnCetakAntrianPoli hanya jika user memilih 1 baris saja
+        //  kalau pilihannya 0 baris atau lebih dari 1 baris, disablekan tombol ini
+        tbPetugas.getSelectionModel().addListSelectionListener(e -> {
+                // Gunakan getValueIsAdjusting agar kode tidak dijalankan dua kali
+                if (!e.getValueIsAdjusting()) {
+                        int jumlahTerpilih = tbPetugas.getSelectedRowCount();
+                        int barisTerpilih = tbPetugas.getSelectedRow();
+
+                        if (jumlahTerpilih == 1 && barisTerpilih != -1) {
+                                // AKTIFKAN TOMBOL
+                                Andini_BtnCetakAntrianPoli.setEnabled(true);
+
+                                try {
+                                        // MENCARI INDEKS KOLOM SECARA DINAMIS BERDASARKAN NAMA HEADER
+                                        // Ganti "No.Rawat" dengan nama header yang muncul di tabel Anda
+                                        int indeksKolom = tbPetugas.getColumnModel().getColumnIndex("No.Rawat");
+
+                                        // Ambil datanya menggunakan indeks yang ditemukan
+                                        String dataNoRawat = tbPetugas.getValueAt(barisTerpilih, indeksKolom).toString();
+
+                                        //JOptionPane.showMessageDialog(null, "Data: " + dataNoRawat);
+                                } catch (IllegalArgumentException ex) {
+                                        // Muncul jika nama kolom "no_rawat" tidak ditemukan di tabel
+                                        System.out.println("Error: Kolom tidak ditemukan! " + ex.getMessage());
+                                }
+
+                        } else {
+                                Andini_BtnCetakAntrianPoli.setEnabled(false);
+                        }
+                }
+        });
 
         this.setLocation(8,1);
         setSize(885,674);
@@ -696,7 +728,7 @@ public final class DlgReg extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+        
         jPopupMenu1 = new javax.swing.JPopupMenu();
         MnDataRM = new javax.swing.JMenu();
         MnRMRawatJalan = new javax.swing.JMenu();
@@ -1106,6 +1138,7 @@ public final class DlgReg extends javax.swing.JDialog {
         jLabel31 = new widget.Label();
         NoKa = new widget.TextBox();
         btnCekBridging = new widget.Button();
+        Andini_BtnCetakAntrianPoli = new javax.swing.JButton();
         ChkInput = new widget.CekBox();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
@@ -4242,6 +4275,19 @@ public final class DlgReg extends javax.swing.JDialog {
             }
         });
         MnRujukan.add(MnRujuk);
+        
+        Andini_BtnCetakAntrianPoli = new javax.swing.JButton();
+        Andini_BtnCetakAntrianPoli.setText("Cetak Antrian");
+        Andini_BtnCetakAntrianPoli.setEnabled(false);
+        Andini_BtnCetakAntrianPoli.setName("Andini_BtnCetakAntrianPoli"); // NOI18N
+        Andini_BtnCetakAntrianPoli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Andini_BtnCetakAntrianPoliActionPerformed(evt);
+            }
+        });
+        FormInput.add(Andini_BtnCetakAntrianPoli);
+        Andini_BtnCetakAntrianPoli.setBounds(900, 40, 120, 100);
+
 
         MnPoliInternal.setBackground(new java.awt.Color(255, 255, 254));
         MnPoliInternal.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -6690,6 +6736,50 @@ public final class DlgReg extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void Andini_BtnCetakAntrianPoliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Andini_BtnCetakAntrianPoliActionPerformed
+                // TODO add your handling code here:
+                int jumlahTerpilih = tbPetugas.getSelectedRowCount();
+                int barisTerpilih = tbPetugas.getSelectedRow();
+
+                if (jumlahTerpilih == 1 && barisTerpilih != -1) {
+                        // AKTIFKAN TOMBOL
+                        try {
+                                // MENCARI INDEKS KOLOM SECARA DINAMIS BERDASARKAN NAMA HEADER
+                                // Ganti "No.Rawat" dengan nama header yang muncul di tabel Anda
+                                int indeksKolom = tbPetugas.getColumnModel().getColumnIndex("No.Rawat");
+
+                                // Ambil datanya menggunakan indeks yang ditemukan
+                                String dataNoRawat = tbPetugas.getValueAt(barisTerpilih, indeksKolom).toString();
+
+                                // 1. Parameter RS (Dibuat sekali saja)
+                                Map<String, Object> param = new HashMap<>();                 
+                                param.put("namars",akses.getnamars());
+                                param.put("alamatrs",akses.getalamatrs());
+                                param.put("kotars",akses.getkabupatenrs());
+                                param.put("propinsirs",akses.getpropinsirs());
+                                param.put("kontakrs",akses.getkontakrs());
+                                param.put("emailrs",akses.getemailrs());   
+                                param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+                                param.put("norawat",dataNoRawat);
+
+                                // 2. Tentukan lokasi file desain report Anda (.jasper atau .jrxml)
+                                String reportPath = "andini_AntrianPoli.jasper"; 
+
+                                // 3. Proses pengisian data dan pemanggilan viewer
+                                Valid.MyReport(reportPath, param, "Antrian Poli");
+
+
+                        } catch (IllegalArgumentException ex) {
+                                // Muncul jika nama kolom "no_rawat" tidak ditemukan di tabel
+                                System.out.println("Error: Kolom tidak ditemukan! " + ex.getMessage());
+                        }
+
+                } else {
+                        Andini_BtnCetakAntrianPoli.setEnabled(false);
+                }
+
+        }//GEN-LAST:event_Andini_BtnCetakAntrianPoliActionPerformed
 
     private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoRwKeyPressed
         Valid.pindah(evt,TNoReg,DTPReg);
@@ -16304,6 +16394,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Andini_BtnCetakAntrianPoli;
     private widget.TextBox AsalRujukan;
     private widget.Button BtnAll;
     private widget.Button BtnBatal;
