@@ -6641,6 +6641,11 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         TabRawatMouseClicked(null);
     }// GEN-LAST:event_BtnAllActionPerformed
 
+    TCari.setText("");caripenjab="";tampildiagnosa="";terbitsep="";
+
+    TabRawatMouseClicked(null);
+    }// GEN-LAST:event_BtnAllActionPerformed
+
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnAllKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             TCari.setText("");
@@ -7814,7 +7819,8 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                                 billing = new DlgBilingRalan(null, false);
                                 billing.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                                 billing.addWindowListener(new WindowAdapter() {
-                                    @Override
+
+    @Override
                                     public void windowClosed(WindowEvent e) {
                                         if (billing.sukses == true) {
                                             if (tabModekasir.getRowCount() != 0) {
@@ -7831,41 +7837,25 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                                             }
                                         }
                                         billing = null;
-                                    }
-                                });
+                                    }});
 
-                                billing.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-                                billing.setLocationRelativeTo(internalFrame1);
-                            }
-                            if (billing == null)
-                                return;
-                            if (!billing.isVisible()) {
-                                billing.TNoRw.setText(TNoRw.getText());
-                                billing.isCek();
-                                billing.isRawat();
-                            }
-                            if (billing.isVisible()) {
-                                billing.toFront();
-                                return;
-                            }
-                            billing.setVisible(true);
-                        }
-                    } catch (Exception ex) {
-                        System.out.println("Notifikasi : " + ex);
-                    } finally {
-                        if (rskasir != null) {
-                            rskasir.close();
-                        }
-                        if (pscaripiutang != null) {
-                            pscaripiutang.close();
-                        }
-                    }
-                } catch (Exception e) {
+    billing.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);billing.setLocationRelativeTo(internalFrame1);}if(billing==null)return;if(!billing.isVisible()){billing.TNoRw.setText(TNoRw.getText());billing.isCek();billing.isRawat();}if(billing.isVisible()){billing.toFront();return;}billing.setVisible(true);}}catch(Exception ex)
+    {
+        System.out.println("Notifikasi : " + ex);
+    }finally
+    {
+        if (rskasir != null) {
+            rskasir.close();
+        }
+        if (pscaripiutang != null) {
+            pscaripiutang.close();
+        }
+    }}catch(
+    Exception e)
+    {
                     System.out.println(e);
                 }
-            }
-        }
-    }// GEN-LAST:event_MnBillingActionPerformed
+    }}}// GEN-LAST:event_MnBillingActionPerformed
 
     private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_TNoRwKeyPressed
         // Valid.pindah(evt,TNoReg,DTPReg);
@@ -10011,46 +10001,17 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                                     billing = new DlgBilingRalan(null, false);
                                     billing.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                                     billing.addWindowListener(new WindowAdapter() {
-                                        @Override
-                                        public void windowClosed(WindowEvent e) {
-                                            billing = null;
-                                        }
-                                    });
 
-                                    billing.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-                                    billing.setLocationRelativeTo(internalFrame1);
-                                }
-                                if (billing == null)
-                                    return;
-                                if (!billing.isVisible()) {
-                                    billing.TNoRw.setText(
-                                            tbKasirRalan2.getValueAt(tbKasirRalan2.getSelectedRow(), 10).toString());
-                                    billing.isCek();
-                                    billing.isRawat();
-                                }
-                                if (billing.isVisible()) {
-                                    billing.toFront();
-                                    return;
-                                }
-                                billing.setVisible(true);
-                            }
-                        } catch (Exception ex) {
-                            System.out.println("Notifikasi : " + ex);
-                        } finally {
-                            if (rskasir != null) {
-                                rskasir.close();
-                            }
-                            if (pscaripiutang != null) {
-                                pscaripiutang.close();
-                            }
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
-                }
-            }
-        }
-    }// GEN-LAST:event_MnBilling1ActionPerformed
+    @Override
+    public void windowClosed(WindowEvent e) {
+        billing = null;
+    }});
+
+    billing.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);billing.setLocationRelativeTo(internalFrame1);}if(billing==null)return;if(!billing.isVisible()){billing.TNoRw.setText(tbKasirRalan2.getValueAt(tbKasirRalan2.getSelectedRow(),10).toString());billing.isCek();billing.isRawat();}if(billing.isVisible()){billing.toFront();return;}billing.setVisible(true);}}catch(
+
+    Exception ex){System.out.println("Notifikasi : "+ex);}finally{if(rskasir!=null){rskasir.close();}if(pscaripiutang!=null){pscaripiutang.close();}}}catch(
+    Exception e){System.out.println(e);
+    }}}}}// GEN-LAST:event_MnBilling1ActionPerformed
 
     private void MnDiagnosa1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MnDiagnosa1ActionPerformed
         if (tabModekasir2.getRowCount() == 0) {

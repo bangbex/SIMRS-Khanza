@@ -21312,6 +21312,31 @@ public class DlgKamarInap extends javax.swing.JDialog {
         super.dispose();
     }
 
+    @Override
+    public void dispose() {
+        cacherawatinap.SetPilihanBelumPulang(R1.isSelected());
+        cacherawatinap.SetPilihanTanggalMasuk(R2.isSelected());
+        cacherawatinap.SetPilihanTanggalPulang(R3.isSelected());
+        cacherawatinap.SetTanggalMasuk1(DTPCari1.getDate());
+        cacherawatinap.SetTanggalMasuk2(DTPCari2.getDate());
+        cacherawatinap.SetTanggalPulang1(DTPCari3.getDate());
+        cacherawatinap.SetTanggalPulang2(DTPCari4.getDate());
+        cacherawatinap.SetKeyWord(TCari.getText());
+        cacherawatinap.SetStatusBayar(cmbStatusBayar.getSelectedItem().toString());
+        cacherawatinap.SetKamar(BangsalCari.getText());
+
+        cacherawatinap.clearDataPasien();
+        for (int i = 0; i < tabMode.getRowCount(); i++) {
+            Object[] baris = new Object[tabMode.getColumnCount()];
+            for (int j = 0; j < tabMode.getColumnCount(); j++) {
+                baris[j] = tabMode.getValueAt(i, j);
+            }
+            cacherawatinap.setDataPasien(baris);
+        }
+
+        super.dispose();
+    }
+
     private void panggilobat(String norawat) {
         if (Sequel.cariInteger(
                 "select count(stok_obat_pasien.no_rawat) from stok_obat_pasien where stok_obat_pasien.no_rawat=? ",

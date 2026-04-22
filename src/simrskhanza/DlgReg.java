@@ -18900,7 +18900,6 @@ public final class DlgReg extends javax.swing.JDialog {
         cacheregistrasi.SetKeyWord(TCari.getText());
         cacheregistrasi.SetDokter(CrDokter.getText());
         cacheregistrasi.SetPoli(CrPoli.getText());
-
         cacheregistrasi.clearDataPasien();
         for (int i = 0; i < tabMode.getRowCount(); i++) {
             Object[] baris = new Object[tabMode.getColumnCount()];
