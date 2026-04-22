@@ -40,25 +40,25 @@ public class SatuSehatCekNIK {
         }  
         
         try {
-            dataPropinsi = new FileReader("./cache/propinsi.iyem");
+            dataPropinsi = new FileReader("./cache/masterpropinsi.iyem");
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         } 
         
         try {
-            dataKabupaten = new FileReader("./cache/kabupaten.iyem");
+            dataKabupaten = new FileReader("./cache/masterkabupaten.iyem");
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         } 
         
         try {
-            dataKecamatan= new FileReader("./cache/kecamatan.iyem");
+            dataKecamatan= new FileReader("./cache/masterkecamatan.iyem");
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         } 
         
         try {
-            dataKelurahan= new FileReader("./cache/kelurahan.iyem");
+            dataKelurahan= new FileReader("./cache/masterkelurahan.iyem");
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         } 

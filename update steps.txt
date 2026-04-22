@@ -1,0 +1,161 @@
+1. 	download tags terbaru dari https://github.com/mas-elkhanza/SIMRS-Khanza/tags
+2. 	extract ke folder sandbox[i]
+3.	synchronisasi schema database 
+	bikin database baru di aapanel dengan nama sandbox[i] username sandbox[i] password sandbox[i] (untuk memudahkan)
+	masuk ke folder sandbox[i] jalankan sandbox[i]/sik.sql
+	dengan sandbox[i]/sik.sql sebagai source dan rs_andini sebagai target
+	jalankan.
+	sinkronkan database db_rsiaandini ke database sandbox
+4. 	copy folder lib
+5.	edit file nbproject/project.properties
+	contoh isian:
+	jlink.launcher.name=sandbox4
+	dist.jar=${dist.dir}/RSANDINI_V1.1.1.jar
+	# Old Java 8 config (disabled)
+	#javac.source=1.8
+	#javac.target=1.8
+	javac.source=15
+	javac.target=15
+	javac.release=15
+	
+6.	copy .gitignore file dari sandbox lain ke sandbox[i]
+7.  sesuaikan setting/database.xml
+8.	copy 	setting/logo.ico
+			setting/logo.jpg
+			setting/logo.png
+			setting/wallpaper.jpg
+			
+9.	copy 	src/picture/*.*
+10.	netbean->open project->sandbox[i]
+11. build
+
+update code:
+1.	setting/database.xml
+2.	src/fungsi/koneksiDB.java
+	
+	
+	//**  fitur:
+	  * 		restart aplikasi jika sudah ganti tanggal
+	  *			deteksi nama window/dialog yang terbuka di frmUtama.jlabel7 sehingga memudahkan debugging
+	  *
+	//
+			
+3.	src/simrskhanza/frmUtama.java
+4.	src/simrskhanza/SIMRSKhanza.java
+5.	jlabel7 di frmUtama jadikan public
+	jadikan maxSize [32767, 32767]
+	prefferedSize klik ... jadikan reset to default
+	
+6.	logoandini100x100.png jadikan icon di frmUtama
+7. 	logoandini100x100.png jadikan logo di frmUtama tengah
+
+	//**  fitur:
+	  * 		Tambah tombol cetak antrian di registrasi
+	  *
+	//
+8. 	tambahkan report/andini_AntrianPoli.jasper
+	tambahkan report/andini_AntrianPoli.jrxml
+	
+9. 	---tambahkan:
+		di simrskhanza.dlgReg
+	    private void Andini_BtnCetakAntrianPoliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Andini_BtnCetakAntrianPoliActionPerformed
+			// TODO add your handling code here:
+			int jumlahTerpilih = tbPetugas.getSelectedRowCount();
+			int barisTerpilih = tbPetugas.getSelectedRow();
+
+			if (jumlahTerpilih == 1 && barisTerpilih != -1) {
+				// AKTIFKAN TOMBOL
+				try {
+					// MENCARI INDEKS KOLOM SECARA DINAMIS BERDASARKAN NAMA HEADER
+					// Ganti "No.Rawat" dengan nama header yang muncul di tabel Anda
+					int indeksKolom = tbPetugas.getColumnModel().getColumnIndex("No.Rawat");
+
+					// Ambil datanya menggunakan indeks yang ditemukan
+					String dataNoRawat = tbPetugas.getValueAt(barisTerpilih, indeksKolom).toString();
+					
+					// 1. Parameter RS (Dibuat sekali saja)
+					Map<String, Object> param = new HashMap<>();                 
+					param.put("namars",akses.getnamars());
+					param.put("alamatrs",akses.getalamatrs());
+					param.put("kotars",akses.getkabupatenrs());
+					param.put("propinsirs",akses.getpropinsirs());
+					param.put("kontakrs",akses.getkontakrs());
+					param.put("emailrs",akses.getemailrs());   
+					param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+					param.put("norawat",dataNoRawat);
+					
+					// 2. Tentukan lokasi file desain report Anda (.jasper atau .jrxml)
+					String reportPath = "andini_AntrianPoli.jasper"; 
+
+					// 3. Proses pengisian data dan pemanggilan viewer
+					Valid.MyReport(reportPath, param, "Antrian Poli");
+
+					
+				} catch (IllegalArgumentException ex) {
+					// Muncul jika nama kolom "no_rawat" tidak ditemukan di tabel
+					System.out.println("Error: Kolom tidak ditemukan! " + ex.getMessage());
+				}
+
+			} else {
+				Andini_BtnCetakAntrianPoli.setEnabled(false);
+			}
+
+		}//GEN-LAST:event_Andini_BtnCetakAntrianPoliActionPerformed
+
+	---tambahkan:
+		private javax.swing.JButton Andini_BtnCetakAntrianPoli;
+		Andini_BtnCetakAntrianPoli = new javax.swing.JButton();
+		
+	---tambahkan:	
+		Andini_BtnCetakAntrianPoli.setText("Cetak Antrian");
+        Andini_BtnCetakAntrianPoli.setEnabled(false);
+        Andini_BtnCetakAntrianPoli.setName("Andini_BtnCetakAntrianPoli"); // NOI18N
+        Andini_BtnCetakAntrianPoli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Andini_BtnCetakAntrianPoliActionPerformed(evt);
+            }
+        });
+        FormInput.add(Andini_BtnCetakAntrianPoli);
+        Andini_BtnCetakAntrianPoli.setBounds(900, 40, 120, 100);
+		
+	---tambahkan di DlgReg()
+		public DlgReg(java.awt.Frame parent, boolean modal) {
+			super(parent, modal);
+			initComponents();
+			
+			//  enablekan tombol Andini_BtnCetakAntrianPoli hanya jika user memilih 1 baris saja
+			//  kalau pilihannya 0 baris atau lebih dari 1 baris, disablekan tombol ini
+			tbPetugas.getSelectionModel().addListSelectionListener(e -> {
+				// Gunakan getValueIsAdjusting agar kode tidak dijalankan dua kali
+				if (!e.getValueIsAdjusting()) {
+					int jumlahTerpilih = tbPetugas.getSelectedRowCount();
+					int barisTerpilih = tbPetugas.getSelectedRow();
+
+					if (jumlahTerpilih == 1 && barisTerpilih != -1) {
+						// AKTIFKAN TOMBOL
+						Andini_BtnCetakAntrianPoli.setEnabled(true);
+
+						try {
+							// MENCARI INDEKS KOLOM SECARA DINAMIS BERDASARKAN NAMA HEADER
+							// Ganti "No.Rawat" dengan nama header yang muncul di tabel Anda
+							int indeksKolom = tbPetugas.getColumnModel().getColumnIndex("No.Rawat");
+
+							// Ambil datanya menggunakan indeks yang ditemukan
+							String dataNoRawat = tbPetugas.getValueAt(barisTerpilih, indeksKolom).toString();
+
+							//JOptionPane.showMessageDialog(null, "Data: " + dataNoRawat);
+						} catch (IllegalArgumentException ex) {
+							// Muncul jika nama kolom "no_rawat" tidak ditemukan di tabel
+							System.out.println("Error: Kolom tidak ditemukan! " + ex.getMessage());
+						}
+
+					} else {
+						Andini_BtnCetakAntrianPoli.setEnabled(false);
+					}
+				}
+			});
+			
+			//
+			... rest of the code
+
+ 
