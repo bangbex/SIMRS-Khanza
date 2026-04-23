@@ -14000,8 +14000,8 @@ public final class DlgIGD extends javax.swing.JDialog {
         cacheigd.SetTanggalAwal(DTPCari1.getDate());
         cacheigd.SetTanggalAkhir(DTPCari2.getDate());
         cacheigd.SetKeyWord(TCari.getText());
-
         cacheigd.clearDataPasien();
+
         for (int i = 0; i < tabMode.getRowCount(); i++) {
             Object[] baris = new Object[tabMode.getColumnCount()];
             for (int j = 0; j < tabMode.getColumnCount(); j++) {
@@ -14009,6 +14009,11 @@ public final class DlgIGD extends javax.swing.JDialog {
             }
             cacheigd.setDataPasien(baris);
         }
+
+        tabMode.setRowCount(0);
+        TCari.setText("");
+        DTPCari1.setDate(new Date());
+        DTPCari2.setDate(new Date());
 
         super.dispose();
     }
