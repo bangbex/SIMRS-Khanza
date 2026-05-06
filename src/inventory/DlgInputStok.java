@@ -1120,6 +1120,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             }
                         } catch (Exception e) {
                             tbDokter.setValueAt(0,i,6);
+                            
                         } finally{
                             if(rsstok!=null){
                                 rsstok.close();
