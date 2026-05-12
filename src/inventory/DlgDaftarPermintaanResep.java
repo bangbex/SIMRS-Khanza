@@ -2310,7 +2310,11 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         Sequel.queryu("delete from antriapotek3");
                         Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','1','"+NoRawat+"')");
                         Sequel.queryu("delete from bukti_penyerahan_resep_obat where no_resep='"+NoResep+"'");
-                    }
+                        //Valid.panggilUrl("billing/LaporanBilling.php?petugas="+akses.getkode().replaceAll(" ","_")+"&tanggal="+DTPTgl.getSelectedItem().toString().replaceAll(" ","_")+"&usere="+koneksiDB.USERHYBRIDWEB()+"&passwordte="+koneksiDB.PASHYBRIDWEB());
+                        Valid.panggilUrl("penyerahanresep/index.php?act=Kamera");
+                        //http://192.168.0.245/webapps/penyerahanresep/index.php?act=Kamera
+                        
+                    }   
                 }else{
                     JOptionPane.showMessageDialog(null,"Maaf, Anda tidak punya hak akses untuk mengvalidasi...!!!!");
                     TCari.requestFocus();
