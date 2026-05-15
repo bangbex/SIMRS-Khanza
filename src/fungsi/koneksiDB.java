@@ -99,7 +99,7 @@ public class koneksiDB {
 
                 System.out.println("==========================================");
                 System.out.println("   SIMRS RSANDINI Version 1.1.1 Released  ");
-                System.out.println("                06-05-2026                ");
+                System.out.println("                12-05-2026                ");
                 System.out.println("            Powered by Khanza             ");
                 System.out.println("==========================================");
                 System.out.println("\nConnecting to >> " + host + "[" + db + "]:" + port + "\nConnection successful.");

@@ -406,6 +406,8 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         
         ChkAccor.setSelected(false);
         isMenu();
+        tampil();
+        
     }
 
     /** This method is called from within the constructor to
