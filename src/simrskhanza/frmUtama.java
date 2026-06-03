@@ -1115,6 +1115,7 @@ import surat.SuratCutiHamil;
 import surat.SuratIndeks;
 import surat.SuratKeluar;
 import surat.SuratKeteranganBebasTBC;
+import surat.SuratKeteranganBerobat;
 import surat.SuratKeteranganCovid;
 import surat.SuratKeteranganLayakTerbang;
 import surat.SuratKeteranganRawatInap;
@@ -1124,6 +1125,7 @@ import surat.SuratKlasifikasi;
 import surat.SuratMap;
 import surat.SuratMasuk;
 import surat.SuratPenolakanAnjuranMedis;
+import surat.SuratPenolakanResusitasi;
 import surat.SuratPermintaanBinrohtal;
 import surat.SuratPermintaanPerlindunganDariKekerasan;
 import surat.SuratPermintaanSecondOpinion;
@@ -23725,7 +23727,31 @@ public class frmUtama extends javax.swing.JFrame {
         aplikasi.setVisible(true);
         this.setCursor(Cursor.getDefaultCursor());
     }
-
+    
+    private void btnSuratKeteranganBerobatActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SuratKeteranganBerobat aplikasi=new SuratKeteranganBerobat(this,false);
+        aplikasi.isCek();
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+    
+    private void btnSuratPenolakanResusitasiActionPerformed(java.awt.event.ActionEvent evt) {  
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SuratPenolakanResusitasi aplikasi=new SuratPenolakanResusitasi(this,false);
+        aplikasi.isCek();
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -24310,280 +24336,144 @@ public class frmUtama extends javax.swing.JFrame {
     private widget.ScrollPane scrollPane2;
     private widget.Tanggal tanggal;
     // End of variables declaration//GEN-END:variables
-    private widget.ButtonBig btnKategoriPerpustakaan, btnRuangPerpustakaan, btnJenisPerpustakaan,
-            btnPengarangPerpustakaan, btnPenerbitPerpustakaan,
-            btnKoleksiPerpustakaan, btnInventarisPerpustakaan, btnPengaturanPeminjamanPerpustakaan,
-            btnDendaPerpustakaan, btnAnggotaPerpustakaan,
-            btnPeminjamanPerpustakaan, btnBayarDendaPerpustakaan, btnPenelitianPerpustakaan, btnEbookPerpustakaan,
-            btnCariEbook, btnPestControl,
-            btnMutuAirLimbah, btnCariInventarisPerpustakaan, btnJenisCideraK3, btnPenyebabKecelakaanK3, btnJenisLukaK3,
-            btnLokasiKejadianK3, btnDampakCideraK3,
-            btnGrafikLimbahDomestikPerBulan, btnJenisPekerjaanK3, btnBagianTubuhK3, btnPeristiwaK3, btnGrafikK3PerTahun,
-            btnGrafikK3PerBulan, btnGrafikK3PerTanggal,
-            btnGrafikK3PerJenisCidera, btnGrafikK3PerPenyebab, btnGrafikK3PerJenisLuka, btnGrafikK3PerLokasiKejadian,
-            btnGrafikK3PerDampakCidera,
-            btnGrafikK3PerJenisPekerjaan, btnGrafikK3PerBagianTubuh, btnJenisCideraK3PerTahun,
-            btnPenyebabKecelakaanK3PerTahun, btnJenisLukaK3PerTahun,
-            btnLokasiKejadianK3PerTahun, btnDampakCideraK3PerTahun, btnJenisPekerjaanK3PerTahun,
-            btnBagianTubuhK3PerTahun, btnSkriningRawatJalan,
-            btnBPJSHistoriPelayanan, btnRekapMutasiBerkas, btnSkriningRalanPernapasanPerTahun, btnPengajuanBarangMedis,
-            btnPengajuanBarangNonMedis,
-            btnGrafikKunjunganRanapBulan, btnGrafikKunjunganRanapTanggal, btnGrafikKunjunganRanapRuang,
-            btnKunjunganBangsalTahun, btnGrafikJenjangJabatanPegawai,
-            btnGrafikBidangPegawai, btnGrafikDepartemenPegawai, btnGrafikPendidikanPegawai, btnGrafikStatusWPPegawai,
-            btnGrafikStatusKerjaPegawai,
-            btnGrafikStatusPulangRanap, btnKIPPasienRanap, btnKIPPasienRalan, btnMappingDokterDPJPVClaim,
-            btnMasterTriaseSkala1, btnMasterTriaseSkala2,
-            btnMasterTriaseSkala3, btnMasterTriaseSkala4, btnMasterTriaseSkala5, btnMasterTriasePemeriksaan,
-            btnMasterTriaseMacamKasus, btnDataTriaseIGD,
-            btnRekapPermintaanDiet, btnDaftarPasienRanap, btnDaftarPasienRanapTNI, btnfee_visit_dokter, btnUser,
-            btnPengajuanAsetInventaris, btnGrafikItemApotekPerJenis,
-            btnGrafikItemApotekPerKategori, btnGrafikItemApotekPerGolongan, btnGrafikItemApotekPerIndustriFarmasi,
-            btn10BesarObatPoli, btnGrafikPengajuanAsetUrgensi,
-            btnGrafikPengajuanAsetStatus, btnGrafikPengajuanAsetDepartemen, btnRekapPengajuanAsetDepartemen,
-            btnGrafikKelompokJabatanPegawai,
-            btnGrafikRisikoKerjaPegawai, btnGrafikEmergencyIndexPegawai, btnGrafikInventarisRuang, btnHarianHAIs2,
-            btnGrafikInventarisJenis, btnResumePasien,
-            btnPerkiraanBiayaRanap, btnRekapObatPoli, btnRekapObatPasien, btnGrafikHAIsPasienRuang,
-            btnGrafikHAIsPasienBulan, btnPermintaanPerbaikanInventaris,
-            btnGrafikHAIsLajuVAP, btnGrafikHAIsLajuIAD, btnGrafikHAIsLajuPleb, btnGrafikHAIsLajuISK,
-            btnGrafikHAIsLajuILO, btnGrafikHAIsLajuHAP,
-            btnMappingPoliInhealth, btnMappingDokterInhealth, btnMappingTindakanRalanInhealth,
-            btnMappingTindakanRanapInhealth, btnMappingTindakanRadiologiInhealth,
-            btnMappingTindakanLaboratInhealth, btnMappingTindakanOperasiInhealth, btnHibahObatBHP, btnAsalHibah,
-            btnAsuhanGizi, btnKirimTagihanInheath,
-            btnSirkulasiObat4, btnSirkulasiObat5, btnSirkulasiObat6, btnSirkulasiNonMedis2, btnMonitoringAsuhanGizi,
-            btnGrafikPenerimaanObatPerBulan, btnRekapKunjungan,
-            btnSuratSakit, btnPenilaianAwalKeperawatanRalan, btnMasterMasalahKeperawatan, btnPengajuanCuti,
-            btnKedatanganPasienPerJam, btnPendonorDarah,
-            btnSuplierToko, btnJenisToko, btnSetHargaToko, btnBarangToko, btnPenagihanPiutangPasien,
-            btnAkunPenagihanPiutang, btnStokOpnameToko,
-            btnRiwayatBarangToko, btnSuratPemesananToko, btnPengajuanBarangToko, btnPenerimaanBarangToko,
-            btnPengadaanBarangToko, btnHutangToko,
-            btnBayarPesanToko, btnMemberToko, btnPenjualanToko, btnRegistrasiPoliPerTanggal, btnPiutangToko,
-            btnReturKeSuplierToko, btnReturBarangNonMedis,
-            btnRiwayatBarangNonMedis, btnPasienCorona, btnPendapatanHarianToko, btnDiagnosaPasienCorona,
-            btnPerawatanPasienCorona, btnPenilaianAwalKeperawatanGigi,
-            btnMasterMasalahKeperawatanGigi, btnBayarPiutangToko, btnPiutangHarianToko, btnPenjualanHarianToko,
-            btnDeteksiDiniCorona, btnPenilaianAwalKeperawatanKebidanan,
-            btnPengumumanEPasien, btnSuratHamil, btnSetTarifOnline, btnBookingPeriksa, btnSirkulasiBarangToko,
-            btnReturJualToko, btnReturPiutangToko,
-            btnSirkulasiBarangToko2, btnKeuntunganBarangToko, btnZISPengeluaranPenerimaDankes,
-            btnZISPenghasilanPenerimaDankes, btnZISUkuranRumahPenerimaDankes,
-            btnZISDindingRumahPenerimaDankes, btnZISLantaiRumahPenerimaDankes, btnZISAtapRumahPenerimaDankes,
-            btnZISKepemilikanRumahPenerimaDankes,
-            btnZISKamarMandiPenerimaDankes, btnZISDapurRumahPenerimaDankes, btnZISKursiRumahPenerimaDankes,
-            btnZISKategoriPHBSPenerimaDankes,
-            btnZISElektronikPenerimaDankes, btnZISTernakPenerimaDankes, btnZISJenisSimpananPenerimaDankes,
-            btnPenilaianAwalRalanBayi,
-            btnZISKategoriAsnafPenerimaDankes, btnMasterMasalahKeperawatanAnak, btnMasterImunisasi,
-            btnZISPatologisPenerimaDankes, btnPCareCekKartu,
-            btnSuratBebasNarkoba, btnSuratKeteranganCovid, btnPemakaianAirTanah, btnGrafikPemakaianAirTanahPerTanggal,
-            btnGrafikPemakaianAirTanahPerBulan,
-            btnLamaPelayananPoli, btnHemodialisa, btnGrafikHemodialisaPerTanggal, btnGrafikHemodialisaPerBulan,
-            btnGrafikHemodialisaPerTahun,
-            btnGrafikMeninggalPerBulan, btnLaporanTahunanIRJ, btnPerbaikanInventaris, btnSuratCutiHamil,
-            btnPermintaanStokObatPasien, btnPemeliharaanInventaris,
-            btnKlasifikasiPasienRanap, btnBulananKlasifikasiPasienRanap, btnHarianKlasifikasiPasienRanap,
-            btnKlasifikasiPasienPerRuang, btnSOAPPerawatan,
-            btnKlaimRawatJalan, btnSkriningGiziLanjut, btnLamaPenyiapanRM, btnDosisRadiologi, btnDemografiUmurKunjungan,
-            btnJamDietPasien, btnRVPPiutangBPJS,
-            btnVerifikasiPenerimaanFarmasi, btnVerifikasiPenerimaanLogistik, btnPermintaanLabPA, btnLamaPelayananLabPA,
-            btnRingkasanPengajuanMedis,
-            btnRingkasanPemesananMedis, btnRingkasanPembelianMedis, btnRingkasanPenerimaanMedis, btnRingkasanHibahMedis,
-            btnRingkasanPenjualanMedis,
-            btnRingkasanBeriObat, btnRingkasanPiutangObat, btnRingkasanStokKeluarObat, btnRingkasanReturSuplierObat,
-            btnRingkasanReturJualObat,
-            btnRingkasanPengajuanNonMedis, btnRingkasanPemesananNonMedis, btnPenilaianAwalKeperawatanKebidananRanap,
-            btnRingkasanPengadaanNonMedis,
-            btnRingkasanPenerimaanNonMedis, btnRingkasanStokKeluarNonMedis, btnRingkasanReturSuplierNonMedis,
-            btnOmsetPenerimaan, btnValidasiPenagihanPiutang,
-            btnPermintaanRanap, btnBPJSReferensiDiagnosaPRB, btnBPJSReferensiObatPRB, btnBPJSSuratKontrol,
-            btnPenggunaanBHPOK, btnSuratKeteranganRawatInap,
-            btnSuratKeteranganSehat, btnPendapatanPerCaraBayar, btnAkunRekeningHtHBankJateng, btnPembayaranBankJateng,
-            btnBPJSSuratPRI, btnRingkasanTindakanRalan,
-            btnLamaPelayananPasien, btnSuratSakitPihak2, btnReferensiPendaftaranMobileJKN, btnBatalPendaftaranMobileJKN,
-            btnTagihanHutangObat, btnLamaOperasi,
-            btnGrafikInventarisKategori, btnGrafikInventarisMerk, btnGrafikInventarisProdusen,
-            btnPengembalianDepositPasien, btnValidasiTagihanObatBHP,
-            btnPiutangObatBelumLunas, btnIntegrasiBRIApi, btnAkunAsetInventaris, btnPengadaanAset, btnSuplierInventaris,
-            btnPenerimaanAset,
-            btnBayarPemesananInventaris, btnHutangAsetInventaris, btnHibahAsetInventaris, btnTagihanHutangNonMedis,
-            btnValidasiTagihanNonMedis,
-            btnTagihanHutangAset, btnValidasiTagihanAset, btnHibahNonMedis, btnCekPCareTACC, btnResepLuar,
-            btnSuratBebasTBC, btnSuratButaWarna, btnSuratBebasTato,
-            btnSuratKewaspadaanKesehatan, btnGrafikPorsiDietPerTanggal, btnGrafikPorsiDietPerBulan,
-            btnGrafikPorsiDietPerTahun, btnGrafikPorsiDietPerRuang,
-            btnMasterMasalahKeperawatanMata, btnPenilaianAwalMedisRalan, btnPenilaianAwalMedisRanap,
-            btnPenilaianAwalMedisRanapKandungan,
-            btnPenilaianAwalMedisRalanKandungan, btnPenilaianAwalMedisIGD, btnPenilaianAwalMedisRalanBayi,
-            btnBPJSReferensiPoliHFIS,
-            btnBPJSReferensiDokterHFIS, btnBPJSReferensiJadwalHFIS, btnFisioterapi, btnBPJSProgramPRB,
-            btnBPJSSuplesiJasaRaharja, btnBPJSDataIndukKecelakaan,
-            btnBPJSDataSEPInternal, btnBPJSKlaimJasaRaharja, btnBPJSPasienFinger, btnBPJSRujukanKhusus,
-            btnPemeliharaanGedung, btnGrafikPerbaikanInventarisPerTanggal,
-            btnGrafikPerbaikanInventarisPerBulan, btnGrafikPerbaikanInventarisPerTahun,
-            btnGrafikPerbaikanInventarisPerPelaksanaStatus,
-            btnPenilaianMCU, btnCaraBayar, btnPeminjamPiutang, btnPiutangLainLain, btnBPJSTaskIDMobileJKN,
-            btnBayarPiutangLainLain, btnPembayaranAkunBayar4,
-            btnStokAkhirFarmasiPerTanggal, btnRiwayatKamarPasien, btnAuditKepatuhanAPD, btnUjiFungsiKFR,
-            btnKategoriPengeluaranHarian, btnKategoriPemasukanLian,
-            btnPembayaranAkunBayar5, btnRuangOperasi, btnJasaTindakanPasien, btnTelaahResep, btnPermintaanResepPulang,
-            btnResumePasienRanap,
-            btnRekapJasaDokter, btnStatusDataRM, btnRingkasanBiayaObatPasienPerTanggal, btnMasterMasalahKeperawatanIGD,
-            btnPenilaianAwalKeperawatanIGD,
-            btnBPJSReferensiDPHOApotek, btnBPJSReferensiPoliApotek, btnBayarJMDokter, btnBPJSReferensiFaskesApotek,
-            btnBPJSReferensiSpesialistikApotek,
-            btnPembayaranBRIVA, btnPenilaianAwalKeperawatanRanap, btnAkunBayarHutang,
-            btnNilaiPenerimaanVendorFarmasiPerBulan, btnMasterRencanaKeperawatan,
-            btnLaporanTahunanIGD, btnObatBHPTidakBergerak, btnRingkasanHutangVendorFarmasi,
-            btnNilaiPenerimaanVendorNonMedisPerBulan, btnRingkasanHutangVendorBarangNonMedis,
-            btnAnggotaPolriDirawat, btnDaftarPasienRanapPolri, btnSOAPRalanAnggotaPolri, btnSOAPRanapAnggotaPolri,
-            btnLaporanPenyakitPolri, btnMasterRencanaKeperawatanAnak,
-            btnJumlahPengunjungRalanPolri, btnCatatanObservasiIGD, btnCatatanObservasiRanap,
-            btnCatatanObservasiRanapKebidanan, btnCatatanObservasiRanapPostPartum,
-            btnPenilaianAwalMedisRalanTHT, btnAuditCuciTanganMedis, btnPenilaianPsikologi, btnRuangAuditKepatuhan,
-            btnAuditPembuanganLimbah,
-            btnAuditPembuanganBendaTajam, btnAuditPenangananDarah, btnAuditPengelolaanLinenKotor,
-            btnAuditPenempatanPasien, btnAuditKamarJenazah,
-            btnAuditBundleIADP, btnAuditBundleIDO, btnAuditFasilitasKebersihanTangan, btnAuditFasilitasAPD,
-            btnAuditPembuanganLimbahCairInfeksius,
-            btnAuditSterilisasiAlat, btnPersetujuanPenolakanTindakan, btnPenilaianAwalMedisRalanPsikiatri,
-            btnAuditBundleISK, btnAuditBundlePLABSI,
-            btnAuditBundleVAP, btnAkunRekeningHtHBankPapua, btnPembayaranBankPapua,
-            btnPenilaianAwalMedisRalanPenyakitDalam, btnPenilaianAwalMedisRalanMata,
-            btnPenilaianAwalMedisRalanNeurologi, btnPenilaianAwalMedisRalanOrthopedi, btnPenilaianAwalMedisRalanBedah,
-            btnSOAPRalanAnggotaTNI, btnSOAPRanapAnggotaTNI,
-            btnJumlahPengunjungRalanTNI, btnLaporanPenyakitTNI, btnCatatanKeperawatanRanap,
-            btnMasterRencanaKeperawatanGigi, btnMasterRencanaKeperawatanMata,
-            btnMasterRencanaKeperawatanIGD, btnMasterMasalahKeperawatanPsikiatri, btnMasterRencanaKeperawatanPsikiatri,
-            btnPenilaianAwalKeperawatanRalanPsikiatri,
-            btnPemantauanPEWSAnak, btnMasterTemplateHasilRadiologi, btnLaporanBulananIRJ,
-            btnMasterTemplatePemeriksaanDokter, btnPermintaanLabMB, btnLamaPelayananLabMB,
-            btnPenilaianPreOperasi, btnPenilaianPreAnastesi, btnPersetujuanPulangAtasPermintanSendiri,
-            btnPerencanaanPemulangan, btnPenilaianRisikoJatuhDewasa,
-            btnPenilaianRisikoJatuhAnak, btnPenilaianAwalMedisRalanGeriatri, btnPenilaianTambahanGeriatri,
-            btnSkriningNutrisiDewasa, btnHasilPemeriksaanUSG,
-            btnSkriningNutrisiLansia, btnSkriningNutrisiAnak, btnAkunRekeningHtHBankJabar, btnPembayaranBankJabar,
-            btnPernyataanPasienUmum, btnKonselingFarmasi,
-            btnPelayananInformasiObat, btnPersetujuanUmum, btnTransferPasienAntarRuang, btnReferensiDokterSatuSehat,
-            btnReferensiPasienSatuSehat,
-            btnMappingOrganisasiSatuSehat, btnMappingLokasiSatuSehat, btnKirimEncounterSatuSehat, btnCatatanCekGDS,
-            btnKirimConditionSatuSehat,
-            btnChecklistPreOperasi, btnKirimObservationTTVSatuSehat, btnSignInSebelumAnestesi,
-            btnKirimProcedureSatuSehat, btnOperasiPerBulan, btnTimeOutSebelumInsisi,
-            btnBarangDapur, btnSignOutSebelumMenutupLuka, btnOpnameDapur, btnSuplierDapur, btnMappingVaksinSatuSehat,
-            btnKirimVaksinSatuSehat, btnPembelianDapur,
-            btnChecklistPostOperasi, btnPengeluaranDapur, btnRiwayatBarangDapur, btnPermintaanDapur, btnRBiayaDapur,
-            btnRekapPengadaanDapur, btnLimbahB3MedisCair,
-            btnGrafikLimbahB3MedisCairPerTanggal, btnGrafikLimbahB3MedisCairPerBulan, btnRekapBiayaRegistrasi,
-            btnRekonsiliasiObat, btnKirimClinicalImpressionSatuSehat,
-            btnPenilaianPasienTerminal, btnPersetujuanRawatInap, btnMonitoringReaksiTranfusi,
-            btnPenilaianKorbanKekerasan, btnPenilaianRisikoJatuhLansia,
-            btnSkriningManagerPelayananPasien, btnPenilaianPasienPenyakitMenular, btnSkriningMPPFormA,
-            btnSkriningMPPFormB, btnEdukasiPasienKeluargaRJ,
-            btnPemantauanPEWSDewasa, btnBPJSAntreanPerTanggalMobileJKN, btnPenilaianTambahanBunuhDiri,
-            btnPenilaianTambahanPerilakuKekerasan,
-            btnPenilaianTambahanMelarikanDiri, btnPersetujuanPenundaanPelayanan, btnSisaDietPasien,
-            btnPenilaianAwalMedisRalanBedahMulut,
-            btnPenilaianPasienKeracunan, btnPemantauanMEOWS, btnCatatanADIMEGizi, btnMasterMasalahKeperawatanGeriatri,
-            btnMasterRencanaKeperawatanGeriatri,
-            btnPenilaianAwalKeperawatanRalanGeriatri, btnChecklistKriteriaMasukHCU, btnChecklistKriteriaKeluarHCU,
-            btnPenilaianRisikoDekubitus, btnMasterMenolakAnjuranMedis,
-            btnPenolakanAnjuranMedis, btnLaporanTahunanPenolakanAnjuranMedis, btnMasterTemplateLaporanOperasi,
-            btnDokumentasiTindakanESWL, btnChecklistKriteriaMasukICU,
-            btnChecklistKriteriaKeluarICU, btnDataFollowUpDBD, btnPengajuanBiayaKuangan,
-            btnPenilaianRisikoJatuhNeonatus, btnPemeriksaanFisikRalanPerPenyakit,
-            btnPenilaianRisikoJatuhGeriatri, btnPersetujuanPengajuanBiaya, btnPemantauanEWSNeonatus,
-            btnValidasiPersetujuanPengajuanBiaya, btnRiwayatPerawatanICare,
-            btnRekapPengajuanBiaya, btnPenilaianAwalMedisRalanKulitKelamin, btnHostToHostBankMandiri,
-            btnPenilaianLevelKecemasanRanapAnak, btnPenilaianAwalMedisHemodialisa,
-            btnPenilaianRisikoJatuhPsikiatri, btnPenilaianLanjutanSkriningFungsional,
-            btnPenilaianAwalMedisRalanRehabMedik, btnTemplatePersetujuanPenolakanTindakan,
-            btnPenilaianAwalMedisRalanIGDPsikiatri, btnBPJSReferensiSettingPPKApotek, btnBPJSReferensiObatApotek,
-            btnPembayaranBankMandiri, btnBPJSMapingObatApotek,
-            btnPenilaianUlangNyeri, btnPenilaianTerapiWicara, btnPengkajianRestrain, btnBPJSKunjunganSEPApotek,
-            btnBPJSMonitoringKlaimApotek, btnPenilaianAwalMedisRalanParu,
-            btnBPJSDaftarPelayananObatApotek, btnCatatanKeperawatanRalan, btnCatatanPersalinan,
-            btnSkorAldrettePascaAnestesi, btnSkorStewardPascaAnestesi,
-            btnSkorBromagePascaAnestesi, btnPenilaianPreInduksi, btnHasilUSGUrologi, btnHasilUSGGynecologi,
-            btnHasilPemeriksaanEKG, btnKirimDietSatuSehat, btnMappingObatSatuSehat,
-            btnRingkasanPengadaanDapur, btnKirimMedicationSatuSehat, btnKirimMedicationRequestSatuSehat,
-            btnPenatalaksanaanTerapiOkupasi, btnKirimMedicationDispenseSatuSehat,
-            btnHasilUSGNeonatus, btnHasilEndoskopiFaringLaring, btnMappingRadiologiSatuSehat,
-            btnKirimServiceRequestRadiologiSatuSehat, btnHasilEndoskopiHidung, btnKirimSpecimenRadiologiSatuSehat,
-            btnMasterMasalahKeperawatanNeonatus, btnMasterRencanaKeperawatanNeonatus,
-            btnPenilaianAwalKeperawatanRanapNeonatus, btnKirimObservationRadiologiSatuSehat,
-            btnKirimDiagnosticReportSatuSehat, btnHasilEndoskopiTelinga, btnMappingLaboratSatuSehat,
-            btnKirimServiceRequestLabPKSatuSehat, btnKirimServiceRequestLabMBSatuSehat,
-            btnKirimSpecimenLabPKSatuSehat, btnKirimSpecimenLabMBSatuSehat, btnKirimObservationLabPKSatuSehat,
-            btnKirimObservationLabMBSatuSehat, btnKirimDiagnosticReportLabPKSatuSehat,
-            btnKirimDiagnosticReportLabMBSatuSehat, btnKepatuhanKelengkapanKeselamatanBedah,
-            btnNilaiPiutangPerJenisBayarPerBulan, btnRingkasanPiutangPerJenisBayar,
-            btnPenilaianPasienImunitasRendah, btnCatatanKeseimbanganCairan, btnCatatanObservasiCHBP,
-            btnCatatanObservasiInduksiPersalinan, btnSKPKategoriPenilaian, btnSKPKriteriaPenilaian,
-            btnReferensiPoliMobileJKNFKTP, btnReferensiDokterMobileJKNFKTP, btnSKPPenilaianPegawai,
-            btnMandiriMetodePembayaran, btnMandiriBankTujuanTRansfer, btnPembayaranPihakKe3BankMandiri,
-            btnMandiriKodeTransaksiTujuanTRansfer, btnSKPRekapitulasiPenilaian, btnPCareReferensiAlergi,
-            btnPCareReferensiPrognosa, btnKonsultasiMedik, btnDataSasaranUsiaProduktif,
-            btnDataSasaranUsiaLansia, btnSkriningMerokokUsiaSekolah, btnSkriningKekerasanPadaPerempuan,
-            btnSkriningObesitas, btnSkriningRisikoKankerPayudara, btnSkriningRisikoKankerParu,
-            btnSkriningKesehatanGigiMulutRemaja, btnSkriningTBC, btnPenilaianAwalKeperawatanRanapBayiAnak,
-            btnBookingMCUPerusahaan, btnCatatanObservasiRestrainNonFramakologi,
-            btnCatatanObservasiVentilator, btnCatatanAnastesiSedasi, btnSkriningPUMA, btnKirimCarePlanSatuSehat,
-            btnKirimMedicationStatementSatuSehat, btnSkriningAdiksiNikotin,
-            btnSkriningThalassemia, btnSkriningInstrumenSDQ, btnSkriningInstrumenSRQ, btnChecklistPemberianFibrinolitik,
-            btnSkriningKankerKolorektal, btnPenerimaanBarangDapur, btnBayarPesanDapur,
-            btnHutangDapur, btnTagihanHutangDapur, btnValidasiTagihanDapur, btnSuratPemesananDapur,
-            btnPengajuanBarangDapur, btnReturBarangDapur, btnHibahDapur, btnRingkasanPenerimaanDapur,
-            btnRingkasanPengajuanDapur, btnRingkasanPemesananDapur, btnRingkasanReturBeliDapur,
-            btnRingkasanStokKeluarDapur, btnStokKeluarDapurPerTanggal, btnSirkulasiDapur, btnSirkulasiDapur2,
-            btnVerifikasiPenerimaanDapur, btnNilaiPenerimaanVendorDapurPerBulan, btnRingkasanHutangVendorBarangDapur,
-            btnPenilaianPsikologiKlinis, btnPenilaianAwalMedisRanapNeonatus,
-            btnPenilaianDerajatDehidrasi, btnRingkasanJasaTindakanPasien, btnPendapatanPerAkun, btnHasilPemeriksaanECHO,
-            btnRl13KetersediaanKamar, btnPendapatanPerAkunClosing,
-            btnPenilaianBayiBaruLahir, btnPengeluaranPengeluaran, btnSkriningDiabetesMelitus, btnLaporanTindakan,
-            btnPelaksanaanInformasiEdukasi, btnLayananKedokteranFisikRehabilitasi,
-            btnSkriningKesehatanGigiMulutBalita, btnSkriningAnemia, btnPermintaanLayananProgramKFR,
-            btnLayananProgramKFR, btnSkriningHipertensi, btnSkriningKesehatanPenglihatan,
-            btnCatatanObservasiHemodialisa, btnSkriningKesehatanGigiMulutDewasa, btnSkriningRisikoKankerServiks,
-            btnCatatanCairanHemodialisa, btnSkriningKesehatanGigiMulutLansia,
-            btnSkriningIndraPendengaran, btnCatatanPengkajianPaskaOperasi, btnSirkulasiInventarisCSSD,
-            btnSkriningFrailtySyndrome, btnLamaPelayananCSSD, btnCatatanObservasiBayi,
-            btnRiwayatSuratPeringatan, btnMasterKesimpulanAnjuranMCU, btnKategoriPiutangJasaPerusahaan,
-            btnPiutangJasaPerusahaan, btnBayarPiutangJasaPerusahaan, btnPiutangJasaPerusahaanBelumLunas,
-            btnPiutangPeminjamanUangBelumLunas, btnChecklistKesiapanAnestesi, btnHasilPemeriksaanSlitLamp,
-            btnHasilPemeriksaanOCT, btnPoliAsalPasienRanap, btnPemberiHutangLain,
-            btnDokterAsalPasienRanap, btnBebanHutangLain, btnRekapKeluarDutaParking, btnSuratKeteranganLayakTerbang,
-            btnBayarBebanHutangLain, btnPersetujuanPemeriksaanHIV, btnSkriningInstrumenACRS,
-            btnSuratPernyataanMemilihDPJP, btnSkriningInstrumenMentalEmosional, btnChecklistKriteriaMasukNICU,
-            btnChecklistKriteriaKeluarNICU, btnPenilaianAwalMedisRanapPsikiatri,
-            btnLabKeslingPelanggan, btnChecklistKriteriaMasukPICU, btnChecklistKriteriaKeluarPICU,
-            btnLabKeslingSampelBakuMutu, btnSkriningInstrumenAMT, btnLabKeslingParameterPengujian,
-            btnLabKeslingNilaiNormalBakuMutu, btnSkriningPneumoniaSeverityIndex, btnPenilaianAwalMedisRalanJantung,
-            btnPenilaianAwalMedisRalanUrologi, btnHasilPemeriksaanTreadmill,
-            btnHasilPemeriksaanECHOPediatrik, btnMasterTemplateInformasiEdukasi, btnSkriningInstrumenESAT,
-            btnLabKeslingPermintaanPengujianSampel, btnPenilaianAwalMedisRanapJantung,
-            btnEEksekutif, btnLabKeslingPengujianSampelTidakDapatDilayani, btnLabKeslingPengujianSampelDapatDilayani,
-            btnLabKeslingPenugasanPengujianSampel, btnLabKeslingHasilPengujianSampel,
-            btnLabKeslingVerifikasiPengujianSampel, btnLabKeslingValidasiPengujianSampel, btnLabKeslingRekapPelayanan,
-            btnLabKeslingPembyaranPengujianSampel, btnLabKeslingRekapPembayaran,
-            btnSkriningCURB65, btnBPJSPotensiPRB, btnBPJSRiwayatPelayananObatApotek, btnSkriningGiziKehamilan,
-            btnBPJSRekapPesertaPRBObatApotek, btnSuratSerahTerimaBarangAnggotaTubuh, btnPCRAICRAJenisAktivitasProyek,
-            btnPCRAICRALokasiKelompokRisiko, btnPCRAICRAKelasRisikoPencegahan, btnPCRAICRATindakanPengendalian,
-            btnPCRAICRAIdentifikasiRisikoInfeksi, btnPCRAICRAIdentifikasiRisikoKeselamatan,
-            btnPCRAICRAIdentifikasiRisikoKebakaran, btnPCRAICRAIdentifikasiRisikoUtilitas, btnBPJSResepObatApotek,
-            btnObatApolApotekBPJS, btnPermintaanResepIterasiApotekBPJS, btnPCRAICRAPengkajianRisikoPraKonstruksi,
-            btnPCRAICRAPersyaratanHarusDipenuhi, btnKirimQRTelaahFarmasiSatuSehat, btnKirimAllergiSatuSehat,
-            btnKonsultasiPerawat, btnMappingProsedurSmartKlaimBPJS, btnMappingPenyakitSmartKlaimBPJS,
-            btnKirimFHIRSmartKlaimBPJS,
-            btnSuratPermintaanBinrohtal, btnSuratPermintaanPerlindunganDariKekerasan, btnSuratPermohonanPrivasi,
-            btnSuratPermintaanSecondOpinion;
-
-    public void isWall() {
-        try {
-            ps = koneksi.prepareStatement(
-                    "select setting.nama_instansi,setting.alamat_instansi,setting.kabupaten,setting.propinsi,setting.aktifkan,setting.wallpaper,setting.kontak,setting.email,setting.logo,setting.kode_ppk,setting.kode_ppkkemenkes from setting");
+    private widget.ButtonBig btnKategoriPerpustakaan,btnRuangPerpustakaan,btnJenisPerpustakaan,btnPengarangPerpustakaan,btnPenerbitPerpustakaan,
+            btnKoleksiPerpustakaan,btnInventarisPerpustakaan,btnPengaturanPeminjamanPerpustakaan,btnDendaPerpustakaan,btnAnggotaPerpustakaan,
+            btnPeminjamanPerpustakaan,btnBayarDendaPerpustakaan,btnPenelitianPerpustakaan,btnEbookPerpustakaan,btnCariEbook,btnPestControl,
+            btnMutuAirLimbah,btnCariInventarisPerpustakaan,btnJenisCideraK3,btnPenyebabKecelakaanK3,btnJenisLukaK3,btnLokasiKejadianK3,btnDampakCideraK3,
+            btnGrafikLimbahDomestikPerBulan,btnJenisPekerjaanK3,btnBagianTubuhK3,btnPeristiwaK3,btnGrafikK3PerTahun,btnGrafikK3PerBulan,btnGrafikK3PerTanggal,
+            btnGrafikK3PerJenisCidera,btnGrafikK3PerPenyebab,btnGrafikK3PerJenisLuka,btnGrafikK3PerLokasiKejadian,btnGrafikK3PerDampakCidera,
+            btnGrafikK3PerJenisPekerjaan,btnGrafikK3PerBagianTubuh,btnJenisCideraK3PerTahun,btnPenyebabKecelakaanK3PerTahun,btnJenisLukaK3PerTahun,
+            btnLokasiKejadianK3PerTahun,btnDampakCideraK3PerTahun,btnJenisPekerjaanK3PerTahun,btnBagianTubuhK3PerTahun,btnSkriningRawatJalan,
+            btnBPJSHistoriPelayanan,btnRekapMutasiBerkas,btnSkriningRalanPernapasanPerTahun,btnPengajuanBarangMedis,btnPengajuanBarangNonMedis,
+            btnGrafikKunjunganRanapBulan,btnGrafikKunjunganRanapTanggal,btnGrafikKunjunganRanapRuang,btnKunjunganBangsalTahun,btnGrafikJenjangJabatanPegawai,
+            btnGrafikBidangPegawai,btnGrafikDepartemenPegawai,btnGrafikPendidikanPegawai,btnGrafikStatusWPPegawai,btnGrafikStatusKerjaPegawai,
+            btnGrafikStatusPulangRanap,btnKIPPasienRanap,btnKIPPasienRalan,btnMappingDokterDPJPVClaim,btnMasterTriaseSkala1,btnMasterTriaseSkala2,
+            btnMasterTriaseSkala3,btnMasterTriaseSkala4,btnMasterTriaseSkala5,btnMasterTriasePemeriksaan,btnMasterTriaseMacamKasus,btnDataTriaseIGD,
+            btnRekapPermintaanDiet,btnDaftarPasienRanap,btnDaftarPasienRanapTNI,btnfee_visit_dokter,btnUser,btnPengajuanAsetInventaris,btnGrafikItemApotekPerJenis,
+            btnGrafikItemApotekPerKategori,btnGrafikItemApotekPerGolongan,btnGrafikItemApotekPerIndustriFarmasi,btn10BesarObatPoli,btnGrafikPengajuanAsetUrgensi,
+            btnGrafikPengajuanAsetStatus,btnGrafikPengajuanAsetDepartemen,btnRekapPengajuanAsetDepartemen,btnGrafikKelompokJabatanPegawai,
+            btnGrafikRisikoKerjaPegawai,btnGrafikEmergencyIndexPegawai,btnGrafikInventarisRuang,btnHarianHAIs2,btnGrafikInventarisJenis,btnResumePasien,
+            btnPerkiraanBiayaRanap,btnRekapObatPoli,btnRekapObatPasien,btnGrafikHAIsPasienRuang,btnGrafikHAIsPasienBulan,btnPermintaanPerbaikanInventaris,
+            btnGrafikHAIsLajuVAP,btnGrafikHAIsLajuIAD,btnGrafikHAIsLajuPleb,btnGrafikHAIsLajuISK,btnGrafikHAIsLajuILO,btnGrafikHAIsLajuHAP,
+            btnMappingPoliInhealth,btnMappingDokterInhealth,btnMappingTindakanRalanInhealth,btnMappingTindakanRanapInhealth,btnMappingTindakanRadiologiInhealth,
+            btnMappingTindakanLaboratInhealth,btnMappingTindakanOperasiInhealth,btnHibahObatBHP,btnAsalHibah,btnAsuhanGizi,btnKirimTagihanInheath,
+            btnSirkulasiObat4,btnSirkulasiObat5,btnSirkulasiObat6,btnSirkulasiNonMedis2,btnMonitoringAsuhanGizi,btnGrafikPenerimaanObatPerBulan,btnRekapKunjungan,
+            btnSuratSakit,btnPenilaianAwalKeperawatanRalan,btnMasterMasalahKeperawatan,btnPengajuanCuti,btnKedatanganPasienPerJam,btnPendonorDarah,
+            btnSuplierToko,btnJenisToko,btnSetHargaToko,btnBarangToko,btnPenagihanPiutangPasien,btnAkunPenagihanPiutang,btnStokOpnameToko,
+            btnRiwayatBarangToko,btnSuratPemesananToko,btnPengajuanBarangToko,btnPenerimaanBarangToko,btnPengadaanBarangToko,btnHutangToko,
+            btnBayarPesanToko,btnMemberToko,btnPenjualanToko,btnRegistrasiPoliPerTanggal,btnPiutangToko,btnReturKeSuplierToko,btnReturBarangNonMedis,
+            btnRiwayatBarangNonMedis,btnPasienCorona,btnPendapatanHarianToko,btnDiagnosaPasienCorona,btnPerawatanPasienCorona,btnPenilaianAwalKeperawatanGigi,
+            btnMasterMasalahKeperawatanGigi,btnBayarPiutangToko,btnPiutangHarianToko,btnPenjualanHarianToko,btnDeteksiDiniCorona,btnPenilaianAwalKeperawatanKebidanan,
+            btnPengumumanEPasien,btnSuratHamil,btnSetTarifOnline,btnBookingPeriksa,btnSirkulasiBarangToko,btnReturJualToko,btnReturPiutangToko,
+            btnSirkulasiBarangToko2,btnKeuntunganBarangToko,btnZISPengeluaranPenerimaDankes,btnZISPenghasilanPenerimaDankes,btnZISUkuranRumahPenerimaDankes,
+            btnZISDindingRumahPenerimaDankes,btnZISLantaiRumahPenerimaDankes,btnZISAtapRumahPenerimaDankes,btnZISKepemilikanRumahPenerimaDankes,
+            btnZISKamarMandiPenerimaDankes,btnZISDapurRumahPenerimaDankes,btnZISKursiRumahPenerimaDankes,btnZISKategoriPHBSPenerimaDankes,
+            btnZISElektronikPenerimaDankes,btnZISTernakPenerimaDankes,btnZISJenisSimpananPenerimaDankes,btnPenilaianAwalRalanBayi,
+            btnZISKategoriAsnafPenerimaDankes,btnMasterMasalahKeperawatanAnak,btnMasterImunisasi,btnZISPatologisPenerimaDankes,btnPCareCekKartu,
+            btnSuratBebasNarkoba,btnSuratKeteranganCovid,btnPemakaianAirTanah,btnGrafikPemakaianAirTanahPerTanggal,btnGrafikPemakaianAirTanahPerBulan,
+            btnLamaPelayananPoli,btnHemodialisa,btnGrafikHemodialisaPerTanggal,btnGrafikHemodialisaPerBulan,btnGrafikHemodialisaPerTahun,
+            btnGrafikMeninggalPerBulan,btnLaporanTahunanIRJ,btnPerbaikanInventaris,btnSuratCutiHamil,btnPermintaanStokObatPasien,btnPemeliharaanInventaris,
+            btnKlasifikasiPasienRanap,btnBulananKlasifikasiPasienRanap,btnHarianKlasifikasiPasienRanap,btnKlasifikasiPasienPerRuang,btnSOAPPerawatan,
+            btnKlaimRawatJalan,btnSkriningGiziLanjut,btnLamaPenyiapanRM,btnDosisRadiologi,btnDemografiUmurKunjungan,btnJamDietPasien,btnRVPPiutangBPJS,
+            btnVerifikasiPenerimaanFarmasi,btnVerifikasiPenerimaanLogistik,btnPermintaanLabPA,btnLamaPelayananLabPA,btnRingkasanPengajuanMedis,
+            btnRingkasanPemesananMedis,btnRingkasanPembelianMedis,btnRingkasanPenerimaanMedis,btnRingkasanHibahMedis,btnRingkasanPenjualanMedis,
+            btnRingkasanBeriObat,btnRingkasanPiutangObat,btnRingkasanStokKeluarObat,btnRingkasanReturSuplierObat,btnRingkasanReturJualObat,
+            btnRingkasanPengajuanNonMedis,btnRingkasanPemesananNonMedis,btnPenilaianAwalKeperawatanKebidananRanap,btnRingkasanPengadaanNonMedis,
+            btnRingkasanPenerimaanNonMedis,btnRingkasanStokKeluarNonMedis,btnRingkasanReturSuplierNonMedis,btnOmsetPenerimaan,btnValidasiPenagihanPiutang,
+            btnPermintaanRanap,btnBPJSReferensiDiagnosaPRB,btnBPJSReferensiObatPRB,btnBPJSSuratKontrol,btnPenggunaanBHPOK,btnSuratKeteranganRawatInap,
+            btnSuratKeteranganSehat,btnPendapatanPerCaraBayar,btnAkunRekeningHtHBankJateng,btnPembayaranBankJateng,btnBPJSSuratPRI,btnRingkasanTindakanRalan,
+            btnLamaPelayananPasien,btnSuratSakitPihak2,btnReferensiPendaftaranMobileJKN,btnBatalPendaftaranMobileJKN,btnTagihanHutangObat,btnLamaOperasi,
+            btnGrafikInventarisKategori,btnGrafikInventarisMerk,btnGrafikInventarisProdusen,btnPengembalianDepositPasien,btnValidasiTagihanObatBHP,
+            btnPiutangObatBelumLunas,btnIntegrasiBRIApi,btnAkunAsetInventaris,btnPengadaanAset,btnSuplierInventaris,btnPenerimaanAset,
+            btnBayarPemesananInventaris,btnHutangAsetInventaris,btnHibahAsetInventaris,btnTagihanHutangNonMedis,btnValidasiTagihanNonMedis,
+            btnTagihanHutangAset,btnValidasiTagihanAset,btnHibahNonMedis,btnCekPCareTACC,btnResepLuar,btnSuratBebasTBC,btnSuratButaWarna,btnSuratBebasTato,
+            btnSuratKewaspadaanKesehatan,btnGrafikPorsiDietPerTanggal,btnGrafikPorsiDietPerBulan,btnGrafikPorsiDietPerTahun,btnGrafikPorsiDietPerRuang,
+            btnMasterMasalahKeperawatanMata,btnPenilaianAwalMedisRalan,btnPenilaianAwalMedisRanap,btnPenilaianAwalMedisRanapKandungan,
+            btnPenilaianAwalMedisRalanKandungan,btnPenilaianAwalMedisIGD,btnPenilaianAwalMedisRalanBayi,btnBPJSReferensiPoliHFIS,
+            btnBPJSReferensiDokterHFIS,btnBPJSReferensiJadwalHFIS,btnFisioterapi,btnBPJSProgramPRB,btnBPJSSuplesiJasaRaharja,btnBPJSDataIndukKecelakaan,
+            btnBPJSDataSEPInternal,btnBPJSKlaimJasaRaharja,btnBPJSPasienFinger,btnBPJSRujukanKhusus,btnPemeliharaanGedung,btnGrafikPerbaikanInventarisPerTanggal,
+            btnGrafikPerbaikanInventarisPerBulan,btnGrafikPerbaikanInventarisPerTahun,btnGrafikPerbaikanInventarisPerPelaksanaStatus,
+            btnPenilaianMCU,btnCaraBayar,btnPeminjamPiutang,btnPiutangLainLain,btnBPJSTaskIDMobileJKN,btnBayarPiutangLainLain,btnPembayaranAkunBayar4,
+            btnStokAkhirFarmasiPerTanggal,btnRiwayatKamarPasien,btnAuditKepatuhanAPD,btnUjiFungsiKFR,btnKategoriPengeluaranHarian,btnKategoriPemasukanLian,
+            btnPembayaranAkunBayar5,btnRuangOperasi,btnJasaTindakanPasien,btnTelaahResep,btnPermintaanResepPulang,btnResumePasienRanap,
+            btnRekapJasaDokter,btnStatusDataRM,btnRingkasanBiayaObatPasienPerTanggal,btnMasterMasalahKeperawatanIGD,btnPenilaianAwalKeperawatanIGD,
+            btnBPJSReferensiDPHOApotek,btnBPJSReferensiPoliApotek,btnBayarJMDokter,btnBPJSReferensiFaskesApotek,btnBPJSReferensiSpesialistikApotek,
+            btnPembayaranBRIVA,btnPenilaianAwalKeperawatanRanap,btnAkunBayarHutang,btnNilaiPenerimaanVendorFarmasiPerBulan,btnMasterRencanaKeperawatan,
+            btnLaporanTahunanIGD,btnObatBHPTidakBergerak,btnRingkasanHutangVendorFarmasi,btnNilaiPenerimaanVendorNonMedisPerBulan,btnRingkasanHutangVendorBarangNonMedis,
+            btnAnggotaPolriDirawat,btnDaftarPasienRanapPolri,btnSOAPRalanAnggotaPolri,btnSOAPRanapAnggotaPolri,btnLaporanPenyakitPolri,btnMasterRencanaKeperawatanAnak,
+            btnJumlahPengunjungRalanPolri,btnCatatanObservasiIGD,btnCatatanObservasiRanap,btnCatatanObservasiRanapKebidanan,btnCatatanObservasiRanapPostPartum,
+            btnPenilaianAwalMedisRalanTHT,btnAuditCuciTanganMedis,btnPenilaianPsikologi,btnRuangAuditKepatuhan,btnAuditPembuanganLimbah,
+            btnAuditPembuanganBendaTajam,btnAuditPenangananDarah,btnAuditPengelolaanLinenKotor,btnAuditPenempatanPasien,btnAuditKamarJenazah,
+            btnAuditBundleIADP,btnAuditBundleIDO,btnAuditFasilitasKebersihanTangan,btnAuditFasilitasAPD,btnAuditPembuanganLimbahCairInfeksius,
+            btnAuditSterilisasiAlat,btnPersetujuanPenolakanTindakan,btnPenilaianAwalMedisRalanPsikiatri,btnAuditBundleISK,btnAuditBundlePLABSI,
+            btnAuditBundleVAP,btnAkunRekeningHtHBankPapua,btnPembayaranBankPapua,btnPenilaianAwalMedisRalanPenyakitDalam,btnPenilaianAwalMedisRalanMata,
+            btnPenilaianAwalMedisRalanNeurologi,btnPenilaianAwalMedisRalanOrthopedi,btnPenilaianAwalMedisRalanBedah,btnSOAPRalanAnggotaTNI,btnSOAPRanapAnggotaTNI,
+            btnJumlahPengunjungRalanTNI,btnLaporanPenyakitTNI,btnCatatanKeperawatanRanap,btnMasterRencanaKeperawatanGigi,btnMasterRencanaKeperawatanMata,
+            btnMasterRencanaKeperawatanIGD,btnMasterMasalahKeperawatanPsikiatri,btnMasterRencanaKeperawatanPsikiatri,btnPenilaianAwalKeperawatanRalanPsikiatri,
+            btnPemantauanPEWSAnak,btnMasterTemplateHasilRadiologi,btnLaporanBulananIRJ,btnMasterTemplatePemeriksaanDokter,btnPermintaanLabMB,btnLamaPelayananLabMB,
+            btnPenilaianPreOperasi,btnPenilaianPreAnastesi,btnPersetujuanPulangAtasPermintanSendiri,btnPerencanaanPemulangan,btnPenilaianRisikoJatuhDewasa,
+            btnPenilaianRisikoJatuhAnak,btnPenilaianAwalMedisRalanGeriatri,btnPenilaianTambahanGeriatri,btnSkriningNutrisiDewasa,btnHasilPemeriksaanUSG,
+            btnSkriningNutrisiLansia,btnSkriningNutrisiAnak,btnAkunRekeningHtHBankJabar,btnPembayaranBankJabar,btnPernyataanPasienUmum,btnKonselingFarmasi,
+            btnPelayananInformasiObat,btnPersetujuanUmum,btnTransferPasienAntarRuang,btnReferensiDokterSatuSehat,btnReferensiPasienSatuSehat,
+            btnMappingOrganisasiSatuSehat,btnMappingLokasiSatuSehat,btnKirimEncounterSatuSehat,btnCatatanCekGDS,btnKirimConditionSatuSehat,
+            btnChecklistPreOperasi,btnKirimObservationTTVSatuSehat,btnSignInSebelumAnestesi,btnKirimProcedureSatuSehat,btnOperasiPerBulan,btnTimeOutSebelumInsisi,
+            btnBarangDapur,btnSignOutSebelumMenutupLuka,btnOpnameDapur,btnSuplierDapur,btnMappingVaksinSatuSehat,btnKirimVaksinSatuSehat,btnPembelianDapur,
+            btnChecklistPostOperasi,btnPengeluaranDapur,btnRiwayatBarangDapur,btnPermintaanDapur,btnRBiayaDapur,btnRekapPengadaanDapur,btnLimbahB3MedisCair,
+            btnGrafikLimbahB3MedisCairPerTanggal,btnGrafikLimbahB3MedisCairPerBulan,btnRekapBiayaRegistrasi,btnRekonsiliasiObat,btnKirimClinicalImpressionSatuSehat,
+            btnPenilaianPasienTerminal,btnPersetujuanRawatInap,btnMonitoringReaksiTranfusi,btnPenilaianKorbanKekerasan,btnPenilaianRisikoJatuhLansia,
+            btnSkriningManagerPelayananPasien,btnPenilaianPasienPenyakitMenular,btnSkriningMPPFormA,btnSkriningMPPFormB,btnEdukasiPasienKeluargaRJ,
+            btnPemantauanPEWSDewasa,btnBPJSAntreanPerTanggalMobileJKN,btnPenilaianTambahanBunuhDiri,btnPenilaianTambahanPerilakuKekerasan,
+            btnPenilaianTambahanMelarikanDiri,btnPersetujuanPenundaanPelayanan,btnSisaDietPasien,btnPenilaianAwalMedisRalanBedahMulut,
+            btnPenilaianPasienKeracunan,btnPemantauanMEOWS,btnCatatanADIMEGizi,btnMasterMasalahKeperawatanGeriatri,btnMasterRencanaKeperawatanGeriatri,
+            btnPenilaianAwalKeperawatanRalanGeriatri,btnChecklistKriteriaMasukHCU,btnChecklistKriteriaKeluarHCU,btnPenilaianRisikoDekubitus,btnMasterMenolakAnjuranMedis,
+            btnPenolakanAnjuranMedis,btnLaporanTahunanPenolakanAnjuranMedis,btnMasterTemplateLaporanOperasi,btnDokumentasiTindakanESWL,btnChecklistKriteriaMasukICU,
+            btnChecklistKriteriaKeluarICU,btnDataFollowUpDBD,btnPengajuanBiayaKuangan,btnPenilaianRisikoJatuhNeonatus,btnPemeriksaanFisikRalanPerPenyakit,
+            btnPenilaianRisikoJatuhGeriatri,btnPersetujuanPengajuanBiaya,btnPemantauanEWSNeonatus,btnValidasiPersetujuanPengajuanBiaya,btnRiwayatPerawatanICare,
+            btnRekapPengajuanBiaya,btnPenilaianAwalMedisRalanKulitKelamin,btnHostToHostBankMandiri,btnPenilaianLevelKecemasanRanapAnak,btnPenilaianAwalMedisHemodialisa,
+            btnPenilaianRisikoJatuhPsikiatri,btnPenilaianLanjutanSkriningFungsional,btnPenilaianAwalMedisRalanRehabMedik,btnTemplatePersetujuanPenolakanTindakan,
+            btnPenilaianAwalMedisRalanIGDPsikiatri,btnBPJSReferensiSettingPPKApotek,btnBPJSReferensiObatApotek,btnPembayaranBankMandiri,btnBPJSMapingObatApotek,
+            btnPenilaianUlangNyeri,btnPenilaianTerapiWicara,btnPengkajianRestrain,btnBPJSKunjunganSEPApotek,btnBPJSMonitoringKlaimApotek,btnPenilaianAwalMedisRalanParu,
+            btnBPJSDaftarPelayananObatApotek,btnCatatanKeperawatanRalan,btnCatatanPersalinan,btnSkorAldrettePascaAnestesi,btnSkorStewardPascaAnestesi,
+            btnSkorBromagePascaAnestesi,btnPenilaianPreInduksi,btnHasilUSGUrologi,btnHasilUSGGynecologi,btnHasilPemeriksaanEKG,btnKirimDietSatuSehat,btnMappingObatSatuSehat,
+            btnRingkasanPengadaanDapur,btnKirimMedicationSatuSehat,btnKirimMedicationRequestSatuSehat,btnPenatalaksanaanTerapiOkupasi,btnKirimMedicationDispenseSatuSehat,
+            btnHasilUSGNeonatus,btnHasilEndoskopiFaringLaring,btnMappingRadiologiSatuSehat,btnKirimServiceRequestRadiologiSatuSehat,btnHasilEndoskopiHidung,btnKirimSpecimenRadiologiSatuSehat,
+            btnMasterMasalahKeperawatanNeonatus,btnMasterRencanaKeperawatanNeonatus,btnPenilaianAwalKeperawatanRanapNeonatus,btnKirimObservationRadiologiSatuSehat,
+            btnKirimDiagnosticReportSatuSehat,btnHasilEndoskopiTelinga,btnMappingLaboratSatuSehat,btnKirimServiceRequestLabPKSatuSehat,btnKirimServiceRequestLabMBSatuSehat,
+            btnKirimSpecimenLabPKSatuSehat,btnKirimSpecimenLabMBSatuSehat,btnKirimObservationLabPKSatuSehat,btnKirimObservationLabMBSatuSehat,btnKirimDiagnosticReportLabPKSatuSehat,
+            btnKirimDiagnosticReportLabMBSatuSehat,btnKepatuhanKelengkapanKeselamatanBedah,btnNilaiPiutangPerJenisBayarPerBulan,btnRingkasanPiutangPerJenisBayar,
+            btnPenilaianPasienImunitasRendah,btnCatatanKeseimbanganCairan,btnCatatanObservasiCHBP,btnCatatanObservasiInduksiPersalinan,btnSKPKategoriPenilaian,btnSKPKriteriaPenilaian,
+            btnReferensiPoliMobileJKNFKTP,btnReferensiDokterMobileJKNFKTP,btnSKPPenilaianPegawai,btnMandiriMetodePembayaran,btnMandiriBankTujuanTRansfer,btnPembayaranPihakKe3BankMandiri,
+            btnMandiriKodeTransaksiTujuanTRansfer,btnSKPRekapitulasiPenilaian,btnPCareReferensiAlergi,btnPCareReferensiPrognosa,btnKonsultasiMedik,btnDataSasaranUsiaProduktif,
+            btnDataSasaranUsiaLansia,btnSkriningMerokokUsiaSekolah,btnSkriningKekerasanPadaPerempuan,btnSkriningObesitas,btnSkriningRisikoKankerPayudara,btnSkriningRisikoKankerParu,
+            btnSkriningKesehatanGigiMulutRemaja,btnSkriningTBC,btnPenilaianAwalKeperawatanRanapBayiAnak,btnBookingMCUPerusahaan,btnCatatanObservasiRestrainNonFramakologi,
+            btnCatatanObservasiVentilator,btnCatatanAnastesiSedasi,btnSkriningPUMA,btnKirimCarePlanSatuSehat,btnKirimMedicationStatementSatuSehat,btnSkriningAdiksiNikotin,
+            btnSkriningThalassemia,btnSkriningInstrumenSDQ,btnSkriningInstrumenSRQ,btnChecklistPemberianFibrinolitik,btnSkriningKankerKolorektal,btnPenerimaanBarangDapur,btnBayarPesanDapur,
+            btnHutangDapur,btnTagihanHutangDapur,btnValidasiTagihanDapur,btnSuratPemesananDapur,btnPengajuanBarangDapur,btnReturBarangDapur,btnHibahDapur,btnRingkasanPenerimaanDapur,
+            btnRingkasanPengajuanDapur,btnRingkasanPemesananDapur,btnRingkasanReturBeliDapur,btnRingkasanStokKeluarDapur,btnStokKeluarDapurPerTanggal,btnSirkulasiDapur,btnSirkulasiDapur2,
+            btnVerifikasiPenerimaanDapur,btnNilaiPenerimaanVendorDapurPerBulan,btnRingkasanHutangVendorBarangDapur,btnPenilaianPsikologiKlinis,btnPenilaianAwalMedisRanapNeonatus,
+            btnPenilaianDerajatDehidrasi,btnRingkasanJasaTindakanPasien,btnPendapatanPerAkun,btnHasilPemeriksaanECHO,btnRl13KetersediaanKamar,btnPendapatanPerAkunClosing,
+            btnPenilaianBayiBaruLahir,btnPengeluaranPengeluaran,btnSkriningDiabetesMelitus,btnLaporanTindakan,btnPelaksanaanInformasiEdukasi,btnLayananKedokteranFisikRehabilitasi,
+            btnSkriningKesehatanGigiMulutBalita,btnSkriningAnemia,btnPermintaanLayananProgramKFR,btnLayananProgramKFR,btnSkriningHipertensi,btnSkriningKesehatanPenglihatan,
+            btnCatatanObservasiHemodialisa,btnSkriningKesehatanGigiMulutDewasa,btnSkriningRisikoKankerServiks,btnCatatanCairanHemodialisa,btnSkriningKesehatanGigiMulutLansia,
+            btnSkriningIndraPendengaran,btnCatatanPengkajianPaskaOperasi,btnSirkulasiInventarisCSSD,btnSkriningFrailtySyndrome,btnLamaPelayananCSSD,btnCatatanObservasiBayi,
+            btnRiwayatSuratPeringatan,btnMasterKesimpulanAnjuranMCU,btnKategoriPiutangJasaPerusahaan,btnPiutangJasaPerusahaan,btnBayarPiutangJasaPerusahaan,btnPiutangJasaPerusahaanBelumLunas,
+            btnPiutangPeminjamanUangBelumLunas,btnChecklistKesiapanAnestesi,btnHasilPemeriksaanSlitLamp,btnHasilPemeriksaanOCT,btnPoliAsalPasienRanap,btnPemberiHutangLain,
+            btnDokterAsalPasienRanap,btnBebanHutangLain,btnRekapKeluarDutaParking,btnSuratKeteranganLayakTerbang,btnBayarBebanHutangLain,btnPersetujuanPemeriksaanHIV,btnSkriningInstrumenACRS,
+            btnSuratPernyataanMemilihDPJP,btnSkriningInstrumenMentalEmosional,btnChecklistKriteriaMasukNICU,btnChecklistKriteriaKeluarNICU,btnPenilaianAwalMedisRanapPsikiatri,
+            btnLabKeslingPelanggan,btnChecklistKriteriaMasukPICU,btnChecklistKriteriaKeluarPICU,btnLabKeslingSampelBakuMutu,btnSkriningInstrumenAMT,btnLabKeslingParameterPengujian,
+            btnLabKeslingNilaiNormalBakuMutu,btnSkriningPneumoniaSeverityIndex,btnPenilaianAwalMedisRalanJantung,btnPenilaianAwalMedisRalanUrologi,btnHasilPemeriksaanTreadmill,
+            btnHasilPemeriksaanECHOPediatrik,btnMasterTemplateInformasiEdukasi,btnSkriningInstrumenESAT,btnLabKeslingPermintaanPengujianSampel,btnPenilaianAwalMedisRanapJantung,
+            btnEEksekutif,btnLabKeslingPengujianSampelTidakDapatDilayani,btnLabKeslingPengujianSampelDapatDilayani,btnLabKeslingPenugasanPengujianSampel,btnLabKeslingHasilPengujianSampel,
+            btnLabKeslingVerifikasiPengujianSampel,btnLabKeslingValidasiPengujianSampel,btnLabKeslingRekapPelayanan,btnLabKeslingPembyaranPengujianSampel,btnLabKeslingRekapPembayaran,
+            btnSkriningCURB65,btnBPJSPotensiPRB,btnBPJSRiwayatPelayananObatApotek,btnSkriningGiziKehamilan,btnBPJSRekapPesertaPRBObatApotek,btnSuratSerahTerimaBarangAnggotaTubuh,btnPCRAICRAJenisAktivitasProyek,
+            btnPCRAICRALokasiKelompokRisiko,btnPCRAICRAKelasRisikoPencegahan,btnPCRAICRATindakanPengendalian,btnPCRAICRAIdentifikasiRisikoInfeksi,btnPCRAICRAIdentifikasiRisikoKeselamatan,
+            btnPCRAICRAIdentifikasiRisikoKebakaran,btnPCRAICRAIdentifikasiRisikoUtilitas,btnBPJSResepObatApotek,btnObatApolApotekBPJS,btnPermintaanResepIterasiApotekBPJS,btnPCRAICRAPengkajianRisikoPraKonstruksi,
+            btnPCRAICRAPersyaratanHarusDipenuhi,btnKirimQRTelaahFarmasiSatuSehat,btnKirimAllergiSatuSehat,btnKonsultasiPerawat,btnMappingProsedurSmartKlaimBPJS,btnMappingPenyakitSmartKlaimBPJS,btnKirimFHIRSmartKlaimBPJS,
+            btnSuratPermintaanBinrohtal,btnSuratPermintaanPerlindunganDariKekerasan,btnSuratPermohonanPrivasi,btnSuratPermintaanSecondOpinion,btnSuratKeteranganBerobat,btnSuratPenolakanResusitasi;
+    
+    public void isWall(){
+        try{            
+            ps=koneksi.prepareStatement("select setting.nama_instansi,setting.alamat_instansi,setting.kabupaten,setting.propinsi,setting.aktifkan,setting.wallpaper,setting.kontak,setting.email,setting.logo,setting.kode_ppk,setting.kode_ppkkemenkes from setting");
             try {
                 rs = ps.executeQuery();
                 while (rs.next()) {
@@ -30108,8 +29998,13 @@ public class frmUtama extends javax.swing.JFrame {
                 Panelmenu.add(btnSuratKeteranganLayakTerbang);
                 jmlmenu++;
             }
-
-            if (akses.getsurat_kewaspadaan_kesehatan() == true) {
+            
+            if(akses.getsurat_keterangan_berobat()==true){
+                Panelmenu.add(btnSuratKeteranganBerobat);
+                jmlmenu++;
+            }
+            
+            if(akses.getsurat_kewaspadaan_kesehatan()==true){
                 Panelmenu.add(btnSuratKewaspadaanKesehatan);
                 jmlmenu++;
             }
@@ -30198,9 +30093,14 @@ public class frmUtama extends javax.swing.JFrame {
                 Panelmenu.add(btnSuratPermintaanSecondOpinion);
                 jmlmenu++;
             }
-        } else if (cmbMenu.getSelectedIndex() == 16) {
-            jmlmenu = 0;
-            if (akses.getruang_perpustakaan() == true) {
+            
+            if(akses.getsurat_penolakan_resusitasi()==true){
+                Panelmenu.add(btnSuratPenolakanResusitasi);
+                jmlmenu++;
+            }
+        }else if(cmbMenu.getSelectedIndex()==16){ 
+            jmlmenu=0;
+            if(akses.getruang_perpustakaan()==true){
                 Panelmenu.add(btnRuangPerpustakaan);
                 jmlmenu++;
             }
@@ -36058,8 +35958,13 @@ public class frmUtama extends javax.swing.JFrame {
             Panelmenu.add(btnSuratKeteranganLayakTerbang);
             jmlmenu++;
         }
-
-        if (akses.getsurat_kewaspadaan_kesehatan() == true) {
+        
+        if(akses.getsurat_keterangan_berobat()==true){
+            Panelmenu.add(btnSuratKeteranganBerobat);
+            jmlmenu++;
+        }
+        
+        if(akses.getsurat_kewaspadaan_kesehatan()==true){
             Panelmenu.add(btnSuratKewaspadaanKesehatan);
             jmlmenu++;
         }
@@ -36146,6 +36051,11 @@ public class frmUtama extends javax.swing.JFrame {
 
         if (akses.getsurat_permintaan_second_opinion() == true) {
             Panelmenu.add(btnSuratPermintaanSecondOpinion);
+            jmlmenu++;
+        }
+        
+        if(akses.getsurat_penolakan_resusitasi()==true){
+            Panelmenu.add(btnSuratPenolakanResusitasi);
             jmlmenu++;
         }
 
@@ -44653,10 +44563,16 @@ public class frmUtama extends javax.swing.JFrame {
                 jmlmenu++;
             }
         }
-
-        if (akses.getsurat_kewaspadaan_kesehatan() == true) {
-            if (btnSuratKewaspadaanKesehatan.getText().toLowerCase().trim()
-                    .contains(TCari.getText().toLowerCase().trim())) {
+        
+        if(akses.getsurat_keterangan_berobat()==true){
+            if(btnSuratKeteranganBerobat.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
+                Panelmenu.add(btnSuratKeteranganBerobat);
+                jmlmenu++;
+            }
+        }
+        
+        if(akses.getsurat_kewaspadaan_kesehatan()==true){
+            if(btnSuratKewaspadaanKesehatan.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
                 Panelmenu.add(btnSuratKewaspadaanKesehatan);
                 jmlmenu++;
             }
@@ -44794,8 +44710,15 @@ public class frmUtama extends javax.swing.JFrame {
             }
         }
 
-        if (akses.getruang_perpustakaan() == true) {
-            if (btnRuangPerpustakaan.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())) {
+        if(akses.getsurat_penolakan_resusitasi()==true){
+            if(btnSuratPenolakanResusitasi.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
+                Panelmenu.add(btnSuratPenolakanResusitasi);                 
+                jmlmenu++;
+            }
+        }
+        
+        if(akses.getruang_perpustakaan()==true){
+            if(btnRuangPerpustakaan.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
                 Panelmenu.add(btnRuangPerpustakaan);
                 jmlmenu++;
             }
@@ -51854,19 +51777,22 @@ public class frmUtama extends javax.swing.JFrame {
         btnSuratPermohonanPrivasi.addActionListener(this::btnSuratPermohonanPrivasiActionPerformed);
 
         btnSuratPermintaanSecondOpinion = new widget.ButtonBig();
-        btnSuratPermintaanSecondOpinion
-                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/forum_15181620.png")));
+        btnSuratPermintaanSecondOpinion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/conversation_3601377.png"))); 
         btnSuratPermintaanSecondOpinion.setText("Surat Permintaan Second Opinion");
         btnSuratPermintaanSecondOpinion.setIconTextGap(0);
         btnSuratPermintaanSecondOpinion.setName("btnSuratPermintaanSecondOpinion");
         btnSuratPermintaanSecondOpinion.setPreferredSize(new java.awt.Dimension(200, 90));
         btnSuratPermintaanSecondOpinion.addActionListener(this::btnSuratPermintaanSecondOpinionActionPerformed);
-
+        
+        btnSuratPenolakanResusitasi = new widget.ButtonBig();
+        btnSuratPenolakanResusitasi.setName("btnSuratPenolakanResusitasi");
+        btnSuratPenolakanResusitasi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSuratPenolakanResusitasi.addActionListener(this::btnSuratPenolakanResusitasiActionPerformed);
+        
         btnPCRAICRAJenisAktivitasProyek = new widget.ButtonBig();
         btnPCRAICRAJenisAktivitasProyek
                 .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/construction_12539761.png")));
         btnPCRAICRAJenisAktivitasProyek.setText("Jenis Aktivitas Proyek PCRA");
-        btnPCRAICRAJenisAktivitasProyek.setIconTextGap(0);
         btnPCRAICRAJenisAktivitasProyek.setName("btnPCRAICRAJenisAktivitasProyek");
         btnPCRAICRAJenisAktivitasProyek.setPreferredSize(new java.awt.Dimension(200, 90));
         btnPCRAICRAJenisAktivitasProyek.addActionListener(this::btnPCRAICRAJenisAktivitasProyekActionPerformed);
@@ -52030,5 +51956,13 @@ public class frmUtama extends javax.swing.JFrame {
         btnKonsultasiPerawat.setName("btnKonsultasiPerawat");
         btnKonsultasiPerawat.setPreferredSize(new java.awt.Dimension(200, 90));
         btnKonsultasiPerawat.addActionListener(this::btnKonsultasiPerawatActionPerformed);
+        
+        btnSuratKeteranganBerobat = new widget.ButtonBig();
+        btnSuratKeteranganBerobat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/register_11421976.png"))); 
+        btnSuratKeteranganBerobat.setText("Surat Keterangan Berobat");
+        btnSuratKeteranganBerobat.setIconTextGap(0);
+        btnSuratKeteranganBerobat.setName("btnSuratKeteranganBerobat");
+        btnSuratKeteranganBerobat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSuratKeteranganBerobat.addActionListener(this::btnSuratKeteranganBerobatActionPerformed);
     }
 }
