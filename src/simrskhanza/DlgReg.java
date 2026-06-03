@@ -17357,6 +17357,7 @@ public final class DlgReg extends javax.swing.JDialog {
                 form.emptTeks();
                 form.setNoRm(TNoRw.getText(), DTPCari2.getDate());
                 this.setCursor(Cursor.getDefaultCursor());
+            }
         }
     }
 
