@@ -169,6 +169,7 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
      
         ChkAccor.setSelected(false);
         isPhoto();
+        tampil();
     }
 
     /** This method is called from within the constructor to
@@ -2114,10 +2115,21 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
             if(tbListDicom.getSelectedRow()!= -1){
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 OrthancDICOM orthan=new OrthancDICOM(null,false);
+                String idSeries = tbListDicom.getValueAt(tbListDicom.getSelectedRow(),2).toString();
                 orthan.setJudul("::[ DICOM Orthanc Pasien "+tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString()+", Series "+tbListDicom.getValueAt(tbListDicom.getSelectedRow(),2).toString()+" ]::",tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString().replaceAll("/","")+"_"+tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString().replaceAll(" ","_").replaceAll("/","").replaceAll(":","").replaceAll(",",""),tbListDicom.getValueAt(tbListDicom.getSelectedRow(),2).toString(),tbListDicom.getValueAt(tbListDicom.getSelectedRow(),1).toString(),tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString());
                 try {
-                    System.out.println("URL : "+koneksiDB.URLORTHANC()+":"+koneksiDB.PORTORTHANC()+"/web-viewer/app/viewer.html?series="+tbListDicom.getValueAt(tbListDicom.getSelectedRow(),2).toString());
-                    orthan.loadURL(koneksiDB.URLORTHANC()+":"+koneksiDB.PORTORTHANC()+"/web-viewer/app/viewer.html?series="+tbListDicom.getValueAt(tbListDicom.getSelectedRow(),2).toString());
+                    ApiOrthanc myOrthanc = new ApiOrthanc();
+                    JsonNode root = myOrthanc.ambilInstancesFromSeries(idSeries);
+
+                    if (root != null && root.isArray() && root.size() > 0) {
+                        String instanceId = root.get(0).get("ID").asText();
+                        String url = koneksiDB.URLORTHANC() + ":" + koneksiDB.PORTORTHANC() + "/instances/" + instanceId + "/preview";
+                        System.out.println("URL : "+ url);
+                        orthan.loadURL( url );
+                    }else {
+                        JOptionPane.showMessageDialog(null, "Tidak ada instance di series ini");
+                    }
+
                 } catch (Exception ex) {
                     System.out.println("Notifikasi : "+ex);
                 }

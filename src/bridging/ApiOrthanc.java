@@ -83,6 +83,25 @@ public class ApiOrthanc {
         }
         return root;
     }
+
+    public JsonNode ambilInstancesFromSeries(String idSeries){
+        System.out.println("Mengambil instances dari series: " + idSeries);
+        try{
+            headers = new HttpHeaders();
+            System.out.println("Auth : "+authEncrypt);
+            headers.add("Authorization", "Basic "+authEncrypt);
+            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+            String url = koneksiDB.URLORTHANC() + ":" + koneksiDB.PORTORTHANC() + "/series/" + idSeries + "/instances";
+            System.out.println("URL : "+ url );
+            String response = getRest().exchange(url, HttpMethod.GET, requestEntity, String.class).getBody();
+            System.out.println("Result JSON : " + response );
+            return mapper.readTree( response );
+        }catch(Exception e){
+            System.out.println("Notifikasi : "+e);
+            JOptionPane.showMessageDialog(null,"Gagal mengambil data instances dari series "+idSeries+" di Orthanc server, silahkan hubungi administrator ..!!");
+            return null;
+        }
+    }
     
     public JsonNode AmbilPng(String NoRawat,String Series){
         System.out.println("Percobaan Mengambil Gambar PNG : "+NoRawat+", Series : "+Series);

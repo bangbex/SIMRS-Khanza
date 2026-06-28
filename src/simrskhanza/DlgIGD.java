@@ -14876,6 +14876,7 @@ public final class DlgIGD extends javax.swing.JDialog {
         MnSuratPermintaanSecondOpinion.setPreferredSize(new java.awt.Dimension(260, 26));
         MnSuratPermintaanSecondOpinion.addActionListener(this::MnSuratPermintaanSecondOpinionActionPerformed);
 
+        MnSuratPenolakanResusitasi = new javax.swing.JMenuItem();
         MnSuratPenolakanResusitasi.setForeground(new java.awt.Color(50, 50, 50));
         MnSuratPenolakanResusitasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png")));
         MnSuratPenolakanResusitasi.setText("Penolakan Resusitasi");

@@ -1080,7 +1080,10 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             if(bangsal.getTable().getSelectedRow()!= -1){                   
                 kdgudang.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),0).toString());
                 nmgudang.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),1).toString());
-                runBackground(() ->tampil2());
+                runBackground(() ->{
+                    LoadData();
+                    SwingUtilities.invokeLater(() -> ppStokActionPerformed(null));
+                });
             }  
             kdgudang.requestFocus();
         }
@@ -2307,7 +2310,8 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                     tbDokter.setValueAt("",i,0); 
                 }
             }else{
-                tbDokter.setValueAt(0,i,6);  
+                // Reset selisih dan nominal saja (biarkan stok tetap)
+                //tbDokter.setValueAt(0,i,6);  
                 tbDokter.setValueAt(0,i,7);  
                 tbDokter.setValueAt(0,i,8); 
                 tbDokter.setValueAt(0,i,9); 
