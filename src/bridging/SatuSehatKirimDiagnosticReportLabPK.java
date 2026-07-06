@@ -183,6 +183,7 @@ public final class SatuSehatKirimDiagnosticReportLabPK extends javax.swing.JDial
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        tampil();
     }
     
     

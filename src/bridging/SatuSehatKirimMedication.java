@@ -148,6 +148,7 @@ public final class SatuSehatKirimMedication extends javax.swing.JDialog {
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        tampil();
     }
     
     

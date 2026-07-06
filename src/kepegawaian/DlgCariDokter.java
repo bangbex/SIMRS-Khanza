@@ -106,6 +106,7 @@ public final class DlgCariDokter extends javax.swing.JDialog {
         }
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
+        tampil();
     }
     
 

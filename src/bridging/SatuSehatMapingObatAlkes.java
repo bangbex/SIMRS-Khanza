@@ -122,6 +122,7 @@ public final class SatuSehatMapingObatAlkes extends javax.swing.JDialog {
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));    
         ChkInput.setSelected(false);
         isForm();
+        tampil();
     }
 
     /** This method is called from within the constructor to

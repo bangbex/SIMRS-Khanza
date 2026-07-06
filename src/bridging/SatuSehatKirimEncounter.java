@@ -164,6 +164,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        tampil();
     }
     
     

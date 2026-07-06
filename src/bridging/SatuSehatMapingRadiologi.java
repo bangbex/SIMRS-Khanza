@@ -101,6 +101,7 @@ public final class SatuSehatMapingRadiologi extends javax.swing.JDialog {
         
         ChkInput.setSelected(false);
         isForm();
+        tampil();
     }
 
     /** This method is called from within the constructor to

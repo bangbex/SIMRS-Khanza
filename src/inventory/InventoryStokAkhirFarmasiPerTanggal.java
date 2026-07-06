@@ -765,8 +765,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     // End of variables declaration//GEN-END:variables
 
     private void prosesCari() {
-        if(KdGudang.getText().equals("")||NmGudang.getText().equals("")){
+        if(KdGudang.getText().isEmpty()||NmGudang.getText().isEmpty()){
              JOptionPane.showMessageDialog(null,"Silahkan pilih lokasi stok...!!");
+             return;
         }else{
              Object[] row={"Kode Barang","Nama Barang",
                  "1("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),1)+")",

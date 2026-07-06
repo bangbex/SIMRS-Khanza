@@ -95,6 +95,7 @@ public class DlgInputStok extends javax.swing.JDialog {
              }
         };
         tbDokter.setModel(tabMode);
+        tbDokter.createDefaultColumnsFromModel();
 
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -1321,6 +1322,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         if(kdgudang.getText().equals("")){
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -1371,6 +1373,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }else{
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -1430,6 +1433,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         if(kdgudang.getText().equals("")){
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -1481,6 +1485,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }else{
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -1540,6 +1545,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         if(kdgudang.getText().equals("")){
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -1591,6 +1597,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }else{
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -1650,6 +1657,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         if(kdgudang.getText().equals("")){
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -1701,6 +1709,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }else{
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -1760,6 +1769,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         if(kdgudang.getText().equals("")){
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -1811,6 +1821,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }else{
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -1870,6 +1881,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         if(kdgudang.getText().equals("")){
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -1921,6 +1933,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }else{
             try{  
                 Valid.tabelKosong(tabMode);
+                tbDokter.createDefaultColumnsFromModel();
                 file=new File("./cache/stokopname.iyem");
                 file.createNewFile();
                 fileWriter = new FileWriter(file);
@@ -2072,6 +2085,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private void tampil() {
         try{  
             Valid.tabelKosong(tabMode);
+            tbDokter.createDefaultColumnsFromModel();
             file=new File("./cache/stokopname.iyem");
             file.createNewFile();
             fileWriter = new FileWriter(file);
@@ -2160,6 +2174,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             }
 
             Valid.tabelKosong(tabMode);
+            tbDokter.createDefaultColumnsFromModel();
             for(i=0;i<jml;i++){
                 tabMode.addRow(new Object[]{
                     real[i],kodebarang[i],namabarang[i],kategori[i],satuan[i],
@@ -2389,6 +2404,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private void BelumOpname() {
         try{  
             Valid.tabelKosong(tabMode);
+            tbDokter.createDefaultColumnsFromModel();
             pstampil=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,jenis.nama, databarang.kode_sat, "+
                     "databarang."+hppfarmasi+" as dasar from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
                     "where databarang.kode_brng not in (select opname.kode_brng from opname where opname.tanggal=? and opname.kd_bangsal=?) and databarang.status='1' and "+
@@ -2426,6 +2442,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private void SudahOpname(){
         try{  
             Valid.tabelKosong(tabMode);
+            tbDokter.createDefaultColumnsFromModel();
             pstampil=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,jenis.nama, databarang.kode_sat, "+
                     "databarang."+hppfarmasi+" as dasar from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
                     "where databarang.kode_brng in (select opname.kode_brng from opname where opname.tanggal=? and opname.kd_bangsal=?) and databarang.status='1' and "+

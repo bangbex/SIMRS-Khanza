@@ -8600,16 +8600,32 @@ public class frmUtama extends javax.swing.JFrame {
                     MnLogin.setText("Log Out");
                     lblStts.setText("Admin : ");
                     lblUser.setText("Admin Utama");
+                    this.setTitle("SIM " + akses.getnamars() + " - User: " + lblUser.getText());
                     if (AKTIFKANTRACKSQL.equals("yes")) {
                         Sequel.menyimpan("tracker", "'Admin Utama',current_date(),current_time()", "Login");
                     }
                 } else if (akses.getjml2() >= 1) {
+                    //pertama cari user  di tabel dokter 
+                    String myUser = Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter = '" + akses.getkode() + "'");
+                    // jika bukan dokter, cari di tabel petugas
+                    if(myUser == null || myUser.isEmpty()){
+                        myUser = Sequel.cariIsi("select petugas.nama from petugas where petugas.nip = '" + akses.getkode() + "'");
+                    }
+                    // jika bukan, fallback tampilakn user sebagai ID
+                    if (myUser == null || myUser.isEmpty()) {
+                        myUser = "Unknown user (" + akses.getkode() + ")"; // atau "Unknown User"
+                    }
+                    // tampilkan dialog selamat datang
+                    JOptionPane.showMessageDialog(null,"Selamat datang " + myUser+ " di SIMRS Khanza RS ANDINI");
+                    
                     BtnMenu.setEnabled(true);
                     DlgLogin.dispose();
                     BtnLog.setText("Log Out");
                     MnLogin.setText("Log Out");
                     lblStts.setText("Admin : ");
                     lblUser.setText(akses.getkode());
+                    // kode disini adalah id dari user. nama user bisa di ambil dari tabel kepegawaian
+                    this.setTitle("SIM " + akses.getnamars() + " - [ " + myUser + " ] ");
                     MnGantiPassword.setEnabled(true);
                     MnPengajuanCutiPegawai.setEnabled(true);
                     BtnToolReg.setEnabled(akses.getregistrasi());

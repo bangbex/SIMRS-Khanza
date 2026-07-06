@@ -180,6 +180,7 @@ public final class SatuSehatKirimDiagnosticReportRadiologi extends javax.swing.J
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        tampil();
     }
     
     

@@ -90,6 +90,7 @@ public final class DlgCariPoli2 extends javax.swing.JDialog {
         }
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
+        tampil();
     }
 
     /** This method is called from within the constructor to

@@ -171,6 +171,7 @@ public final class SatuSehatKirimServiceRequestRadiologi extends javax.swing.JDi
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        tampil();
     }
     
     

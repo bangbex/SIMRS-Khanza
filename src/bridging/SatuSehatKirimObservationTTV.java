@@ -769,6 +769,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        TabRawatMouseClicked(null);
     }
     
     

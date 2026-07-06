@@ -2,14 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="4">
         <file>
-            <url>src/simrskhanza/DlgCariPeriksaRadiologi.java</url>
-            <bookmark id="2">
-                <name/>
-                <line>1838</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>src/keuangan/DlgPendapatanPerCaraBayar.java</url>
             <bookmark id="4">
                 <name/>
@@ -17,15 +9,37 @@
                 <key/>
             </bookmark>
         </file>
+        <file>
+            <url>src/simrskhanza/DlgCariPeriksaRadiologi.java</url>
+            <bookmark id="2">
+                <name/>
+                <line>1838</line>
+                <key/>
+            </bookmark>
+        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/permintaan/DlgPermintaanRadiologi.java</file>
-            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/inventory/DlgCariPemesanan.java</file>
-            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/simrskhanza/DlgCariPeriksaRadiologi.java</file>
-            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/permintaan/DlgCariPermintaanRadiologi.java</file>
-            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/bridging/OrthancDICOM.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/inventory/InventoryTelaahResep.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/inventory/InventoryStokAkhirFarmasiPerTanggal.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/permintaan/DlgBookingRegistrasi.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/simrskhanza/DlgCariPoli.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/kepegawaian/DlgCariDokter2.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/simrskhanza/frmUtama.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/setting/DlgUser.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/keuangan/DlgRBTindakanDokter.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/bridging/BPJSMapingDokterDPJP.java</file>
             <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/fungsi/koneksiDB.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/kepegawaian/DlgDokter.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/fungsi/sekuel.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/kepegawaian/DlgCariDokter.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/keuangan/DlgDetailJMDokter.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/keuangan/DlgRBObatDokterPeresep.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/simrskhanza/DlgCariPoli2.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/informasi/InformasiJadwal.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/keuangan/DlgDetailTindakan.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/setting/DlgSetRM.java</file>
+            <file>file:/C:/khanza/sandbox5/SIMRS-Khanza/src/fungsi/akses.java</file>
         </group>
     </open-files>
 </project-private>

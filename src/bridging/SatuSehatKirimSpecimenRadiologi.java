@@ -159,6 +159,7 @@ public final class SatuSehatKirimSpecimenRadiologi extends javax.swing.JDialog {
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        tampil();
     }
     
     

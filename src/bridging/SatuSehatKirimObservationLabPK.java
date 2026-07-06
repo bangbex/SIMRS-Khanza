@@ -174,6 +174,7 @@ public final class SatuSehatKirimObservationLabPK extends javax.swing.JDialog {
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        tampil();
     }
     
     

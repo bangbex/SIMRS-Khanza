@@ -176,6 +176,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        tampil();
     }
     
     
@@ -548,7 +549,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
-        this.setCursor(Cursor.getDefaultCursor());       
+        this.setCursor(Cursor.getDefaultCursor());    
     }//GEN-LAST:event_BtnPrintActionPerformed
 
     private void TCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariKeyPressed

@@ -171,6 +171,7 @@ public final class SatuSehatKirimObservationRadiologi extends javax.swing.JDialo
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        tampil();
     }
     
     

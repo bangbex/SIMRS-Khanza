@@ -174,6 +174,7 @@ public final class SatuSehatKirimServiceRequestLabPK extends javax.swing.JDialog
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        tampil();
     }
     
     

@@ -1230,9 +1230,9 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void laporan1() {
         Valid.tabelKosong(tabMode);      
         try{
-           ps=koneksi.prepareStatement("select kd_dokter,nm_dokter from dokter where status='1' and kd_dokter like ? order by nm_dokter");
+           ps=koneksi.prepareStatement("select kd_dokter,nm_dokter from dokter where status='1' and kd_dokter = ? order by nm_dokter");
            try {
-                ps.setString(1,"%"+kddokter.getText()+"%");
+                ps.setString(1,kddokter.getText());
                 rs=ps.executeQuery();
                 i=1;
                 ttlbiaya=0;
@@ -2818,9 +2818,9 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void laporan2() {
         try{
            htmlContent = new StringBuilder();
-           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter like ? order by dokter.nm_dokter");
+           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter = ? order by dokter.nm_dokter");
            try {
-                ps.setString(1,"%"+kddokter.getText()+"%");
+                ps.setString(1,kddokter.getText());
                 rs=ps.executeQuery();
                 i=1;
                 ttlbiaya=0;
@@ -5076,9 +5076,9 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void laporan3() {
         try{
            htmlContent = new StringBuilder();
-           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter like ? order by dokter.nm_dokter");
+           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter = ? order by dokter.nm_dokter");
            try {
-                ps.setString(1,"%"+kddokter.getText()+"%");
+                ps.setString(1,kddokter.getText());
                 rs=ps.executeQuery();
                 i=1;
                 ttlbiaya=0;
@@ -7334,9 +7334,9 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void jasamedis() {
         try{
            htmlContent = new StringBuilder();
-           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter like ? order by dokter.nm_dokter");
+           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter = ? order by dokter.nm_dokter");
            try {
-                ps.setString(1,"%"+kddokter.getText()+"%");
+                ps.setString(1,kddokter.getText());
                 rs=ps.executeQuery();
                 i=1;
                 ttlbiaya=0;
@@ -9463,9 +9463,9 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void jasamedis2() {
         try{
            htmlContent = new StringBuilder();
-           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter like ? order by dokter.nm_dokter");
+           ps=koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter where dokter.status='1' and dokter.kd_dokter = ? order by dokter.nm_dokter");
            try {
-                ps.setString(1,"%"+kddokter.getText()+"%");
+                ps.setString(1,kddokter.getText());
                 rs=ps.executeQuery();
                 i=1;
                 ttlbiaya=0;

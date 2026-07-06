@@ -156,6 +156,7 @@ public final class SatuSehatKirimProcedure extends javax.swing.JDialog {
         );
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
+        tampil();
     }
     
     
