@@ -824,12 +824,10 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         
         for (i = 0; i < 33; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
-            if(i==0){
-                column.setPreferredWidth(85);
-            }else if(i==1){
-                column.setPreferredWidth(190);
-            }else{
-                column.setPreferredWidth(63);
+            switch (i) {
+                case 0 -> column.setPreferredWidth(85);
+                case 1 -> column.setPreferredWidth(190);
+                default -> column.setPreferredWidth(63);
             }
         }
         
