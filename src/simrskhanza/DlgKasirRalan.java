@@ -300,6 +300,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         initKasirRalan();
+        initLegendaWarna();
 
         this.setLocation(8,1);
         setSize(885,674);
@@ -9075,6 +9076,11 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     }
     
     private void formWindowOpened(java.awt.event.WindowEvent evt) {
+    
+        if (CrPtg.getText().trim().equals("") || akses.getJenisUser().equals("dokter")) {
+            CrPtg.setText(akses.getnamauser());
+        }
+        
         if(akuntindakanralan.getSuspen_Piutang_Tindakan_Ralan().equals("")){
             akuntindakanralan.SetAkunTindakanRalan();
         }
@@ -15772,6 +15778,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                     System.exit(0);
                 }
             });
+            dialog.CrPtg.setText("Krisnanto");
             dialog.setVisible(true);
         });
     }
@@ -16209,6 +16216,88 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                                   MnHasilPemeriksaanTreadmill,MnHasilPemeriksaanECHOPediatrik,MnSkriningInstrumenESAT,MnSkriningCURB65,MnSkriningGiziKehamilan,MnSerahTerimaBarangAnggotaTubuh,MnPermintaanKonsultasiPerawat,
                                   MnPersetujuanBimbinganRohani,MnPermintaanPerlindunganDariKekerasan,MnSuratPermohonanPrivasi,MnSuratPermintaanSecondOpinion,MnCetakSuratKeteranganBerobat,MnSuratPenolakanResusitasi;
     private javax.swing.JMenu MnHasilUSG,MnHasilEndoskopi,MnRMSkrining,MnEdukasi,MnRehabMedik,MnRMSkriningRisikoKanker,MnRMSkriningKesehatanGigiMulut,MnSuratPersetujuan,MnSkriningInstrumen,MnSkriningParu;
+    private javax.swing.JPanel panelLegendaWarna;
+    private javax.swing.JLabel labelMerah, labelOranye, labelAbu, labelHijau;
+    
+    private void initLegendaWarna(){
+        //  Membuat panel utama sebagai container pengikat (menggunakan BorderLayout)
+        javax.swing.JPanel panelUtamaLegenda = new javax.swing.JPanel();
+        panelUtamaLegenda.setName("panelUtamaLegenda");
+        panelUtamaLegenda.setOpaque(false); // Transparan agar mengikuti background aplikasi
+        panelUtamaLegenda.setLayout(new java.awt.BorderLayout());
+        
+        // Memberikan jarak kosong (top, left, bottom, right)
+        // Angka 30 pada parameter keempat memberikan jeda kosong pas sebesar 1 cm dari batas kanan layar
+        panelUtamaLegenda.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        
+        //  Membuat panel penampung dengan FlowLayout rata kanan
+        panelLegendaWarna = new javax.swing.JPanel();
+        panelLegendaWarna.setName("panelLegendaWarna");
+        panelLegendaWarna.setOpaque(false);
+        
+       
+        panelLegendaWarna = new javax.swing.JPanel();
+        panelLegendaWarna.setName("panelLegendaWarna");
+        panelLegendaWarna.setOpaque(false);
+        // Parameter GridLayout(baris, kolom, hgap, vgap). vgap=2 menjaga jarak antar baris sangat tipis
+        // panelLegendaWarna.setLayout(new java.awt.GridLayout(1, 1, 0, 0)); 
+        // MENGGANTI LAYOUT MENJADI FlowLayout RATA TENGAH (CENTER)
+        // Parameter: FlowLayout.CENTER (Rata Tengah), 25 (Jarak antar label sebesar 25px), 2 (Jarak vertikal tipis)
+        panelLegendaWarna.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 2)); 
+        
+        java.awt.Font fontLegenda = new java.awt.Font("Tahoma", java.awt.Font.BOLD, 10);
+        
+        labelMerah = new javax.swing.JLabel();
+        labelMerah.setFont(fontLegenda);
+        labelMerah.setForeground(new java.awt.Color(200,0,0));
+        labelMerah.setText("■ Merah: Sudah dilayani tapi belum bayar. Waspadai, jangan sampai pasien lari!");
+        labelMerah.setHorizontalAlignment(javax.swing.SwingConstants.CENTER); // MEPET KANAN
+        
+        labelOranye = new javax.swing.JLabel();
+        labelOranye.setFont(fontLegenda);
+        labelOranye.setForeground(new java.awt.Color(230,120,0));
+        labelOranye.setText("■ Oranye: Belum dilayani tapi sudah melakukan pembayaran. Prioritaskan pelayanan!");
+        labelOranye.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        
+        labelAbu = new javax.swing.JLabel();
+        labelAbu.setFont(fontLegenda);
+        labelAbu.setForeground(new java.awt.Color(110,110,110));
+        labelAbu.setText("■ Abu-abu: Pasien Batal.");
+        labelAbu.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+       
+        labelHijau = new javax.swing.JLabel();
+        labelHijau.setFont(fontLegenda);
+        labelHijau.setForeground(new java.awt.Color(0,120,0));
+        labelHijau.setText("■ Hijau: Pasien sudah selesai. Terimakasih kepada semua petugas yang sukses melayani pasien sampai selesai.");
+        labelHijau.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        
+        panelLegendaWarna.add(labelMerah);
+        panelLegendaWarna.add(labelOranye);
+        panelLegendaWarna.add(labelAbu);
+        panelLegendaWarna.add(labelHijau);
+        
+        // Tempelkan panel konten tepat di posisi TENGAH (CENTER) pembungkus utama
+        panelUtamaLegenda.add(panelLegendaWarna, java.awt.BorderLayout.CENTER);
+        
+        /* 
+            MEMASUKKAN KE PANEL BAWAH UTAMA KHANZA
+ 
+        */
+        
+        try{
+            internalFrame1.getParent().add(panelUtamaLegenda, java.awt.BorderLayout.SOUTH);
+        }catch(Exception e){
+            try{
+                internalFrame1.add(panelUtamaLegenda, java.awt.BorderLayout.SOUTH);
+            }catch(Exception ex){
+                this.add(panelUtamaLegenda, java.awt.BorderLayout.SOUTH);
+            }
+            
+        }
+        
+        panelUtamaLegenda.revalidate();
+        panelUtamaLegenda.repaint();
+    }
     
     private void tampilkasir() { 
         if(ceksukses==false){
@@ -16217,8 +16306,8 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             new SwingWorker<Void, Object[]>() {
                 @Override
                 protected Void doInBackground() {
-                    try{   
-                        semua=caripenjab.equals("")&&CrPoli.getText().trim().equals("")&&CrPtg.getText().trim().equals("")&&cmbStatus.getSelectedItem().toString().equals("Semua")&&cmbStatusBayar.getSelectedItem().toString().equals("Semua")&&TCari.getText().trim().equals("");
+                    try{    
+                                     semua=caripenjab.equals("")&&CrPoli.getText().trim().equals("")&&CrPtg.getText().trim().equals("")&&cmbStatus.getSelectedItem().toString().equals("Semua")&&cmbStatusBayar.getSelectedItem().toString().equals("Semua")&&TCari.getText().trim().equals("");
                         pskasir=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
                             "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli,"+
                             "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts,penjab.png_jawab,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur, "+
@@ -16239,7 +16328,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                                 pskasir.setString(5,"%"+CrPtg.getText()+"%");
                                 pskasir.setString(6,"%"+cmbStatus.getSelectedItem().toString().replaceAll("Semua","")+"%");
                                 pskasir.setString(7,"%"+cmbStatusBayar.getSelectedItem().toString().replaceAll("Semua","")+"%");
-                                pskasir.setString(8,"%"+TCari.getText().trim()+"%");
+                                pskasir.setString(8,"%"+TCari.getText().trim()+"%"); 
                                 pskasir.setString(9,"%"+TCari.getText().trim()+"%");
                                 pskasir.setString(10,"%"+TCari.getText().trim()+"%");
                                 pskasir.setString(11,"%"+TCari.getText().trim()+"%");

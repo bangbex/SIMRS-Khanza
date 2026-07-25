@@ -1228,7 +1228,7 @@ public class frmUtama extends javax.swing.JFrame {
     private String coder_nik = "", pilihpage = "", judulform = "",
             tampilkantni = Sequel.cariIsi("select set_tni_polri.tampilkan_tni_polri from set_tni_polri"),
             AKTIFKANTRACKSQL = koneksiDB.AKTIFKANTRACKSQL();
-
+    
     private frmUtama() {
         super();
         initComponents();
@@ -8564,151 +8564,146 @@ public class frmUtama extends javax.swing.JFrame {
     private void BtnLoginActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnLoginActionPerformed
         if (edAdmin.getText().trim().equals("")) {
             Valid.textKosong(edAdmin, "ID User");
-        } else if (edPwd.getText().trim().equals("")) {
+            return;
+        }
+        
+        if (edPwd.getText().trim().equals("")) {
             Valid.textKosong(edPwd, "Password");
-        } else {
-            try {
-                cacheigd.reset();
-                cacherawatjalan.reset();
-                cacherawatinap.reset();
-                cacheregistrasi.reset();
-                akses.setData(edAdmin.getText(), edPwd.getText());
-                if (akses.getjml1() >= 1) {
-                    BtnMenu.setEnabled(true);
-                    BtnToolReg.setEnabled(true);
+            return;
+        } 
+
+        try {
+            cacheigd.reset();
+            cacherawatjalan.reset();
+            cacherawatinap.reset();
+            cacheregistrasi.reset();
+            akses.setData(edAdmin.getText(), edPwd.getText());
+            if (akses.getjml1() >= 1) {
+                BtnMenu.setEnabled(true);
+                BtnToolReg.setEnabled(true);
+                BtnToolKamnap.setEnabled(true);
+                BtnToolKasir.setEnabled(true);
+                btnToolIGD.setEnabled(true);
+                btnPermintaanLab.setEnabled(true);
+                btnPermintaanLabPA.setEnabled(true);
+                btnPermintaanLabMB.setEnabled(true);
+                btnLaboratorium.setEnabled(true);
+                btnLaboratoriumPA.setEnabled(true);
+                btnLaboratoriumMB.setEnabled(true);
+                btnPermintaanRadiologi.setEnabled(true);
+                btnPeriksaRadiologi.setEnabled(true);
+                btnInputPenjualan.setEnabled(true);
+                btnDataPenjualan.setEnabled(true);
+                btnDataPenyerahanDarah.setEnabled(true);
+                btnDaftarPermintaanResep.setEnabled(true);
+                btnResepObatDepan.setEnabled(true);
+                MnGantiPassword.setEnabled(false);
+                MnPengajuanCutiPegawai.setEnabled(false);
+
+                DlgLogin.dispose();
+                BtnLog.setText("Log Out");
+                MnLogin.setText("Log Out");
+                lblStts.setText("Admin : ");
+                lblUser.setText("Admin Utama");
+                this.setTitle("SIM " + akses.getnamars() + " - User: " + lblUser.getText());
+                if (AKTIFKANTRACKSQL.equals("yes")) {
+                    Sequel.menyimpan("tracker", "'Admin Utama',current_date(),current_time()", "Login");
+                }
+            } else if (akses.getjml2() >= 1) {
+                
+
+                BtnMenu.setEnabled(true);
+                DlgLogin.dispose();
+                BtnLog.setText("Log Out");
+                MnLogin.setText("Log Out");
+                lblStts.setText("Admin : ");
+                lblUser.setText(akses.getkode());
+                // kode disini adalah id dari user. nama user bisa di ambil dari tabel kepegawaian
+                this.setTitle("SIM " + akses.getnamars() + " - " + akses.getJenisUser() +" [ " + akses.getnamauser() + " ] ");
+                JOptionPane.showMessageDialog(null,"Selamat datang " + akses.getnamauser() + " di SIMRS Khanza RS ANDINI");
+                MnGantiPassword.setEnabled(true);
+                MnPengajuanCutiPegawai.setEnabled(true);
+                BtnToolReg.setEnabled(akses.getregistrasi());
+                if ((akses.getkamar_inap() == true) || (akses.getbilling_ranap() == true)
+                        || (akses.gettindakan_ranap() == true)) {
                     BtnToolKamnap.setEnabled(true);
+                } else {
+                    BtnToolKamnap.setEnabled(akses.getkamar_inap());
+                }
+
+                if ((akses.getkasir_ralan() == true) || (akses.getbilling_ralan() == true)) {
                     BtnToolKasir.setEnabled(true);
-                    btnToolIGD.setEnabled(true);
+                } else {
+                    BtnToolKasir.setEnabled(akses.getkasir_ralan());
+                }
+
+                if ((akses.getpermintaan_radiologi() == true) || (akses.getperiksa_radiologi() == true)) {
+                    btnPermintaanRadiologi.setEnabled(true);
+                } else {
+                    btnPermintaanRadiologi.setEnabled(akses.getpermintaan_radiologi());
+                }
+
+                if ((akses.getpermintaan_lab() == true) || (akses.getperiksa_lab() == true)
+                        || (akses.getpemeriksaan_lab_pa() == true) || (akses.getpemeriksaan_lab_mb() == true)) {
                     btnPermintaanLab.setEnabled(true);
                     btnPermintaanLabPA.setEnabled(true);
                     btnPermintaanLabMB.setEnabled(true);
-                    btnLaboratorium.setEnabled(true);
-                    btnLaboratoriumPA.setEnabled(true);
-                    btnLaboratoriumMB.setEnabled(true);
-                    btnPermintaanRadiologi.setEnabled(true);
-                    btnPeriksaRadiologi.setEnabled(true);
-                    btnInputPenjualan.setEnabled(true);
-                    btnDataPenjualan.setEnabled(true);
-                    btnDataPenyerahanDarah.setEnabled(true);
-                    btnDaftarPermintaanResep.setEnabled(true);
-                    btnResepObatDepan.setEnabled(true);
-                    MnGantiPassword.setEnabled(false);
-                    MnPengajuanCutiPegawai.setEnabled(false);
-
-                    DlgLogin.dispose();
-                    BtnLog.setText("Log Out");
-                    MnLogin.setText("Log Out");
-                    lblStts.setText("Admin : ");
-                    lblUser.setText("Admin Utama");
-                    this.setTitle("SIM " + akses.getnamars() + " - User: " + lblUser.getText());
-                    if (AKTIFKANTRACKSQL.equals("yes")) {
-                        Sequel.menyimpan("tracker", "'Admin Utama',current_date(),current_time()", "Login");
-                    }
-                } else if (akses.getjml2() >= 1) {
-                    //pertama cari user  di tabel dokter 
-                    String myUser = Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter = '" + akses.getkode() + "'");
-                    // jika bukan dokter, cari di tabel petugas
-                    if(myUser == null || myUser.isEmpty()){
-                        myUser = Sequel.cariIsi("select petugas.nama from petugas where petugas.nip = '" + akses.getkode() + "'");
-                    }
-                    // jika bukan, fallback tampilakn user sebagai ID
-                    if (myUser == null || myUser.isEmpty()) {
-                        myUser = "Unknown user (" + akses.getkode() + ")"; // atau "Unknown User"
-                    }
-                    // tampilkan dialog selamat datang
-                    JOptionPane.showMessageDialog(null,"Selamat datang " + myUser+ " di SIMRS Khanza RS ANDINI");
-                    
-                    BtnMenu.setEnabled(true);
-                    DlgLogin.dispose();
-                    BtnLog.setText("Log Out");
-                    MnLogin.setText("Log Out");
-                    lblStts.setText("Admin : ");
-                    lblUser.setText(akses.getkode());
-                    // kode disini adalah id dari user. nama user bisa di ambil dari tabel kepegawaian
-                    this.setTitle("SIM " + akses.getnamars() + " - [ " + myUser + " ] ");
-                    MnGantiPassword.setEnabled(true);
-                    MnPengajuanCutiPegawai.setEnabled(true);
-                    BtnToolReg.setEnabled(akses.getregistrasi());
-                    if ((akses.getkamar_inap() == true) || (akses.getbilling_ranap() == true)
-                            || (akses.gettindakan_ranap() == true)) {
-                        BtnToolKamnap.setEnabled(true);
-                    } else {
-                        BtnToolKamnap.setEnabled(akses.getkamar_inap());
-                    }
-
-                    if ((akses.getkasir_ralan() == true) || (akses.getbilling_ralan() == true)) {
-                        BtnToolKasir.setEnabled(true);
-                    } else {
-                        BtnToolKasir.setEnabled(akses.getkasir_ralan());
-                    }
-
-                    if ((akses.getpermintaan_radiologi() == true) || (akses.getperiksa_radiologi() == true)) {
-                        btnPermintaanRadiologi.setEnabled(true);
-                    } else {
-                        btnPermintaanRadiologi.setEnabled(akses.getpermintaan_radiologi());
-                    }
-
-                    if ((akses.getpermintaan_lab() == true) || (akses.getperiksa_lab() == true)
-                            || (akses.getpemeriksaan_lab_pa() == true) || (akses.getpemeriksaan_lab_mb() == true)) {
-                        btnPermintaanLab.setEnabled(true);
-                        btnPermintaanLabPA.setEnabled(true);
-                        btnPermintaanLabMB.setEnabled(true);
-                    } else {
-                        btnPermintaanLab.setEnabled(akses.getpermintaan_lab());
-                        btnPermintaanLabPA.setEnabled(akses.getpermintaan_lab());
-                        btnPermintaanLabMB.setEnabled(akses.getpermintaan_lab());
-                    }
-
-                    btnToolIGD.setEnabled(akses.getigd());
-                    btnLaboratorium.setEnabled(akses.getperiksa_lab());
-                    btnLaboratoriumPA.setEnabled(akses.getpemeriksaan_lab_pa());
-                    btnLaboratoriumMB.setEnabled(akses.getpemeriksaan_lab_pa());
-                    btnPeriksaRadiologi.setEnabled(akses.getperiksa_radiologi());
-                    btnInputPenjualan.setEnabled(akses.getpenjualan_obat());
-                    btnDataPenjualan.setEnabled(akses.getpenjualan_obat());
-                    btnDataPenyerahanDarah.setEnabled(akses.getutd_penyerahan_darah());
-                    btnDaftarPermintaanResep.setEnabled(akses.getresep_dokter());
-                    btnResepObatDepan.setEnabled(akses.getresep_obat());
-                    if (AKTIFKANTRACKSQL.equals("yes")) {
-                        Sequel.menyimpan("tracker", "'" + edAdmin.getText() + "',current_date(),current_time()",
-                                "Login");
-                    }
-                } else if ((akses.getjml1() == 0) && (akses.getjml2() == 0)) {
-                    JOptionPane.showMessageDialog(null, "Maaf, Gagal login. ID User atau password ada yang salah ...!");
-                    BtnToolReg.setEnabled(false);
-                    BtnToolKamnap.setEnabled(false);
-                    BtnToolKasir.setEnabled(false);
-                    MnGantiPassword.setEnabled(false);
-                    MnPengajuanCutiPegawai.setEnabled(false);
-                    btnToolIGD.setEnabled(false);
-                    btnPermintaanLab.setEnabled(false);
-                    btnPermintaanLabPA.setEnabled(false);
-                    btnPermintaanLabMB.setEnabled(false);
-                    btnLaboratorium.setEnabled(false);
-                    btnLaboratoriumPA.setEnabled(false);
-                    btnLaboratoriumMB.setEnabled(false);
-                    btnPermintaanRadiologi.setEnabled(false);
-                    btnPeriksaRadiologi.setEnabled(false);
-                    btnInputPenjualan.setEnabled(false);
-                    btnDataPenjualan.setEnabled(false);
-                    btnDataPenyerahanDarah.setEnabled(false);
-                    btnDaftarPermintaanResep.setEnabled(false);
-                    btnResepObatDepan.setEnabled(false);
-                    edAdmin.setText("");
-                    edPwd.setText("");
-
-                    BtnMenu.setEnabled(false);
-
-                    edAdmin.requestFocus();
-                    BtnLog.setText("Log In");
-                    MnLogin.setText("Log In");
-                    lblStts.setText("Status Admin : ");
-                    lblUser.setText("Log Out");
+                } else {
+                    btnPermintaanLab.setEnabled(akses.getpermintaan_lab());
+                    btnPermintaanLabPA.setEnabled(akses.getpermintaan_lab());
+                    btnPermintaanLabMB.setEnabled(akses.getpermintaan_lab());
                 }
-            } catch (Exception e) {
-                System.out.println("Notifikasi : " + e);
+
+                btnToolIGD.setEnabled(akses.getigd());
+                btnLaboratorium.setEnabled(akses.getperiksa_lab());
+                btnLaboratoriumPA.setEnabled(akses.getpemeriksaan_lab_pa());
+                btnLaboratoriumMB.setEnabled(akses.getpemeriksaan_lab_pa());
+                btnPeriksaRadiologi.setEnabled(akses.getperiksa_radiologi());
+                btnInputPenjualan.setEnabled(akses.getpenjualan_obat());
+                btnDataPenjualan.setEnabled(akses.getpenjualan_obat());
+                btnDataPenyerahanDarah.setEnabled(akses.getutd_penyerahan_darah());
+                btnDaftarPermintaanResep.setEnabled(akses.getresep_dokter());
+                btnResepObatDepan.setEnabled(akses.getresep_obat());
+                if (AKTIFKANTRACKSQL.equals("yes")) {
+                    Sequel.menyimpan("tracker", "'" + edAdmin.getText() + "',current_date(),current_time()",
+                            "Login");
+                }
+            } else if ((akses.getjml1() == 0) && (akses.getjml2() == 0)) {
+                JOptionPane.showMessageDialog(null, "Maaf, Gagal login. ID User atau password ada yang salah ...!");
+                BtnToolReg.setEnabled(false);
+                BtnToolKamnap.setEnabled(false);
+                BtnToolKasir.setEnabled(false);
+                MnGantiPassword.setEnabled(false);
+                MnPengajuanCutiPegawai.setEnabled(false);
+                btnToolIGD.setEnabled(false);
+                btnPermintaanLab.setEnabled(false);
+                btnPermintaanLabPA.setEnabled(false);
+                btnPermintaanLabMB.setEnabled(false);
+                btnLaboratorium.setEnabled(false);
+                btnLaboratoriumPA.setEnabled(false);
+                btnLaboratoriumMB.setEnabled(false);
+                btnPermintaanRadiologi.setEnabled(false);
+                btnPeriksaRadiologi.setEnabled(false);
+                btnInputPenjualan.setEnabled(false);
+                btnDataPenjualan.setEnabled(false);
+                btnDataPenyerahanDarah.setEnabled(false);
+                btnDaftarPermintaanResep.setEnabled(false);
+                btnResepObatDepan.setEnabled(false);
+                edAdmin.setText("");
+                edPwd.setText("");
+
+                BtnMenu.setEnabled(false);
+
+                edAdmin.requestFocus();
+                BtnLog.setText("Log In");
+                MnLogin.setText("Log In");
+                lblStts.setText("Status Admin : ");
+                lblUser.setText("Log Out");
             }
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
         }
+        
     }// GEN-LAST:event_BtnLoginActionPerformed
 
     private void BtnToolKamnapActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnToolKamnapActionPerformed

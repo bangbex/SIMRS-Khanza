@@ -662,21 +662,45 @@ public final class DlgPenanggungJawab extends javax.swing.JDialog {
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         if(KdAsuransi.getText().trim().equals("")){
             Valid.textKosong(KdAsuransi,"Kode Penanggung/Askes/Asuransi");
-        }else if(NmAsuransi.getText().trim().equals("")){
-            Valid.textKosong(NmAsuransi,"Nama Penanggung/Askes/Asuransi");
-        }else if(Perusahaan.getText().trim().equals("")){
-            Valid.textKosong(Perusahaan,"Nama Perusahaan Penanggung/Askes/Asuransi");
-        }else if(AlamatAsuransi.getText().trim().equals("")){
-            Valid.textKosong(AlamatAsuransi,"Alamat Perusahaan Penanggung/Askes/Asuransi");
-        }else if(NoTelp.getText().trim().equals("")){
-            Valid.textKosong(NoTelp,"No.Telp Perusahaan Penanggung/Askes/Asuransi");
-        }else if(Attn.getText().trim().equals("")){
-            Valid.textKosong(Attn,"Attn");
-        }else{
-            Sequel.menyimpan("penjab","'"+KdAsuransi.getText()+"','"+NmAsuransi.getText()+"','"+Perusahaan.getText()+"','"+AlamatAsuransi.getText()+"','"+NoTelp.getText()+"','"+Attn.getText()+"','1'","Kode Penanggung/Askes/Asuransi");
-            BtnCariActionPerformed(evt);
-            emptTeks();
+            return;
         }
+        if(NmAsuransi.getText().trim().equals("")){
+            Valid.textKosong(NmAsuransi,"Nama Penanggung/Askes/Asuransi");
+            return;
+        }
+        if(Perusahaan.getText().trim().equals("")){
+            Valid.textKosong(Perusahaan,"Nama Perusahaan Penanggung/Askes/Asuransi");
+            return;
+        }
+        if(AlamatAsuransi.getText().trim().equals("")){
+            Valid.textKosong(AlamatAsuransi,"Alamat Perusahaan Penanggung/Askes/Asuransi");
+            return;
+        }
+        if(NoTelp.getText().trim().equals("")){
+            Valid.textKosong(NoTelp,"No.Telp Perusahaan Penanggung/Askes/Asuransi");
+            return;
+        }
+        if(Attn.getText().trim().equals("")){
+            Valid.textKosong(Attn,"Attn");
+            return;
+        }
+        
+        // Validasi Validasi Panjang Karakter untuk mencegah Data Truncation (Maksimal 3 Karakter untuk kd_pj)
+        if(KdAsuransi.getText().trim().length() > 3){
+            javax.swing.JOptionPane.showMessageDialog(null, "Maaf, Kode Penanggung tidak boleh lebih dari 3 karakter!");
+            KdAsuransi.requestFocus();
+            return;
+        }
+        // Validasi Duplikasi: Memeriksa apakah kode sudah ada di tabel penjab
+        if(Sequel.cariInteger("select count(kd_pj) from penjab where kd_pj='"+KdAsuransi.getText().trim()+"'") > 0){
+            javax.swing.JOptionPane.showMessageDialog(null, "Maaf, Kode Penanggung '"+KdAsuransi.getText().trim()+"' sudah digunakan!\nSilakan gunakan kode yang lain.");
+            KdAsuransi.requestFocus();
+            return;
+        }
+        // Jika lolos semua validasi, data baru disimpan
+        Sequel.menyimpan("penjab","'"+KdAsuransi.getText()+"','"+NmAsuransi.getText()+"','"+Perusahaan.getText()+"','"+AlamatAsuransi.getText()+"','"+NoTelp.getText()+"','"+Attn.getText()+"','1'","Kode Penanggung/Askes/Asuransi");
+        BtnCariActionPerformed(evt);
+        emptTeks();
 }//GEN-LAST:event_BtnSimpanActionPerformed
 
     private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed

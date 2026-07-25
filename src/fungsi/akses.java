@@ -18,7 +18,7 @@ public final class akses {
     private static final Connection koneksi=koneksiDB.condb();
     private static PreparedStatement ps,ps2;
     private static ResultSet rs,rs2;
-    private static String kode="",kdbangsal="",alamatip="",namars="",alamatrs="",kabupatenrs="",propinsirs="",kontakrs="",emailrs="",form="",namauser="",kode_ppk="",kode_ppk_kemenkes=""; 
+    private static String jenisUser = "", kode="",kdbangsal="",alamatip="",namars="",alamatrs="",kabupatenrs="",propinsirs="",kontakrs="",emailrs="",form="",namauser="",kode_ppk="",kode_ppk_kemenkes=""; 
     private static int jml1=0,jml2=0,lebar=0,tinggi=0;
     private static boolean aktif=false,admin=false,user=false,vakum=false,aplikasi=false,penyakit=false,obat_penyakit=false,dokter=false,jadwal_praktek=false,petugas=false,pasien=false,registrasi=false,
             tindakan_ralan=false,kamar_inap=false,tindakan_ranap=false,operasi=false,rujukan_keluar=false,rujukan_masuk=false,beri_obat=false,
@@ -267,6 +267,7 @@ public final class akses {
         try {        
                 ps=koneksi.prepareStatement("select * from admin where admin.usere=AES_ENCRYPT(?,'nur') and admin.passworde=AES_ENCRYPT(?,'windi')");               
                 ps2=koneksi.prepareStatement("select * from user where user.id_user=AES_ENCRYPT(?,'nur') and user.password=AES_ENCRYPT(?,'windi')");
+                sekuel Sequel = new sekuel();
                 try {
                     ps.setString(1,user);
                     ps.setString(2,pass);
@@ -279,7 +280,7 @@ public final class akses {
                     rs2.last();
 
                     akses.jml1=rs.getRow();
-                    akses.jml2=rs2.getRow();               
+                    akses.jml2=rs2.getRow();  
                     if(rs.getRow()>=1){
                         akses.kode="Admin Utama";
                         akses.penyakit=true;
@@ -1487,7 +1488,23 @@ public final class akses {
                     }else if(rs2.getRow()>=1){   
                         rs2.beforeFirst();
                         rs2.next();
+                        //pertama cari user  di tabel dokter 
+                        String myUser = Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter = '" + user + "'");
+                        jenisUser = "dokter";
+                        // jika bukan dokter, cari di tabel petugas
+                        if(myUser == null || myUser.isEmpty()){
+                            myUser = Sequel.cariIsi("select petugas.nama from petugas where petugas.nip = '" + user + "'");
+                            jenisUser = "petugas";
+                        }
+                        // jika bukan, fallback tampilakn user sebagai ID
+                        if (myUser == null || myUser.isEmpty()) {
+                            myUser = "Unknown user (" + user + ")"; // atau "Unknown User"
+                            jenisUser = "";
+                        }
+                        
                         akses.kode=user;
+                        akses.namauser=myUser;  
+                        akses.jenisUser=jenisUser;  
                         akses.penyakit=rs2.getBoolean("penyakit");
                         akses.obat_penyakit=rs2.getBoolean("obat_penyakit");
                         akses.dokter=rs2.getBoolean("dokter");
@@ -2715,6 +2732,8 @@ public final class akses {
     }
     
     public static void setLogOut(){
+        akses.namauser="";
+        akses.jenisUser="";
         akses.kode="";                  
         akses.penyakit= false;
         akses.obat_penyakit= false;
@@ -3919,7 +3938,7 @@ public final class akses {
         akses.surat_keterangan_berobat=false;
         akses.surat_penolakan_resusitasi=false;
     }
-    
+           
     public static int getjml1() {return akses.jml1;}    
     public static int getjml2() {return akses.jml2;}    
     public static boolean getadmin(){return akses.admin;}        
@@ -4051,7 +4070,8 @@ public final class akses {
     public static void setform(String form){akses.form=form;}
     public static String getform(){return akses.form;}   
     public static void setnamauser(String namauser){akses.namauser=namauser;}
-    public static String getnamauser(){return akses.namauser;}   
+    public static String getnamauser(){return akses.namauser;}  
+    public static String getJenisUser(){return akses.jenisUser;}
     public static void setstatus(boolean status){akses.status=status;}
     public static boolean getstatus(){return akses.status;}
     public static boolean getjm_ranap_dokter(){return akses.jm_ranap_dokter;}     
