@@ -509,6 +509,11 @@ import bridging.SatuSehatMapingLokasi;
 import bridging.SatuSehatMapingObatAlkes;
 import bridging.SatuSehatMapingOrganisasi;
 import bridging.SatuSehatMapingRadiologi;
+import bridging.SatuSehatMapingTindakanLaboratKPTL;
+import bridging.SatuSehatMapingTindakanOperasiKPTL;
+import bridging.SatuSehatMapingTindakanRadiologiKPTL;
+import bridging.SatuSehatMapingTindakanRalanKPTL;
+import bridging.SatuSehatMapingTindakanRanapKPTL;
 import bridging.SatuSehatMapingVaksin;
 import bridging.SatuSehatReferensiPasien;
 import bridging.SatuSehatReferensiPraktisi;
@@ -932,6 +937,7 @@ import rekammedis.RMChecklistKriteriaKeluarNICU;
 import rekammedis.RMChecklistKriteriaKeluarPICU;
 import rekammedis.RMChecklistKriteriaMasukHCU;
 import rekammedis.RMChecklistKriteriaMasukICU;
+import rekammedis.RMChecklistKriteriaMasukIsolasi;
 import rekammedis.RMChecklistKriteriaMasukNICU;
 import rekammedis.RMChecklistKriteriaMasukPICU;
 import rekammedis.RMChecklistPemberianFibrinolitik;
@@ -952,8 +958,11 @@ import rekammedis.RMDataCatatanObservasiRanap;
 import rekammedis.RMDataCatatanObservasiRanapKebidanan;
 import rekammedis.RMDataCatatanObservasiRanapPostPartum;
 import rekammedis.RMDataCatatanObservasiRestrainNonFarmakologi;
+import rekammedis.RMDataCatatanObservasiRuangOperasi;
 import rekammedis.RMDataCatatanObservasiVentilator;
 import rekammedis.RMDataFollowUpDBD;
+import rekammedis.RMDataIntervensiNyeriFarmakologi;
+import rekammedis.RMDataIntervensiNyeriNonFarmakologi;
 import rekammedis.RMDataMonitoringAsuhanGizi;
 import rekammedis.RMDataMonitoringReaksiTranfusi;
 import rekammedis.RMDataResumePasienRanap;
@@ -971,6 +980,7 @@ import rekammedis.RMHasilPemeriksaanOCT;
 import rekammedis.RMHasilPemeriksaanSlitLamp;
 import rekammedis.RMHasilPemeriksaanTreadmill;
 import rekammedis.RMHasilPemeriksaanUSG;
+import rekammedis.RMHasilPemeriksaanUSGAbdomen;
 import rekammedis.RMHasilPemeriksaanUSGGynecologi;
 import rekammedis.RMHasilPemeriksaanUSGNeonatus;
 import rekammedis.RMHasilPemeriksaanUSGUrologi;
@@ -1124,6 +1134,7 @@ import surat.SuratKewaspadaanKesehatan;
 import surat.SuratKlasifikasi;
 import surat.SuratMap;
 import surat.SuratMasuk;
+import surat.SuratPengajuanCutiPerawatan;
 import surat.SuratPenolakanAnjuranMedis;
 import surat.SuratPenolakanResusitasi;
 import surat.SuratPermintaanBinrohtal;
@@ -1228,7 +1239,7 @@ public class frmUtama extends javax.swing.JFrame {
     private String coder_nik = "", pilihpage = "", judulform = "",
             tampilkantni = Sequel.cariIsi("select set_tni_polri.tampilkan_tni_polri from set_tni_polri"),
             AKTIFKANTRACKSQL = koneksiDB.AKTIFKANTRACKSQL();
-    
+
     private frmUtama() {
         super();
         initComponents();
@@ -8566,11 +8577,11 @@ public class frmUtama extends javax.swing.JFrame {
             Valid.textKosong(edAdmin, "ID User");
             return;
         }
-        
+
         if (edPwd.getText().trim().equals("")) {
             Valid.textKosong(edPwd, "Password");
             return;
-        } 
+        }
 
         try {
             cacheigd.reset();
@@ -8610,7 +8621,6 @@ public class frmUtama extends javax.swing.JFrame {
                     Sequel.menyimpan("tracker", "'Admin Utama',current_date(),current_time()", "Login");
                 }
             } else if (akses.getjml2() >= 1) {
-                
 
                 BtnMenu.setEnabled(true);
                 DlgLogin.dispose();
@@ -8618,9 +8628,12 @@ public class frmUtama extends javax.swing.JFrame {
                 MnLogin.setText("Log Out");
                 lblStts.setText("Admin : ");
                 lblUser.setText(akses.getkode());
-                // kode disini adalah id dari user. nama user bisa di ambil dari tabel kepegawaian
-                this.setTitle("SIM " + akses.getnamars() + " - " + akses.getJenisUser() +" [ " + akses.getnamauser() + " ] ");
-                JOptionPane.showMessageDialog(null,"Selamat datang " + akses.getnamauser() + " di SIMRS Khanza RS ANDINI");
+                // kode disini adalah id dari user. nama user bisa di ambil dari tabel
+                // kepegawaian
+                this.setTitle("SIM " + akses.getnamars() + " - " + akses.getJenisUser() + " [ " + akses.getnamauser()
+                        + " ] ");
+                JOptionPane.showMessageDialog(null,
+                        "Selamat datang " + akses.getnamauser() + " di SIMRS Khanza RS ANDINI");
                 MnGantiPassword.setEnabled(true);
                 MnPengajuanCutiPegawai.setEnabled(true);
                 BtnToolReg.setEnabled(akses.getregistrasi());
@@ -8703,7 +8716,7 @@ public class frmUtama extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println("Notifikasi : " + e);
         }
-        
+
     }// GEN-LAST:event_BtnLoginActionPerformed
 
     private void BtnToolKamnapActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnToolKamnapActionPerformed
@@ -11508,39 +11521,40 @@ public class frmUtama extends javax.swing.JFrame {
         }
 
         cariNIK.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    if (cariNIK.getTable().getSelectedRow() != -1) {
-                        coder_nik = cariNIK.getTable().getValueAt(cariNIK.getTable().getSelectedRow(), 2).toString();
-                        isTutup();
-                        try {
-                            inacbgklaim.loadURL("http://" + koneksiDB.HOSTHYBRIDWEB() + ":"
-                                    + prop.getProperty("PORTWEB") + "/" + prop.getProperty("HYBRIDWEB") + "/"
-                                    + "inacbg/login.php?act=login&usere=" + koneksiDB.USERHYBRIDWEB() + "&passwordte="
-                                    + koneksiDB.PASHYBRIDWEB() + "&page=" + pilihpage + "&codernik=" + coder_nik);
-                        } catch (Exception ex) {
-                            System.out.println("Notifikasi : " + ex);
-                        }
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
 
-                        inacbgklaim.setJudul(judulform);
-                        inacbgklaim.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
-                        inacbgklaim.setLocationRelativeTo(PanelUtama);
-                        inacbgklaim.setVisible(true);
-                        DlgHome.dispose();
-                    }
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            if (cariNIK.getTable().getSelectedRow() != -1) {
+                coder_nik = cariNIK.getTable().getValueAt(cariNIK.getTable().getSelectedRow(), 2).toString();
+                isTutup();
+                try {
+                    inacbgklaim.loadURL("http://" + koneksiDB.HOSTHYBRIDWEB() + ":"
+                            + prop.getProperty("PORTWEB") + "/" + prop.getProperty("HYBRIDWEB") + "/"
+                            + "inacbg/login.php?act=login&usere=" + koneksiDB.USERHYBRIDWEB() + "&passwordte="
+                            + koneksiDB.PASHYBRIDWEB() + "&page=" + pilihpage + "&codernik=" + coder_nik);
+                } catch (Exception ex) {
+                    System.out.println("Notifikasi : " + ex);
                 }
-            }
 
-            @Override
-            public void keyReleased(KeyEvent e) {
+                inacbgklaim.setJudul(judulform);
+                inacbgklaim.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+                inacbgklaim.setLocationRelativeTo(PanelUtama);
+                inacbgklaim.setVisible(true);
+                DlgHome.dispose();
             }
-        });
-    }// GEN-LAST:event_formWindowOpened
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    });}// GEN-LAST:event_formWindowOpened
 
     private void btnHarianKamarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnHarianKamarActionPerformed
         isTutup();
@@ -23738,31 +23752,167 @@ public class frmUtama extends javax.swing.JFrame {
         aplikasi.setVisible(true);
         this.setCursor(Cursor.getDefaultCursor());
     }
-    
+
     private void btnSuratKeteranganBerobatActionPerformed(java.awt.event.ActionEvent evt) {
         isTutup();
         DlgHome.dispose();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        SuratKeteranganBerobat aplikasi=new SuratKeteranganBerobat(this,false);
+        SuratKeteranganBerobat aplikasi = new SuratKeteranganBerobat(this, false);
         aplikasi.isCek();
         aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
         aplikasi.setLocationRelativeTo(PanelUtama);
         aplikasi.setVisible(true);
         this.setCursor(Cursor.getDefaultCursor());
     }
-    
-    private void btnSuratPenolakanResusitasiActionPerformed(java.awt.event.ActionEvent evt) {  
+
+    private void btnSuratPenolakanResusitasiActionPerformed(java.awt.event.ActionEvent evt) {
         isTutup();
         DlgHome.dispose();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        SuratPenolakanResusitasi aplikasi=new SuratPenolakanResusitasi(this,false);
+        SuratPenolakanResusitasi aplikasi = new SuratPenolakanResusitasi(this, false);
         aplikasi.isCek();
         aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
         aplikasi.setLocationRelativeTo(PanelUtama);
         aplikasi.setVisible(true);
         this.setCursor(Cursor.getDefaultCursor());
     }
-    
+
+    private void btnCatatanObservasiRuangOperasiActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        RMDataCatatanObservasiRuangOperasi form = new RMDataCatatanObservasiRuangOperasi(this, false);
+        form.isCek();
+        form.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        form.setLocationRelativeTo(PanelUtama);
+        form.setVisible(true);
+        DlgHome.dispose();
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void btnHasilUSGAbdomenActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        RMHasilPemeriksaanUSGAbdomen form = new RMHasilPemeriksaanUSGAbdomen(this, false);
+        form.isCek();
+        form.emptTeks();
+        form.setTampil();
+        form.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        form.setLocationRelativeTo(PanelUtama);
+        form.setVisible(true);
+        DlgHome.dispose();
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void btnIntervensiNyeriFarmakologiActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        RMDataIntervensiNyeriFarmakologi aplikasi = new RMDataIntervensiNyeriFarmakologi(this, false);
+        aplikasi.isCek();
+        aplikasi.emptTeks();
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void btnIntervensiNyeriNonFarmakologiActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        RMDataIntervensiNyeriNonFarmakologi aplikasi = new RMDataIntervensiNyeriNonFarmakologi(this, false);
+        aplikasi.isCek();
+        aplikasi.emptTeks();
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void btnSuratPengajuanCutiPerawatanActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SuratPengajuanCutiPerawatan aplikasi = new SuratPengajuanCutiPerawatan(this, false);
+        aplikasi.isCek();
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void btnChecklistKriteriaMasukIsolasiActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        RMChecklistKriteriaMasukIsolasi aplikasi = new RMChecklistKriteriaMasukIsolasi(this, false);
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        aplikasi.isCek();
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void btnMapingTarifTindakanRalanKPTLSatuSehatActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SatuSehatMapingTindakanRalanKPTL aplikasi = new SatuSehatMapingTindakanRalanKPTL(this, false);
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        aplikasi.isCek();
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void btnMapingTarifTindakanRanapKPTLSatuSehatActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SatuSehatMapingTindakanRanapKPTL aplikasi = new SatuSehatMapingTindakanRanapKPTL(this, false);
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        aplikasi.isCek();
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void btnMapingTarifTindakanRadiologiKPTLSatuSehatActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SatuSehatMapingTindakanRadiologiKPTL aplikasi = new SatuSehatMapingTindakanRadiologiKPTL(this, false);
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        aplikasi.isCek();
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void btnMapingTarifTindakanLabKPTLSatuSehatActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SatuSehatMapingTindakanLaboratKPTL aplikasi = new SatuSehatMapingTindakanLaboratKPTL(this, false);
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        aplikasi.isCek();
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    private void btnMapingTarifTindakanOperasiKPTLSatuSehatActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SatuSehatMapingTindakanOperasiKPTL aplikasi = new SatuSehatMapingTindakanOperasiKPTL(this, false);
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        aplikasi.isCek();
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -24347,144 +24497,285 @@ public class frmUtama extends javax.swing.JFrame {
     private widget.ScrollPane scrollPane2;
     private widget.Tanggal tanggal;
     // End of variables declaration//GEN-END:variables
-    private widget.ButtonBig btnKategoriPerpustakaan,btnRuangPerpustakaan,btnJenisPerpustakaan,btnPengarangPerpustakaan,btnPenerbitPerpustakaan,
-            btnKoleksiPerpustakaan,btnInventarisPerpustakaan,btnPengaturanPeminjamanPerpustakaan,btnDendaPerpustakaan,btnAnggotaPerpustakaan,
-            btnPeminjamanPerpustakaan,btnBayarDendaPerpustakaan,btnPenelitianPerpustakaan,btnEbookPerpustakaan,btnCariEbook,btnPestControl,
-            btnMutuAirLimbah,btnCariInventarisPerpustakaan,btnJenisCideraK3,btnPenyebabKecelakaanK3,btnJenisLukaK3,btnLokasiKejadianK3,btnDampakCideraK3,
-            btnGrafikLimbahDomestikPerBulan,btnJenisPekerjaanK3,btnBagianTubuhK3,btnPeristiwaK3,btnGrafikK3PerTahun,btnGrafikK3PerBulan,btnGrafikK3PerTanggal,
-            btnGrafikK3PerJenisCidera,btnGrafikK3PerPenyebab,btnGrafikK3PerJenisLuka,btnGrafikK3PerLokasiKejadian,btnGrafikK3PerDampakCidera,
-            btnGrafikK3PerJenisPekerjaan,btnGrafikK3PerBagianTubuh,btnJenisCideraK3PerTahun,btnPenyebabKecelakaanK3PerTahun,btnJenisLukaK3PerTahun,
-            btnLokasiKejadianK3PerTahun,btnDampakCideraK3PerTahun,btnJenisPekerjaanK3PerTahun,btnBagianTubuhK3PerTahun,btnSkriningRawatJalan,
-            btnBPJSHistoriPelayanan,btnRekapMutasiBerkas,btnSkriningRalanPernapasanPerTahun,btnPengajuanBarangMedis,btnPengajuanBarangNonMedis,
-            btnGrafikKunjunganRanapBulan,btnGrafikKunjunganRanapTanggal,btnGrafikKunjunganRanapRuang,btnKunjunganBangsalTahun,btnGrafikJenjangJabatanPegawai,
-            btnGrafikBidangPegawai,btnGrafikDepartemenPegawai,btnGrafikPendidikanPegawai,btnGrafikStatusWPPegawai,btnGrafikStatusKerjaPegawai,
-            btnGrafikStatusPulangRanap,btnKIPPasienRanap,btnKIPPasienRalan,btnMappingDokterDPJPVClaim,btnMasterTriaseSkala1,btnMasterTriaseSkala2,
-            btnMasterTriaseSkala3,btnMasterTriaseSkala4,btnMasterTriaseSkala5,btnMasterTriasePemeriksaan,btnMasterTriaseMacamKasus,btnDataTriaseIGD,
-            btnRekapPermintaanDiet,btnDaftarPasienRanap,btnDaftarPasienRanapTNI,btnfee_visit_dokter,btnUser,btnPengajuanAsetInventaris,btnGrafikItemApotekPerJenis,
-            btnGrafikItemApotekPerKategori,btnGrafikItemApotekPerGolongan,btnGrafikItemApotekPerIndustriFarmasi,btn10BesarObatPoli,btnGrafikPengajuanAsetUrgensi,
-            btnGrafikPengajuanAsetStatus,btnGrafikPengajuanAsetDepartemen,btnRekapPengajuanAsetDepartemen,btnGrafikKelompokJabatanPegawai,
-            btnGrafikRisikoKerjaPegawai,btnGrafikEmergencyIndexPegawai,btnGrafikInventarisRuang,btnHarianHAIs2,btnGrafikInventarisJenis,btnResumePasien,
-            btnPerkiraanBiayaRanap,btnRekapObatPoli,btnRekapObatPasien,btnGrafikHAIsPasienRuang,btnGrafikHAIsPasienBulan,btnPermintaanPerbaikanInventaris,
-            btnGrafikHAIsLajuVAP,btnGrafikHAIsLajuIAD,btnGrafikHAIsLajuPleb,btnGrafikHAIsLajuISK,btnGrafikHAIsLajuILO,btnGrafikHAIsLajuHAP,
-            btnMappingPoliInhealth,btnMappingDokterInhealth,btnMappingTindakanRalanInhealth,btnMappingTindakanRanapInhealth,btnMappingTindakanRadiologiInhealth,
-            btnMappingTindakanLaboratInhealth,btnMappingTindakanOperasiInhealth,btnHibahObatBHP,btnAsalHibah,btnAsuhanGizi,btnKirimTagihanInheath,
-            btnSirkulasiObat4,btnSirkulasiObat5,btnSirkulasiObat6,btnSirkulasiNonMedis2,btnMonitoringAsuhanGizi,btnGrafikPenerimaanObatPerBulan,btnRekapKunjungan,
-            btnSuratSakit,btnPenilaianAwalKeperawatanRalan,btnMasterMasalahKeperawatan,btnPengajuanCuti,btnKedatanganPasienPerJam,btnPendonorDarah,
-            btnSuplierToko,btnJenisToko,btnSetHargaToko,btnBarangToko,btnPenagihanPiutangPasien,btnAkunPenagihanPiutang,btnStokOpnameToko,
-            btnRiwayatBarangToko,btnSuratPemesananToko,btnPengajuanBarangToko,btnPenerimaanBarangToko,btnPengadaanBarangToko,btnHutangToko,
-            btnBayarPesanToko,btnMemberToko,btnPenjualanToko,btnRegistrasiPoliPerTanggal,btnPiutangToko,btnReturKeSuplierToko,btnReturBarangNonMedis,
-            btnRiwayatBarangNonMedis,btnPasienCorona,btnPendapatanHarianToko,btnDiagnosaPasienCorona,btnPerawatanPasienCorona,btnPenilaianAwalKeperawatanGigi,
-            btnMasterMasalahKeperawatanGigi,btnBayarPiutangToko,btnPiutangHarianToko,btnPenjualanHarianToko,btnDeteksiDiniCorona,btnPenilaianAwalKeperawatanKebidanan,
-            btnPengumumanEPasien,btnSuratHamil,btnSetTarifOnline,btnBookingPeriksa,btnSirkulasiBarangToko,btnReturJualToko,btnReturPiutangToko,
-            btnSirkulasiBarangToko2,btnKeuntunganBarangToko,btnZISPengeluaranPenerimaDankes,btnZISPenghasilanPenerimaDankes,btnZISUkuranRumahPenerimaDankes,
-            btnZISDindingRumahPenerimaDankes,btnZISLantaiRumahPenerimaDankes,btnZISAtapRumahPenerimaDankes,btnZISKepemilikanRumahPenerimaDankes,
-            btnZISKamarMandiPenerimaDankes,btnZISDapurRumahPenerimaDankes,btnZISKursiRumahPenerimaDankes,btnZISKategoriPHBSPenerimaDankes,
-            btnZISElektronikPenerimaDankes,btnZISTernakPenerimaDankes,btnZISJenisSimpananPenerimaDankes,btnPenilaianAwalRalanBayi,
-            btnZISKategoriAsnafPenerimaDankes,btnMasterMasalahKeperawatanAnak,btnMasterImunisasi,btnZISPatologisPenerimaDankes,btnPCareCekKartu,
-            btnSuratBebasNarkoba,btnSuratKeteranganCovid,btnPemakaianAirTanah,btnGrafikPemakaianAirTanahPerTanggal,btnGrafikPemakaianAirTanahPerBulan,
-            btnLamaPelayananPoli,btnHemodialisa,btnGrafikHemodialisaPerTanggal,btnGrafikHemodialisaPerBulan,btnGrafikHemodialisaPerTahun,
-            btnGrafikMeninggalPerBulan,btnLaporanTahunanIRJ,btnPerbaikanInventaris,btnSuratCutiHamil,btnPermintaanStokObatPasien,btnPemeliharaanInventaris,
-            btnKlasifikasiPasienRanap,btnBulananKlasifikasiPasienRanap,btnHarianKlasifikasiPasienRanap,btnKlasifikasiPasienPerRuang,btnSOAPPerawatan,
-            btnKlaimRawatJalan,btnSkriningGiziLanjut,btnLamaPenyiapanRM,btnDosisRadiologi,btnDemografiUmurKunjungan,btnJamDietPasien,btnRVPPiutangBPJS,
-            btnVerifikasiPenerimaanFarmasi,btnVerifikasiPenerimaanLogistik,btnPermintaanLabPA,btnLamaPelayananLabPA,btnRingkasanPengajuanMedis,
-            btnRingkasanPemesananMedis,btnRingkasanPembelianMedis,btnRingkasanPenerimaanMedis,btnRingkasanHibahMedis,btnRingkasanPenjualanMedis,
-            btnRingkasanBeriObat,btnRingkasanPiutangObat,btnRingkasanStokKeluarObat,btnRingkasanReturSuplierObat,btnRingkasanReturJualObat,
-            btnRingkasanPengajuanNonMedis,btnRingkasanPemesananNonMedis,btnPenilaianAwalKeperawatanKebidananRanap,btnRingkasanPengadaanNonMedis,
-            btnRingkasanPenerimaanNonMedis,btnRingkasanStokKeluarNonMedis,btnRingkasanReturSuplierNonMedis,btnOmsetPenerimaan,btnValidasiPenagihanPiutang,
-            btnPermintaanRanap,btnBPJSReferensiDiagnosaPRB,btnBPJSReferensiObatPRB,btnBPJSSuratKontrol,btnPenggunaanBHPOK,btnSuratKeteranganRawatInap,
-            btnSuratKeteranganSehat,btnPendapatanPerCaraBayar,btnAkunRekeningHtHBankJateng,btnPembayaranBankJateng,btnBPJSSuratPRI,btnRingkasanTindakanRalan,
-            btnLamaPelayananPasien,btnSuratSakitPihak2,btnReferensiPendaftaranMobileJKN,btnBatalPendaftaranMobileJKN,btnTagihanHutangObat,btnLamaOperasi,
-            btnGrafikInventarisKategori,btnGrafikInventarisMerk,btnGrafikInventarisProdusen,btnPengembalianDepositPasien,btnValidasiTagihanObatBHP,
-            btnPiutangObatBelumLunas,btnIntegrasiBRIApi,btnAkunAsetInventaris,btnPengadaanAset,btnSuplierInventaris,btnPenerimaanAset,
-            btnBayarPemesananInventaris,btnHutangAsetInventaris,btnHibahAsetInventaris,btnTagihanHutangNonMedis,btnValidasiTagihanNonMedis,
-            btnTagihanHutangAset,btnValidasiTagihanAset,btnHibahNonMedis,btnCekPCareTACC,btnResepLuar,btnSuratBebasTBC,btnSuratButaWarna,btnSuratBebasTato,
-            btnSuratKewaspadaanKesehatan,btnGrafikPorsiDietPerTanggal,btnGrafikPorsiDietPerBulan,btnGrafikPorsiDietPerTahun,btnGrafikPorsiDietPerRuang,
-            btnMasterMasalahKeperawatanMata,btnPenilaianAwalMedisRalan,btnPenilaianAwalMedisRanap,btnPenilaianAwalMedisRanapKandungan,
-            btnPenilaianAwalMedisRalanKandungan,btnPenilaianAwalMedisIGD,btnPenilaianAwalMedisRalanBayi,btnBPJSReferensiPoliHFIS,
-            btnBPJSReferensiDokterHFIS,btnBPJSReferensiJadwalHFIS,btnFisioterapi,btnBPJSProgramPRB,btnBPJSSuplesiJasaRaharja,btnBPJSDataIndukKecelakaan,
-            btnBPJSDataSEPInternal,btnBPJSKlaimJasaRaharja,btnBPJSPasienFinger,btnBPJSRujukanKhusus,btnPemeliharaanGedung,btnGrafikPerbaikanInventarisPerTanggal,
-            btnGrafikPerbaikanInventarisPerBulan,btnGrafikPerbaikanInventarisPerTahun,btnGrafikPerbaikanInventarisPerPelaksanaStatus,
-            btnPenilaianMCU,btnCaraBayar,btnPeminjamPiutang,btnPiutangLainLain,btnBPJSTaskIDMobileJKN,btnBayarPiutangLainLain,btnPembayaranAkunBayar4,
-            btnStokAkhirFarmasiPerTanggal,btnRiwayatKamarPasien,btnAuditKepatuhanAPD,btnUjiFungsiKFR,btnKategoriPengeluaranHarian,btnKategoriPemasukanLian,
-            btnPembayaranAkunBayar5,btnRuangOperasi,btnJasaTindakanPasien,btnTelaahResep,btnPermintaanResepPulang,btnResumePasienRanap,
-            btnRekapJasaDokter,btnStatusDataRM,btnRingkasanBiayaObatPasienPerTanggal,btnMasterMasalahKeperawatanIGD,btnPenilaianAwalKeperawatanIGD,
-            btnBPJSReferensiDPHOApotek,btnBPJSReferensiPoliApotek,btnBayarJMDokter,btnBPJSReferensiFaskesApotek,btnBPJSReferensiSpesialistikApotek,
-            btnPembayaranBRIVA,btnPenilaianAwalKeperawatanRanap,btnAkunBayarHutang,btnNilaiPenerimaanVendorFarmasiPerBulan,btnMasterRencanaKeperawatan,
-            btnLaporanTahunanIGD,btnObatBHPTidakBergerak,btnRingkasanHutangVendorFarmasi,btnNilaiPenerimaanVendorNonMedisPerBulan,btnRingkasanHutangVendorBarangNonMedis,
-            btnAnggotaPolriDirawat,btnDaftarPasienRanapPolri,btnSOAPRalanAnggotaPolri,btnSOAPRanapAnggotaPolri,btnLaporanPenyakitPolri,btnMasterRencanaKeperawatanAnak,
-            btnJumlahPengunjungRalanPolri,btnCatatanObservasiIGD,btnCatatanObservasiRanap,btnCatatanObservasiRanapKebidanan,btnCatatanObservasiRanapPostPartum,
-            btnPenilaianAwalMedisRalanTHT,btnAuditCuciTanganMedis,btnPenilaianPsikologi,btnRuangAuditKepatuhan,btnAuditPembuanganLimbah,
-            btnAuditPembuanganBendaTajam,btnAuditPenangananDarah,btnAuditPengelolaanLinenKotor,btnAuditPenempatanPasien,btnAuditKamarJenazah,
-            btnAuditBundleIADP,btnAuditBundleIDO,btnAuditFasilitasKebersihanTangan,btnAuditFasilitasAPD,btnAuditPembuanganLimbahCairInfeksius,
-            btnAuditSterilisasiAlat,btnPersetujuanPenolakanTindakan,btnPenilaianAwalMedisRalanPsikiatri,btnAuditBundleISK,btnAuditBundlePLABSI,
-            btnAuditBundleVAP,btnAkunRekeningHtHBankPapua,btnPembayaranBankPapua,btnPenilaianAwalMedisRalanPenyakitDalam,btnPenilaianAwalMedisRalanMata,
-            btnPenilaianAwalMedisRalanNeurologi,btnPenilaianAwalMedisRalanOrthopedi,btnPenilaianAwalMedisRalanBedah,btnSOAPRalanAnggotaTNI,btnSOAPRanapAnggotaTNI,
-            btnJumlahPengunjungRalanTNI,btnLaporanPenyakitTNI,btnCatatanKeperawatanRanap,btnMasterRencanaKeperawatanGigi,btnMasterRencanaKeperawatanMata,
-            btnMasterRencanaKeperawatanIGD,btnMasterMasalahKeperawatanPsikiatri,btnMasterRencanaKeperawatanPsikiatri,btnPenilaianAwalKeperawatanRalanPsikiatri,
-            btnPemantauanPEWSAnak,btnMasterTemplateHasilRadiologi,btnLaporanBulananIRJ,btnMasterTemplatePemeriksaanDokter,btnPermintaanLabMB,btnLamaPelayananLabMB,
-            btnPenilaianPreOperasi,btnPenilaianPreAnastesi,btnPersetujuanPulangAtasPermintanSendiri,btnPerencanaanPemulangan,btnPenilaianRisikoJatuhDewasa,
-            btnPenilaianRisikoJatuhAnak,btnPenilaianAwalMedisRalanGeriatri,btnPenilaianTambahanGeriatri,btnSkriningNutrisiDewasa,btnHasilPemeriksaanUSG,
-            btnSkriningNutrisiLansia,btnSkriningNutrisiAnak,btnAkunRekeningHtHBankJabar,btnPembayaranBankJabar,btnPernyataanPasienUmum,btnKonselingFarmasi,
-            btnPelayananInformasiObat,btnPersetujuanUmum,btnTransferPasienAntarRuang,btnReferensiDokterSatuSehat,btnReferensiPasienSatuSehat,
-            btnMappingOrganisasiSatuSehat,btnMappingLokasiSatuSehat,btnKirimEncounterSatuSehat,btnCatatanCekGDS,btnKirimConditionSatuSehat,
-            btnChecklistPreOperasi,btnKirimObservationTTVSatuSehat,btnSignInSebelumAnestesi,btnKirimProcedureSatuSehat,btnOperasiPerBulan,btnTimeOutSebelumInsisi,
-            btnBarangDapur,btnSignOutSebelumMenutupLuka,btnOpnameDapur,btnSuplierDapur,btnMappingVaksinSatuSehat,btnKirimVaksinSatuSehat,btnPembelianDapur,
-            btnChecklistPostOperasi,btnPengeluaranDapur,btnRiwayatBarangDapur,btnPermintaanDapur,btnRBiayaDapur,btnRekapPengadaanDapur,btnLimbahB3MedisCair,
-            btnGrafikLimbahB3MedisCairPerTanggal,btnGrafikLimbahB3MedisCairPerBulan,btnRekapBiayaRegistrasi,btnRekonsiliasiObat,btnKirimClinicalImpressionSatuSehat,
-            btnPenilaianPasienTerminal,btnPersetujuanRawatInap,btnMonitoringReaksiTranfusi,btnPenilaianKorbanKekerasan,btnPenilaianRisikoJatuhLansia,
-            btnSkriningManagerPelayananPasien,btnPenilaianPasienPenyakitMenular,btnSkriningMPPFormA,btnSkriningMPPFormB,btnEdukasiPasienKeluargaRJ,
-            btnPemantauanPEWSDewasa,btnBPJSAntreanPerTanggalMobileJKN,btnPenilaianTambahanBunuhDiri,btnPenilaianTambahanPerilakuKekerasan,
-            btnPenilaianTambahanMelarikanDiri,btnPersetujuanPenundaanPelayanan,btnSisaDietPasien,btnPenilaianAwalMedisRalanBedahMulut,
-            btnPenilaianPasienKeracunan,btnPemantauanMEOWS,btnCatatanADIMEGizi,btnMasterMasalahKeperawatanGeriatri,btnMasterRencanaKeperawatanGeriatri,
-            btnPenilaianAwalKeperawatanRalanGeriatri,btnChecklistKriteriaMasukHCU,btnChecklistKriteriaKeluarHCU,btnPenilaianRisikoDekubitus,btnMasterMenolakAnjuranMedis,
-            btnPenolakanAnjuranMedis,btnLaporanTahunanPenolakanAnjuranMedis,btnMasterTemplateLaporanOperasi,btnDokumentasiTindakanESWL,btnChecklistKriteriaMasukICU,
-            btnChecklistKriteriaKeluarICU,btnDataFollowUpDBD,btnPengajuanBiayaKuangan,btnPenilaianRisikoJatuhNeonatus,btnPemeriksaanFisikRalanPerPenyakit,
-            btnPenilaianRisikoJatuhGeriatri,btnPersetujuanPengajuanBiaya,btnPemantauanEWSNeonatus,btnValidasiPersetujuanPengajuanBiaya,btnRiwayatPerawatanICare,
-            btnRekapPengajuanBiaya,btnPenilaianAwalMedisRalanKulitKelamin,btnHostToHostBankMandiri,btnPenilaianLevelKecemasanRanapAnak,btnPenilaianAwalMedisHemodialisa,
-            btnPenilaianRisikoJatuhPsikiatri,btnPenilaianLanjutanSkriningFungsional,btnPenilaianAwalMedisRalanRehabMedik,btnTemplatePersetujuanPenolakanTindakan,
-            btnPenilaianAwalMedisRalanIGDPsikiatri,btnBPJSReferensiSettingPPKApotek,btnBPJSReferensiObatApotek,btnPembayaranBankMandiri,btnBPJSMapingObatApotek,
-            btnPenilaianUlangNyeri,btnPenilaianTerapiWicara,btnPengkajianRestrain,btnBPJSKunjunganSEPApotek,btnBPJSMonitoringKlaimApotek,btnPenilaianAwalMedisRalanParu,
-            btnBPJSDaftarPelayananObatApotek,btnCatatanKeperawatanRalan,btnCatatanPersalinan,btnSkorAldrettePascaAnestesi,btnSkorStewardPascaAnestesi,
-            btnSkorBromagePascaAnestesi,btnPenilaianPreInduksi,btnHasilUSGUrologi,btnHasilUSGGynecologi,btnHasilPemeriksaanEKG,btnKirimDietSatuSehat,btnMappingObatSatuSehat,
-            btnRingkasanPengadaanDapur,btnKirimMedicationSatuSehat,btnKirimMedicationRequestSatuSehat,btnPenatalaksanaanTerapiOkupasi,btnKirimMedicationDispenseSatuSehat,
-            btnHasilUSGNeonatus,btnHasilEndoskopiFaringLaring,btnMappingRadiologiSatuSehat,btnKirimServiceRequestRadiologiSatuSehat,btnHasilEndoskopiHidung,btnKirimSpecimenRadiologiSatuSehat,
-            btnMasterMasalahKeperawatanNeonatus,btnMasterRencanaKeperawatanNeonatus,btnPenilaianAwalKeperawatanRanapNeonatus,btnKirimObservationRadiologiSatuSehat,
-            btnKirimDiagnosticReportSatuSehat,btnHasilEndoskopiTelinga,btnMappingLaboratSatuSehat,btnKirimServiceRequestLabPKSatuSehat,btnKirimServiceRequestLabMBSatuSehat,
-            btnKirimSpecimenLabPKSatuSehat,btnKirimSpecimenLabMBSatuSehat,btnKirimObservationLabPKSatuSehat,btnKirimObservationLabMBSatuSehat,btnKirimDiagnosticReportLabPKSatuSehat,
-            btnKirimDiagnosticReportLabMBSatuSehat,btnKepatuhanKelengkapanKeselamatanBedah,btnNilaiPiutangPerJenisBayarPerBulan,btnRingkasanPiutangPerJenisBayar,
-            btnPenilaianPasienImunitasRendah,btnCatatanKeseimbanganCairan,btnCatatanObservasiCHBP,btnCatatanObservasiInduksiPersalinan,btnSKPKategoriPenilaian,btnSKPKriteriaPenilaian,
-            btnReferensiPoliMobileJKNFKTP,btnReferensiDokterMobileJKNFKTP,btnSKPPenilaianPegawai,btnMandiriMetodePembayaran,btnMandiriBankTujuanTRansfer,btnPembayaranPihakKe3BankMandiri,
-            btnMandiriKodeTransaksiTujuanTRansfer,btnSKPRekapitulasiPenilaian,btnPCareReferensiAlergi,btnPCareReferensiPrognosa,btnKonsultasiMedik,btnDataSasaranUsiaProduktif,
-            btnDataSasaranUsiaLansia,btnSkriningMerokokUsiaSekolah,btnSkriningKekerasanPadaPerempuan,btnSkriningObesitas,btnSkriningRisikoKankerPayudara,btnSkriningRisikoKankerParu,
-            btnSkriningKesehatanGigiMulutRemaja,btnSkriningTBC,btnPenilaianAwalKeperawatanRanapBayiAnak,btnBookingMCUPerusahaan,btnCatatanObservasiRestrainNonFramakologi,
-            btnCatatanObservasiVentilator,btnCatatanAnastesiSedasi,btnSkriningPUMA,btnKirimCarePlanSatuSehat,btnKirimMedicationStatementSatuSehat,btnSkriningAdiksiNikotin,
-            btnSkriningThalassemia,btnSkriningInstrumenSDQ,btnSkriningInstrumenSRQ,btnChecklistPemberianFibrinolitik,btnSkriningKankerKolorektal,btnPenerimaanBarangDapur,btnBayarPesanDapur,
-            btnHutangDapur,btnTagihanHutangDapur,btnValidasiTagihanDapur,btnSuratPemesananDapur,btnPengajuanBarangDapur,btnReturBarangDapur,btnHibahDapur,btnRingkasanPenerimaanDapur,
-            btnRingkasanPengajuanDapur,btnRingkasanPemesananDapur,btnRingkasanReturBeliDapur,btnRingkasanStokKeluarDapur,btnStokKeluarDapurPerTanggal,btnSirkulasiDapur,btnSirkulasiDapur2,
-            btnVerifikasiPenerimaanDapur,btnNilaiPenerimaanVendorDapurPerBulan,btnRingkasanHutangVendorBarangDapur,btnPenilaianPsikologiKlinis,btnPenilaianAwalMedisRanapNeonatus,
-            btnPenilaianDerajatDehidrasi,btnRingkasanJasaTindakanPasien,btnPendapatanPerAkun,btnHasilPemeriksaanECHO,btnRl13KetersediaanKamar,btnPendapatanPerAkunClosing,
-            btnPenilaianBayiBaruLahir,btnPengeluaranPengeluaran,btnSkriningDiabetesMelitus,btnLaporanTindakan,btnPelaksanaanInformasiEdukasi,btnLayananKedokteranFisikRehabilitasi,
-            btnSkriningKesehatanGigiMulutBalita,btnSkriningAnemia,btnPermintaanLayananProgramKFR,btnLayananProgramKFR,btnSkriningHipertensi,btnSkriningKesehatanPenglihatan,
-            btnCatatanObservasiHemodialisa,btnSkriningKesehatanGigiMulutDewasa,btnSkriningRisikoKankerServiks,btnCatatanCairanHemodialisa,btnSkriningKesehatanGigiMulutLansia,
-            btnSkriningIndraPendengaran,btnCatatanPengkajianPaskaOperasi,btnSirkulasiInventarisCSSD,btnSkriningFrailtySyndrome,btnLamaPelayananCSSD,btnCatatanObservasiBayi,
-            btnRiwayatSuratPeringatan,btnMasterKesimpulanAnjuranMCU,btnKategoriPiutangJasaPerusahaan,btnPiutangJasaPerusahaan,btnBayarPiutangJasaPerusahaan,btnPiutangJasaPerusahaanBelumLunas,
-            btnPiutangPeminjamanUangBelumLunas,btnChecklistKesiapanAnestesi,btnHasilPemeriksaanSlitLamp,btnHasilPemeriksaanOCT,btnPoliAsalPasienRanap,btnPemberiHutangLain,
-            btnDokterAsalPasienRanap,btnBebanHutangLain,btnRekapKeluarDutaParking,btnSuratKeteranganLayakTerbang,btnBayarBebanHutangLain,btnPersetujuanPemeriksaanHIV,btnSkriningInstrumenACRS,
-            btnSuratPernyataanMemilihDPJP,btnSkriningInstrumenMentalEmosional,btnChecklistKriteriaMasukNICU,btnChecklistKriteriaKeluarNICU,btnPenilaianAwalMedisRanapPsikiatri,
-            btnLabKeslingPelanggan,btnChecklistKriteriaMasukPICU,btnChecklistKriteriaKeluarPICU,btnLabKeslingSampelBakuMutu,btnSkriningInstrumenAMT,btnLabKeslingParameterPengujian,
-            btnLabKeslingNilaiNormalBakuMutu,btnSkriningPneumoniaSeverityIndex,btnPenilaianAwalMedisRalanJantung,btnPenilaianAwalMedisRalanUrologi,btnHasilPemeriksaanTreadmill,
-            btnHasilPemeriksaanECHOPediatrik,btnMasterTemplateInformasiEdukasi,btnSkriningInstrumenESAT,btnLabKeslingPermintaanPengujianSampel,btnPenilaianAwalMedisRanapJantung,
-            btnEEksekutif,btnLabKeslingPengujianSampelTidakDapatDilayani,btnLabKeslingPengujianSampelDapatDilayani,btnLabKeslingPenugasanPengujianSampel,btnLabKeslingHasilPengujianSampel,
-            btnLabKeslingVerifikasiPengujianSampel,btnLabKeslingValidasiPengujianSampel,btnLabKeslingRekapPelayanan,btnLabKeslingPembyaranPengujianSampel,btnLabKeslingRekapPembayaran,
-            btnSkriningCURB65,btnBPJSPotensiPRB,btnBPJSRiwayatPelayananObatApotek,btnSkriningGiziKehamilan,btnBPJSRekapPesertaPRBObatApotek,btnSuratSerahTerimaBarangAnggotaTubuh,btnPCRAICRAJenisAktivitasProyek,
-            btnPCRAICRALokasiKelompokRisiko,btnPCRAICRAKelasRisikoPencegahan,btnPCRAICRATindakanPengendalian,btnPCRAICRAIdentifikasiRisikoInfeksi,btnPCRAICRAIdentifikasiRisikoKeselamatan,
-            btnPCRAICRAIdentifikasiRisikoKebakaran,btnPCRAICRAIdentifikasiRisikoUtilitas,btnBPJSResepObatApotek,btnObatApolApotekBPJS,btnPermintaanResepIterasiApotekBPJS,btnPCRAICRAPengkajianRisikoPraKonstruksi,
-            btnPCRAICRAPersyaratanHarusDipenuhi,btnKirimQRTelaahFarmasiSatuSehat,btnKirimAllergiSatuSehat,btnKonsultasiPerawat,btnMappingProsedurSmartKlaimBPJS,btnMappingPenyakitSmartKlaimBPJS,btnKirimFHIRSmartKlaimBPJS,
-            btnSuratPermintaanBinrohtal,btnSuratPermintaanPerlindunganDariKekerasan,btnSuratPermohonanPrivasi,btnSuratPermintaanSecondOpinion,btnSuratKeteranganBerobat,btnSuratPenolakanResusitasi;
-    
-    public void isWall(){
-        try{            
-            ps=koneksi.prepareStatement("select setting.nama_instansi,setting.alamat_instansi,setting.kabupaten,setting.propinsi,setting.aktifkan,setting.wallpaper,setting.kontak,setting.email,setting.logo,setting.kode_ppk,setting.kode_ppkkemenkes from setting");
+    private widget.ButtonBig btnKategoriPerpustakaan, btnRuangPerpustakaan, btnJenisPerpustakaan,
+            btnPengarangPerpustakaan, btnPenerbitPerpustakaan,
+            btnKoleksiPerpustakaan, btnInventarisPerpustakaan, btnPengaturanPeminjamanPerpustakaan,
+            btnDendaPerpustakaan, btnAnggotaPerpustakaan,
+            btnPeminjamanPerpustakaan, btnBayarDendaPerpustakaan, btnPenelitianPerpustakaan, btnEbookPerpustakaan,
+            btnCariEbook, btnPestControl,
+            btnMutuAirLimbah, btnCariInventarisPerpustakaan, btnJenisCideraK3, btnPenyebabKecelakaanK3, btnJenisLukaK3,
+            btnLokasiKejadianK3, btnDampakCideraK3,
+            btnGrafikLimbahDomestikPerBulan, btnJenisPekerjaanK3, btnBagianTubuhK3, btnPeristiwaK3, btnGrafikK3PerTahun,
+            btnGrafikK3PerBulan, btnGrafikK3PerTanggal,
+            btnGrafikK3PerJenisCidera, btnGrafikK3PerPenyebab, btnGrafikK3PerJenisLuka, btnGrafikK3PerLokasiKejadian,
+            btnGrafikK3PerDampakCidera,
+            btnGrafikK3PerJenisPekerjaan, btnGrafikK3PerBagianTubuh, btnJenisCideraK3PerTahun,
+            btnPenyebabKecelakaanK3PerTahun, btnJenisLukaK3PerTahun,
+            btnLokasiKejadianK3PerTahun, btnDampakCideraK3PerTahun, btnJenisPekerjaanK3PerTahun,
+            btnBagianTubuhK3PerTahun, btnSkriningRawatJalan,
+            btnBPJSHistoriPelayanan, btnRekapMutasiBerkas, btnSkriningRalanPernapasanPerTahun, btnPengajuanBarangMedis,
+            btnPengajuanBarangNonMedis,
+            btnGrafikKunjunganRanapBulan, btnGrafikKunjunganRanapTanggal, btnGrafikKunjunganRanapRuang,
+            btnKunjunganBangsalTahun, btnGrafikJenjangJabatanPegawai,
+            btnGrafikBidangPegawai, btnGrafikDepartemenPegawai, btnGrafikPendidikanPegawai, btnGrafikStatusWPPegawai,
+            btnGrafikStatusKerjaPegawai,
+            btnGrafikStatusPulangRanap, btnKIPPasienRanap, btnKIPPasienRalan, btnMappingDokterDPJPVClaim,
+            btnMasterTriaseSkala1, btnMasterTriaseSkala2,
+            btnMasterTriaseSkala3, btnMasterTriaseSkala4, btnMasterTriaseSkala5, btnMasterTriasePemeriksaan,
+            btnMasterTriaseMacamKasus, btnDataTriaseIGD,
+            btnRekapPermintaanDiet, btnDaftarPasienRanap, btnDaftarPasienRanapTNI, btnfee_visit_dokter, btnUser,
+            btnPengajuanAsetInventaris, btnGrafikItemApotekPerJenis,
+            btnGrafikItemApotekPerKategori, btnGrafikItemApotekPerGolongan, btnGrafikItemApotekPerIndustriFarmasi,
+            btn10BesarObatPoli, btnGrafikPengajuanAsetUrgensi,
+            btnGrafikPengajuanAsetStatus, btnGrafikPengajuanAsetDepartemen, btnRekapPengajuanAsetDepartemen,
+            btnGrafikKelompokJabatanPegawai,
+            btnGrafikRisikoKerjaPegawai, btnGrafikEmergencyIndexPegawai, btnGrafikInventarisRuang, btnHarianHAIs2,
+            btnGrafikInventarisJenis, btnResumePasien,
+            btnPerkiraanBiayaRanap, btnRekapObatPoli, btnRekapObatPasien, btnGrafikHAIsPasienRuang,
+            btnGrafikHAIsPasienBulan, btnPermintaanPerbaikanInventaris,
+            btnGrafikHAIsLajuVAP, btnGrafikHAIsLajuIAD, btnGrafikHAIsLajuPleb, btnGrafikHAIsLajuISK,
+            btnGrafikHAIsLajuILO, btnGrafikHAIsLajuHAP,
+            btnMappingPoliInhealth, btnMappingDokterInhealth, btnMappingTindakanRalanInhealth,
+            btnMappingTindakanRanapInhealth, btnMappingTindakanRadiologiInhealth,
+            btnMappingTindakanLaboratInhealth, btnMappingTindakanOperasiInhealth, btnHibahObatBHP, btnAsalHibah,
+            btnAsuhanGizi, btnKirimTagihanInheath,
+            btnSirkulasiObat4, btnSirkulasiObat5, btnSirkulasiObat6, btnSirkulasiNonMedis2, btnMonitoringAsuhanGizi,
+            btnGrafikPenerimaanObatPerBulan, btnRekapKunjungan,
+            btnSuratSakit, btnPenilaianAwalKeperawatanRalan, btnMasterMasalahKeperawatan, btnPengajuanCuti,
+            btnKedatanganPasienPerJam, btnPendonorDarah,
+            btnSuplierToko, btnJenisToko, btnSetHargaToko, btnBarangToko, btnPenagihanPiutangPasien,
+            btnAkunPenagihanPiutang, btnStokOpnameToko,
+            btnRiwayatBarangToko, btnSuratPemesananToko, btnPengajuanBarangToko, btnPenerimaanBarangToko,
+            btnPengadaanBarangToko, btnHutangToko,
+            btnBayarPesanToko, btnMemberToko, btnPenjualanToko, btnRegistrasiPoliPerTanggal, btnPiutangToko,
+            btnReturKeSuplierToko, btnReturBarangNonMedis,
+            btnRiwayatBarangNonMedis, btnPasienCorona, btnPendapatanHarianToko, btnDiagnosaPasienCorona,
+            btnPerawatanPasienCorona, btnPenilaianAwalKeperawatanGigi,
+            btnMasterMasalahKeperawatanGigi, btnBayarPiutangToko, btnPiutangHarianToko, btnPenjualanHarianToko,
+            btnDeteksiDiniCorona, btnPenilaianAwalKeperawatanKebidanan,
+            btnPengumumanEPasien, btnSuratHamil, btnSetTarifOnline, btnBookingPeriksa, btnSirkulasiBarangToko,
+            btnReturJualToko, btnReturPiutangToko,
+            btnSirkulasiBarangToko2, btnKeuntunganBarangToko, btnZISPengeluaranPenerimaDankes,
+            btnZISPenghasilanPenerimaDankes, btnZISUkuranRumahPenerimaDankes,
+            btnZISDindingRumahPenerimaDankes, btnZISLantaiRumahPenerimaDankes, btnZISAtapRumahPenerimaDankes,
+            btnZISKepemilikanRumahPenerimaDankes,
+            btnZISKamarMandiPenerimaDankes, btnZISDapurRumahPenerimaDankes, btnZISKursiRumahPenerimaDankes,
+            btnZISKategoriPHBSPenerimaDankes,
+            btnZISElektronikPenerimaDankes, btnZISTernakPenerimaDankes, btnZISJenisSimpananPenerimaDankes,
+            btnPenilaianAwalRalanBayi,
+            btnZISKategoriAsnafPenerimaDankes, btnMasterMasalahKeperawatanAnak, btnMasterImunisasi,
+            btnZISPatologisPenerimaDankes, btnPCareCekKartu,
+            btnSuratBebasNarkoba, btnSuratKeteranganCovid, btnPemakaianAirTanah, btnGrafikPemakaianAirTanahPerTanggal,
+            btnGrafikPemakaianAirTanahPerBulan,
+            btnLamaPelayananPoli, btnHemodialisa, btnGrafikHemodialisaPerTanggal, btnGrafikHemodialisaPerBulan,
+            btnGrafikHemodialisaPerTahun,
+            btnGrafikMeninggalPerBulan, btnLaporanTahunanIRJ, btnPerbaikanInventaris, btnSuratCutiHamil,
+            btnPermintaanStokObatPasien, btnPemeliharaanInventaris,
+            btnKlasifikasiPasienRanap, btnBulananKlasifikasiPasienRanap, btnHarianKlasifikasiPasienRanap,
+            btnKlasifikasiPasienPerRuang, btnSOAPPerawatan,
+            btnKlaimRawatJalan, btnSkriningGiziLanjut, btnLamaPenyiapanRM, btnDosisRadiologi, btnDemografiUmurKunjungan,
+            btnJamDietPasien, btnRVPPiutangBPJS,
+            btnVerifikasiPenerimaanFarmasi, btnVerifikasiPenerimaanLogistik, btnPermintaanLabPA, btnLamaPelayananLabPA,
+            btnRingkasanPengajuanMedis,
+            btnRingkasanPemesananMedis, btnRingkasanPembelianMedis, btnRingkasanPenerimaanMedis, btnRingkasanHibahMedis,
+            btnRingkasanPenjualanMedis,
+            btnRingkasanBeriObat, btnRingkasanPiutangObat, btnRingkasanStokKeluarObat, btnRingkasanReturSuplierObat,
+            btnRingkasanReturJualObat,
+            btnRingkasanPengajuanNonMedis, btnRingkasanPemesananNonMedis, btnPenilaianAwalKeperawatanKebidananRanap,
+            btnRingkasanPengadaanNonMedis,
+            btnRingkasanPenerimaanNonMedis, btnRingkasanStokKeluarNonMedis, btnRingkasanReturSuplierNonMedis,
+            btnOmsetPenerimaan, btnValidasiPenagihanPiutang,
+            btnPermintaanRanap, btnBPJSReferensiDiagnosaPRB, btnBPJSReferensiObatPRB, btnBPJSSuratKontrol,
+            btnPenggunaanBHPOK, btnSuratKeteranganRawatInap,
+            btnSuratKeteranganSehat, btnPendapatanPerCaraBayar, btnAkunRekeningHtHBankJateng, btnPembayaranBankJateng,
+            btnBPJSSuratPRI, btnRingkasanTindakanRalan,
+            btnLamaPelayananPasien, btnSuratSakitPihak2, btnReferensiPendaftaranMobileJKN, btnBatalPendaftaranMobileJKN,
+            btnTagihanHutangObat, btnLamaOperasi,
+            btnGrafikInventarisKategori, btnGrafikInventarisMerk, btnGrafikInventarisProdusen,
+            btnPengembalianDepositPasien, btnValidasiTagihanObatBHP,
+            btnPiutangObatBelumLunas, btnIntegrasiBRIApi, btnAkunAsetInventaris, btnPengadaanAset, btnSuplierInventaris,
+            btnPenerimaanAset,
+            btnBayarPemesananInventaris, btnHutangAsetInventaris, btnHibahAsetInventaris, btnTagihanHutangNonMedis,
+            btnValidasiTagihanNonMedis,
+            btnTagihanHutangAset, btnValidasiTagihanAset, btnHibahNonMedis, btnCekPCareTACC, btnResepLuar,
+            btnSuratBebasTBC, btnSuratButaWarna, btnSuratBebasTato,
+            btnSuratKewaspadaanKesehatan, btnGrafikPorsiDietPerTanggal, btnGrafikPorsiDietPerBulan,
+            btnGrafikPorsiDietPerTahun, btnGrafikPorsiDietPerRuang,
+            btnMasterMasalahKeperawatanMata, btnPenilaianAwalMedisRalan, btnPenilaianAwalMedisRanap,
+            btnPenilaianAwalMedisRanapKandungan,
+            btnPenilaianAwalMedisRalanKandungan, btnPenilaianAwalMedisIGD, btnPenilaianAwalMedisRalanBayi,
+            btnBPJSReferensiPoliHFIS,
+            btnBPJSReferensiDokterHFIS, btnBPJSReferensiJadwalHFIS, btnFisioterapi, btnBPJSProgramPRB,
+            btnBPJSSuplesiJasaRaharja, btnBPJSDataIndukKecelakaan,
+            btnBPJSDataSEPInternal, btnBPJSKlaimJasaRaharja, btnBPJSPasienFinger, btnBPJSRujukanKhusus,
+            btnPemeliharaanGedung, btnGrafikPerbaikanInventarisPerTanggal,
+            btnGrafikPerbaikanInventarisPerBulan, btnGrafikPerbaikanInventarisPerTahun,
+            btnGrafikPerbaikanInventarisPerPelaksanaStatus,
+            btnPenilaianMCU, btnCaraBayar, btnPeminjamPiutang, btnPiutangLainLain, btnBPJSTaskIDMobileJKN,
+            btnBayarPiutangLainLain, btnPembayaranAkunBayar4,
+            btnStokAkhirFarmasiPerTanggal, btnRiwayatKamarPasien, btnAuditKepatuhanAPD, btnUjiFungsiKFR,
+            btnKategoriPengeluaranHarian, btnKategoriPemasukanLian,
+            btnPembayaranAkunBayar5, btnRuangOperasi, btnJasaTindakanPasien, btnTelaahResep, btnPermintaanResepPulang,
+            btnResumePasienRanap,
+            btnRekapJasaDokter, btnStatusDataRM, btnRingkasanBiayaObatPasienPerTanggal, btnMasterMasalahKeperawatanIGD,
+            btnPenilaianAwalKeperawatanIGD,
+            btnBPJSReferensiDPHOApotek, btnBPJSReferensiPoliApotek, btnBayarJMDokter, btnBPJSReferensiFaskesApotek,
+            btnBPJSReferensiSpesialistikApotek,
+            btnPembayaranBRIVA, btnPenilaianAwalKeperawatanRanap, btnAkunBayarHutang,
+            btnNilaiPenerimaanVendorFarmasiPerBulan, btnMasterRencanaKeperawatan,
+            btnLaporanTahunanIGD, btnObatBHPTidakBergerak, btnRingkasanHutangVendorFarmasi,
+            btnNilaiPenerimaanVendorNonMedisPerBulan, btnRingkasanHutangVendorBarangNonMedis,
+            btnAnggotaPolriDirawat, btnDaftarPasienRanapPolri, btnSOAPRalanAnggotaPolri, btnSOAPRanapAnggotaPolri,
+            btnLaporanPenyakitPolri, btnMasterRencanaKeperawatanAnak,
+            btnJumlahPengunjungRalanPolri, btnCatatanObservasiIGD, btnCatatanObservasiRanap,
+            btnCatatanObservasiRanapKebidanan, btnCatatanObservasiRanapPostPartum,
+            btnPenilaianAwalMedisRalanTHT, btnAuditCuciTanganMedis, btnPenilaianPsikologi, btnRuangAuditKepatuhan,
+            btnAuditPembuanganLimbah,
+            btnAuditPembuanganBendaTajam, btnAuditPenangananDarah, btnAuditPengelolaanLinenKotor,
+            btnAuditPenempatanPasien, btnAuditKamarJenazah,
+            btnAuditBundleIADP, btnAuditBundleIDO, btnAuditFasilitasKebersihanTangan, btnAuditFasilitasAPD,
+            btnAuditPembuanganLimbahCairInfeksius,
+            btnAuditSterilisasiAlat, btnPersetujuanPenolakanTindakan, btnPenilaianAwalMedisRalanPsikiatri,
+            btnAuditBundleISK, btnAuditBundlePLABSI,
+            btnAuditBundleVAP, btnAkunRekeningHtHBankPapua, btnPembayaranBankPapua,
+            btnPenilaianAwalMedisRalanPenyakitDalam, btnPenilaianAwalMedisRalanMata,
+            btnPenilaianAwalMedisRalanNeurologi, btnPenilaianAwalMedisRalanOrthopedi, btnPenilaianAwalMedisRalanBedah,
+            btnSOAPRalanAnggotaTNI, btnSOAPRanapAnggotaTNI,
+            btnJumlahPengunjungRalanTNI, btnLaporanPenyakitTNI, btnCatatanKeperawatanRanap,
+            btnMasterRencanaKeperawatanGigi, btnMasterRencanaKeperawatanMata,
+            btnMasterRencanaKeperawatanIGD, btnMasterMasalahKeperawatanPsikiatri, btnMasterRencanaKeperawatanPsikiatri,
+            btnPenilaianAwalKeperawatanRalanPsikiatri,
+            btnPemantauanPEWSAnak, btnMasterTemplateHasilRadiologi, btnLaporanBulananIRJ,
+            btnMasterTemplatePemeriksaanDokter, btnPermintaanLabMB, btnLamaPelayananLabMB,
+            btnPenilaianPreOperasi, btnPenilaianPreAnastesi, btnPersetujuanPulangAtasPermintanSendiri,
+            btnPerencanaanPemulangan, btnPenilaianRisikoJatuhDewasa,
+            btnPenilaianRisikoJatuhAnak, btnPenilaianAwalMedisRalanGeriatri, btnPenilaianTambahanGeriatri,
+            btnSkriningNutrisiDewasa, btnHasilPemeriksaanUSG,
+            btnSkriningNutrisiLansia, btnSkriningNutrisiAnak, btnAkunRekeningHtHBankJabar, btnPembayaranBankJabar,
+            btnPernyataanPasienUmum, btnKonselingFarmasi,
+            btnPelayananInformasiObat, btnPersetujuanUmum, btnTransferPasienAntarRuang, btnReferensiDokterSatuSehat,
+            btnReferensiPasienSatuSehat,
+            btnMappingOrganisasiSatuSehat, btnMappingLokasiSatuSehat, btnKirimEncounterSatuSehat, btnCatatanCekGDS,
+            btnKirimConditionSatuSehat,
+            btnChecklistPreOperasi, btnKirimObservationTTVSatuSehat, btnSignInSebelumAnestesi,
+            btnKirimProcedureSatuSehat, btnOperasiPerBulan, btnTimeOutSebelumInsisi,
+            btnBarangDapur, btnSignOutSebelumMenutupLuka, btnOpnameDapur, btnSuplierDapur, btnMappingVaksinSatuSehat,
+            btnKirimVaksinSatuSehat, btnPembelianDapur,
+            btnChecklistPostOperasi, btnPengeluaranDapur, btnRiwayatBarangDapur, btnPermintaanDapur, btnRBiayaDapur,
+            btnRekapPengadaanDapur, btnLimbahB3MedisCair,
+            btnGrafikLimbahB3MedisCairPerTanggal, btnGrafikLimbahB3MedisCairPerBulan, btnRekapBiayaRegistrasi,
+            btnRekonsiliasiObat, btnKirimClinicalImpressionSatuSehat,
+            btnPenilaianPasienTerminal, btnPersetujuanRawatInap, btnMonitoringReaksiTranfusi,
+            btnPenilaianKorbanKekerasan, btnPenilaianRisikoJatuhLansia,
+            btnSkriningManagerPelayananPasien, btnPenilaianPasienPenyakitMenular, btnSkriningMPPFormA,
+            btnSkriningMPPFormB, btnEdukasiPasienKeluargaRJ,
+            btnPemantauanPEWSDewasa, btnBPJSAntreanPerTanggalMobileJKN, btnPenilaianTambahanBunuhDiri,
+            btnPenilaianTambahanPerilakuKekerasan,
+            btnPenilaianTambahanMelarikanDiri, btnPersetujuanPenundaanPelayanan, btnSisaDietPasien,
+            btnPenilaianAwalMedisRalanBedahMulut,
+            btnPenilaianPasienKeracunan, btnPemantauanMEOWS, btnCatatanADIMEGizi, btnMasterMasalahKeperawatanGeriatri,
+            btnMasterRencanaKeperawatanGeriatri,
+            btnPenilaianAwalKeperawatanRalanGeriatri, btnChecklistKriteriaMasukHCU, btnChecklistKriteriaKeluarHCU,
+            btnPenilaianRisikoDekubitus, btnMasterMenolakAnjuranMedis,
+            btnPenolakanAnjuranMedis, btnLaporanTahunanPenolakanAnjuranMedis, btnMasterTemplateLaporanOperasi,
+            btnDokumentasiTindakanESWL, btnChecklistKriteriaMasukICU,
+            btnChecklistKriteriaKeluarICU, btnDataFollowUpDBD, btnPengajuanBiayaKuangan,
+            btnPenilaianRisikoJatuhNeonatus, btnPemeriksaanFisikRalanPerPenyakit,
+            btnPenilaianRisikoJatuhGeriatri, btnPersetujuanPengajuanBiaya, btnPemantauanEWSNeonatus,
+            btnValidasiPersetujuanPengajuanBiaya, btnRiwayatPerawatanICare,
+            btnRekapPengajuanBiaya, btnPenilaianAwalMedisRalanKulitKelamin, btnHostToHostBankMandiri,
+            btnPenilaianLevelKecemasanRanapAnak, btnPenilaianAwalMedisHemodialisa,
+            btnPenilaianRisikoJatuhPsikiatri, btnPenilaianLanjutanSkriningFungsional,
+            btnPenilaianAwalMedisRalanRehabMedik, btnTemplatePersetujuanPenolakanTindakan,
+            btnPenilaianAwalMedisRalanIGDPsikiatri, btnBPJSReferensiSettingPPKApotek, btnBPJSReferensiObatApotek,
+            btnPembayaranBankMandiri, btnBPJSMapingObatApotek,
+            btnPenilaianUlangNyeri, btnPenilaianTerapiWicara, btnPengkajianRestrain, btnBPJSKunjunganSEPApotek,
+            btnBPJSMonitoringKlaimApotek, btnPenilaianAwalMedisRalanParu,
+            btnBPJSDaftarPelayananObatApotek, btnCatatanKeperawatanRalan, btnCatatanPersalinan,
+            btnSkorAldrettePascaAnestesi, btnSkorStewardPascaAnestesi,
+            btnSkorBromagePascaAnestesi, btnPenilaianPreInduksi, btnHasilUSGUrologi, btnHasilUSGGynecologi,
+            btnHasilPemeriksaanEKG, btnKirimDietSatuSehat, btnMappingObatSatuSehat,
+            btnRingkasanPengadaanDapur, btnKirimMedicationSatuSehat, btnKirimMedicationRequestSatuSehat,
+            btnPenatalaksanaanTerapiOkupasi, btnKirimMedicationDispenseSatuSehat,
+            btnHasilUSGNeonatus, btnHasilEndoskopiFaringLaring, btnMappingRadiologiSatuSehat,
+            btnKirimServiceRequestRadiologiSatuSehat, btnHasilEndoskopiHidung, btnKirimSpecimenRadiologiSatuSehat,
+            btnMasterMasalahKeperawatanNeonatus, btnMasterRencanaKeperawatanNeonatus,
+            btnPenilaianAwalKeperawatanRanapNeonatus, btnKirimObservationRadiologiSatuSehat,
+            btnKirimDiagnosticReportSatuSehat, btnHasilEndoskopiTelinga, btnMappingLaboratSatuSehat,
+            btnKirimServiceRequestLabPKSatuSehat, btnKirimServiceRequestLabMBSatuSehat,
+            btnKirimSpecimenLabPKSatuSehat, btnKirimSpecimenLabMBSatuSehat, btnKirimObservationLabPKSatuSehat,
+            btnKirimObservationLabMBSatuSehat, btnKirimDiagnosticReportLabPKSatuSehat,
+            btnKirimDiagnosticReportLabMBSatuSehat, btnKepatuhanKelengkapanKeselamatanBedah,
+            btnNilaiPiutangPerJenisBayarPerBulan, btnRingkasanPiutangPerJenisBayar,
+            btnPenilaianPasienImunitasRendah, btnCatatanKeseimbanganCairan, btnCatatanObservasiCHBP,
+            btnCatatanObservasiInduksiPersalinan, btnSKPKategoriPenilaian, btnSKPKriteriaPenilaian,
+            btnReferensiPoliMobileJKNFKTP, btnReferensiDokterMobileJKNFKTP, btnSKPPenilaianPegawai,
+            btnMandiriMetodePembayaran, btnMandiriBankTujuanTRansfer, btnPembayaranPihakKe3BankMandiri,
+            btnMandiriKodeTransaksiTujuanTRansfer, btnSKPRekapitulasiPenilaian, btnPCareReferensiAlergi,
+            btnPCareReferensiPrognosa, btnKonsultasiMedik, btnDataSasaranUsiaProduktif,
+            btnDataSasaranUsiaLansia, btnSkriningMerokokUsiaSekolah, btnSkriningKekerasanPadaPerempuan,
+            btnSkriningObesitas, btnSkriningRisikoKankerPayudara, btnSkriningRisikoKankerParu,
+            btnSkriningKesehatanGigiMulutRemaja, btnSkriningTBC, btnPenilaianAwalKeperawatanRanapBayiAnak,
+            btnBookingMCUPerusahaan, btnCatatanObservasiRestrainNonFramakologi,
+            btnCatatanObservasiVentilator, btnCatatanAnastesiSedasi, btnSkriningPUMA, btnKirimCarePlanSatuSehat,
+            btnKirimMedicationStatementSatuSehat, btnSkriningAdiksiNikotin,
+            btnSkriningThalassemia, btnSkriningInstrumenSDQ, btnSkriningInstrumenSRQ, btnChecklistPemberianFibrinolitik,
+            btnSkriningKankerKolorektal, btnPenerimaanBarangDapur, btnBayarPesanDapur,
+            btnHutangDapur, btnTagihanHutangDapur, btnValidasiTagihanDapur, btnSuratPemesananDapur,
+            btnPengajuanBarangDapur, btnReturBarangDapur, btnHibahDapur, btnRingkasanPenerimaanDapur,
+            btnRingkasanPengajuanDapur, btnRingkasanPemesananDapur, btnRingkasanReturBeliDapur,
+            btnRingkasanStokKeluarDapur, btnStokKeluarDapurPerTanggal, btnSirkulasiDapur, btnSirkulasiDapur2,
+            btnVerifikasiPenerimaanDapur, btnNilaiPenerimaanVendorDapurPerBulan, btnRingkasanHutangVendorBarangDapur,
+            btnPenilaianPsikologiKlinis, btnPenilaianAwalMedisRanapNeonatus,
+            btnPenilaianDerajatDehidrasi, btnRingkasanJasaTindakanPasien, btnPendapatanPerAkun, btnHasilPemeriksaanECHO,
+            btnRl13KetersediaanKamar, btnPendapatanPerAkunClosing,
+            btnPenilaianBayiBaruLahir, btnPengeluaranPengeluaran, btnSkriningDiabetesMelitus, btnLaporanTindakan,
+            btnPelaksanaanInformasiEdukasi, btnLayananKedokteranFisikRehabilitasi,
+            btnSkriningKesehatanGigiMulutBalita, btnSkriningAnemia, btnPermintaanLayananProgramKFR,
+            btnLayananProgramKFR, btnSkriningHipertensi, btnSkriningKesehatanPenglihatan,
+            btnCatatanObservasiHemodialisa, btnSkriningKesehatanGigiMulutDewasa, btnSkriningRisikoKankerServiks,
+            btnCatatanCairanHemodialisa, btnSkriningKesehatanGigiMulutLansia,
+            btnSkriningIndraPendengaran, btnCatatanPengkajianPaskaOperasi, btnSirkulasiInventarisCSSD,
+            btnSkriningFrailtySyndrome, btnLamaPelayananCSSD, btnCatatanObservasiBayi,
+            btnRiwayatSuratPeringatan, btnMasterKesimpulanAnjuranMCU, btnKategoriPiutangJasaPerusahaan,
+            btnPiutangJasaPerusahaan, btnBayarPiutangJasaPerusahaan, btnPiutangJasaPerusahaanBelumLunas,
+            btnPiutangPeminjamanUangBelumLunas, btnChecklistKesiapanAnestesi, btnHasilPemeriksaanSlitLamp,
+            btnHasilPemeriksaanOCT, btnPoliAsalPasienRanap, btnPemberiHutangLain,
+            btnDokterAsalPasienRanap, btnBebanHutangLain, btnRekapKeluarDutaParking, btnSuratKeteranganLayakTerbang,
+            btnBayarBebanHutangLain, btnPersetujuanPemeriksaanHIV, btnSkriningInstrumenACRS,
+            btnSuratPernyataanMemilihDPJP, btnSkriningInstrumenMentalEmosional, btnChecklistKriteriaMasukNICU,
+            btnChecklistKriteriaKeluarNICU, btnPenilaianAwalMedisRanapPsikiatri,
+            btnLabKeslingPelanggan, btnChecklistKriteriaMasukPICU, btnChecklistKriteriaKeluarPICU,
+            btnLabKeslingSampelBakuMutu, btnSkriningInstrumenAMT, btnLabKeslingParameterPengujian,
+            btnLabKeslingNilaiNormalBakuMutu, btnSkriningPneumoniaSeverityIndex, btnPenilaianAwalMedisRalanJantung,
+            btnPenilaianAwalMedisRalanUrologi, btnHasilPemeriksaanTreadmill,
+            btnHasilPemeriksaanECHOPediatrik, btnMasterTemplateInformasiEdukasi, btnSkriningInstrumenESAT,
+            btnLabKeslingPermintaanPengujianSampel, btnPenilaianAwalMedisRanapJantung,
+            btnEEksekutif, btnLabKeslingPengujianSampelTidakDapatDilayani, btnLabKeslingPengujianSampelDapatDilayani,
+            btnLabKeslingPenugasanPengujianSampel, btnLabKeslingHasilPengujianSampel,
+            btnLabKeslingVerifikasiPengujianSampel, btnLabKeslingValidasiPengujianSampel, btnLabKeslingRekapPelayanan,
+            btnLabKeslingPembyaranPengujianSampel, btnLabKeslingRekapPembayaran,
+            btnSkriningCURB65, btnBPJSPotensiPRB, btnBPJSRiwayatPelayananObatApotek, btnSkriningGiziKehamilan,
+            btnBPJSRekapPesertaPRBObatApotek, btnSuratSerahTerimaBarangAnggotaTubuh, btnPCRAICRAJenisAktivitasProyek,
+            btnPCRAICRALokasiKelompokRisiko, btnPCRAICRAKelasRisikoPencegahan, btnPCRAICRATindakanPengendalian,
+            btnPCRAICRAIdentifikasiRisikoInfeksi, btnPCRAICRAIdentifikasiRisikoKeselamatan,
+            btnPCRAICRAIdentifikasiRisikoKebakaran, btnPCRAICRAIdentifikasiRisikoUtilitas, btnBPJSResepObatApotek,
+            btnObatApolApotekBPJS, btnPermintaanResepIterasiApotekBPJS, btnPCRAICRAPengkajianRisikoPraKonstruksi,
+            btnPCRAICRAPersyaratanHarusDipenuhi, btnKirimQRTelaahFarmasiSatuSehat, btnKirimAllergiSatuSehat,
+            btnKonsultasiPerawat, btnMappingProsedurSmartKlaimBPJS, btnMappingPenyakitSmartKlaimBPJS,
+            btnKirimFHIRSmartKlaimBPJS,
+            btnSuratPermintaanBinrohtal, btnSuratPermintaanPerlindunganDariKekerasan, btnSuratPermohonanPrivasi,
+            btnSuratPermintaanSecondOpinion, btnSuratKeteranganBerobat, btnSuratPenolakanResusitasi,
+            btnCatatanObservasiRuangOperasi,
+            btnHasilUSGAbdomen, btnIntervensiNyeriFarmakologi, btnIntervensiNyeriNonFarmakologi,
+            btnSuratPengajuanCutiPerawatan, btnChecklistKriteriaMasukIsolasi, btnMapingTarifTindakanRalanKPTLSatuSehat,
+            btnMapingTarifTindakanRanapKPTLSatuSehat, btnMapingTarifTindakanRadiologiKPTLSatuSehat,
+            btnMapingTarifTindakanLabKPTLSatuSehat, btnMapingTarifTindakanOperasiKPTLSatuSehat;
+
+    public void isWall() {
+        try {
+            ps = koneksi.prepareStatement(
+                    "select setting.nama_instansi,setting.alamat_instansi,setting.kabupaten,setting.propinsi,setting.aktifkan,setting.wallpaper,setting.kontak,setting.email,setting.logo,setting.kode_ppk,setting.kode_ppkkemenkes from setting");
             try {
                 rs = ps.executeQuery();
                 while (rs.next()) {
@@ -27971,6 +28262,31 @@ public class frmUtama extends javax.swing.JFrame {
                 jmlmenu++;
             }
 
+            if (akses.getsatu_sehat_mapping_kptl_tindakan_ralan() == true) {
+                Panelmenu.add(btnMapingTarifTindakanRalanKPTLSatuSehat);
+                jmlmenu++;
+            }
+
+            if (akses.getsatu_sehat_mapping_kptl_tindakan_ranap() == true) {
+                Panelmenu.add(btnMapingTarifTindakanRanapKPTLSatuSehat);
+                jmlmenu++;
+            }
+
+            if (akses.getsatu_sehat_mapping_kptl_tindakan_radiologi() == true) {
+                Panelmenu.add(btnMapingTarifTindakanRadiologiKPTLSatuSehat);
+                jmlmenu++;
+            }
+
+            if (akses.getsatu_sehat_mapping_kptl_tindakan_laborat() == true) {
+                Panelmenu.add(btnMapingTarifTindakanLabKPTLSatuSehat);
+                jmlmenu++;
+            }
+
+            if (akses.getsatu_sehat_mapping_kptl_tindakan_operasi() == true) {
+                Panelmenu.add(btnMapingTarifTindakanOperasiKPTLSatuSehat);
+                jmlmenu++;
+            }
+
             if (akses.getsatu_sehat_mapping_radiologi() == true) {
                 Panelmenu.add(btnMappingRadiologiSatuSehat);
                 jmlmenu++;
@@ -28558,6 +28874,11 @@ public class frmUtama extends javax.swing.JFrame {
                 jmlmenu++;
             }
 
+            if (akses.gethasil_pemeriksaan_usg_abdomen() == true) {
+                Panelmenu.add(btnHasilUSGAbdomen);
+                jmlmenu++;
+            }
+
             if (akses.getpenilaian_awal_medis_ralan_tht() == true) {
                 Panelmenu.add(btnPenilaianAwalMedisRalanTHT);
                 jmlmenu++;
@@ -28745,6 +29066,11 @@ public class frmUtama extends javax.swing.JFrame {
 
             if (akses.getcatatan_observasi_ranap_postpartum() == true) {
                 Panelmenu.add(btnCatatanObservasiRanapPostPartum);
+                jmlmenu++;
+            }
+
+            if (akses.getcatatan_observasi_ruang_ok() == true) {
+                Panelmenu.add(btnCatatanObservasiRuangOperasi);
                 jmlmenu++;
             }
 
@@ -28973,6 +29299,11 @@ public class frmUtama extends javax.swing.JFrame {
                 jmlmenu++;
             }
 
+            if (akses.getchecklist_kriteria_masuk_isolasi() == true) {
+                Panelmenu.add(btnChecklistKriteriaMasukIsolasi);
+                jmlmenu++;
+            }
+
             if (akses.getperencanaan_pemulangan() == true) {
                 Panelmenu.add(btnPerencanaanPemulangan);
                 jmlmenu++;
@@ -29015,6 +29346,16 @@ public class frmUtama extends javax.swing.JFrame {
 
             if (akses.getpenilaian_ulang_nyeri() == true) {
                 Panelmenu.add(btnPenilaianUlangNyeri);
+                jmlmenu++;
+            }
+
+            if (akses.getintervensi_nyeri_farmakologi() == true) {
+                Panelmenu.add(btnIntervensiNyeriFarmakologi);
+                jmlmenu++;
+            }
+
+            if (akses.getintervensi_nyeri_nonfarmakologi() == true) {
+                Panelmenu.add(btnIntervensiNyeriNonFarmakologi);
                 jmlmenu++;
             }
 
@@ -30009,13 +30350,13 @@ public class frmUtama extends javax.swing.JFrame {
                 Panelmenu.add(btnSuratKeteranganLayakTerbang);
                 jmlmenu++;
             }
-            
-            if(akses.getsurat_keterangan_berobat()==true){
+
+            if (akses.getsurat_keterangan_berobat() == true) {
                 Panelmenu.add(btnSuratKeteranganBerobat);
                 jmlmenu++;
             }
-            
-            if(akses.getsurat_kewaspadaan_kesehatan()==true){
+
+            if (akses.getsurat_kewaspadaan_kesehatan() == true) {
                 Panelmenu.add(btnSuratKewaspadaanKesehatan);
                 jmlmenu++;
             }
@@ -30104,14 +30445,19 @@ public class frmUtama extends javax.swing.JFrame {
                 Panelmenu.add(btnSuratPermintaanSecondOpinion);
                 jmlmenu++;
             }
-            
-            if(akses.getsurat_penolakan_resusitasi()==true){
+
+            if (akses.getsurat_penolakan_resusitasi() == true) {
                 Panelmenu.add(btnSuratPenolakanResusitasi);
                 jmlmenu++;
             }
-        }else if(cmbMenu.getSelectedIndex()==16){ 
-            jmlmenu=0;
-            if(akses.getruang_perpustakaan()==true){
+
+            if (akses.getsurat_pengajuan_cuti_pasien() == true) {
+                Panelmenu.add(btnSuratPengajuanCutiPerawatan);
+                jmlmenu++;
+            }
+        } else if (cmbMenu.getSelectedIndex() == 16) {
+            jmlmenu = 0;
+            if (akses.getruang_perpustakaan() == true) {
                 Panelmenu.add(btnRuangPerpustakaan);
                 jmlmenu++;
             }
@@ -33934,2611 +34280,1540 @@ public class frmUtama extends javax.swing.JFrame {
             Panelmenu.add(btnKirimAllergiSatuSehat);
             jmlmenu++;
         }
-
-        if (akses.getsatu_sehat_mapping_radiologi() == true) {
+        
+        
+        if(akses.getsatu_sehat_mapping_kptl_tindakan_ranap()==true){
+            Panelmenu.add(btnMapingTarifTindakanRanapKPTLSatuSehat);
+            jmlmenu++;
+        }
+        
+        if(akses.getsatu_sehat_mapping_kptl_tindakan_radiologi()==true){
+            Panelmenu.add(btnMapingTarifTindakanRadiologiKPTLSatuSehat);
+            jmlmenu++;
+        }
+        
+        if(akses.getsatu_sehat_mapping_kptl_tindakan_laborat()==true){
+            Panelmenu.add(btnMapingTarifTindakanLabKPTLSatuSehat);
+            jmlmenu++;
+        }
+        
+        if(akses.getsatu_sehat_mapping_kptl_tindakan_operasi()==true){
+            Panelmenu.add(btnMapingTarifTindakanOperasiKPTLSatuSehat);
+            jmlmenu++;
+        }
+        
+        if(akses.getsatu_sehat_mapping_radiologi()==true){
             Panelmenu.add(btnMappingRadiologiSatuSehat);
             jmlmenu++;
         }
 
-        if (akses.getsatu_sehat_mapping_lab() == true) {
             Panelmenu.add(btnMappingLaboratSatuSehat);
             jmlmenu++;
         }
 
-        if (akses.getsatu_sehat_kirim_servicerequest_radiologi() == true) {
-            Panelmenu.add(btnKirimServiceRequestRadiologiSatuSehat);
-            jmlmenu++;
-        }
+    if(akses.getsatu_sehat_kirim_servicerequest_radiologi()==true)
 
-        if (akses.getsatu_sehat_kirim_specimen_radiologi() == true) {
-            Panelmenu.add(btnKirimSpecimenRadiologiSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsatu_sehat_kirim_observation_radiologi() == true) {
-            Panelmenu.add(btnKirimObservationRadiologiSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsatu_sehat_kirim_diagnosticreport_radiologi() == true) {
-            Panelmenu.add(btnKirimDiagnosticReportSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsatu_sehat_kirim_servicerequest_lab() == true) {
-            Panelmenu.add(btnKirimServiceRequestLabPKSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsatu_sehat_kirim_specimen_lab() == true) {
-            Panelmenu.add(btnKirimSpecimenLabPKSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsatu_sehat_kirim_observation_lab() == true) {
-            Panelmenu.add(btnKirimObservationLabPKSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsatu_sehat_kirim_diagnosticreport_lab() == true) {
-            Panelmenu.add(btnKirimDiagnosticReportLabPKSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsatu_sehat_kirim_servicerequest_labmb() == true) {
-            Panelmenu.add(btnKirimServiceRequestLabMBSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsatu_sehat_kirim_specimen_labmb() == true) {
-            Panelmenu.add(btnKirimSpecimenLabMBSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsatu_sehat_kirim_observation_labmb() == true) {
-            Panelmenu.add(btnKirimObservationLabMBSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsatu_sehat_kirim_diagnosticreport_labmb() == true) {
-            Panelmenu.add(btnKirimDiagnosticReportLabMBSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsatu_sehat_kirim_careplan() == true) {
-            Panelmenu.add(btnKirimCarePlanSatuSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getreferensi_poli_mobilejknfktp() == true) {
-            Panelmenu.add(btnReferensiPoliMobileJKNFKTP);
-            jmlmenu++;
-        }
-
-        if (akses.getreferensi_dokter_mobilejknfktp() == true) {
-            Panelmenu.add(btnReferensiDokterMobileJKNFKTP);
-            jmlmenu++;
-        }
-
-        if (akses.getduta_parkir_rekap_keluar() == true) {
-            Panelmenu.add(btnRekapKeluarDutaParking);
-            jmlmenu++;
-        }
-
-        if (akses.getperusahaan_pasien() == true) {
-            Panelmenu.add(btnPerusahaan);
-            jmlmenu++;
-        }
-
-        if (akses.getsuku_bangsa() == true) {
-            Panelmenu.add(btnSuku);
-            jmlmenu++;
-        }
-
-        if (akses.getbahasa_pasien() == true) {
-            Panelmenu.add(btnBahasa);
-            jmlmenu++;
-        }
-
-        if (tampilkantni.equals("Yes")) {
-            if (akses.getgolongan_tni() == true) {
-                Panelmenu.add(btnGolonganTNI);
-                jmlmenu++;
-            }
-
-            if (akses.getsatuan_tni() == true) {
-                Panelmenu.add(btnSatuanTNI);
-                jmlmenu++;
-            }
-
-            if (akses.getjabatan_tni() == true) {
-                Panelmenu.add(btnJabatanTNI);
-                jmlmenu++;
-            }
-
-            if (akses.getpangkat_tni() == true) {
-                Panelmenu.add(btnPangkatTNI);
-                jmlmenu++;
-            }
-
-            if (akses.getgolongan_polri() == true) {
-                Panelmenu.add(btnGolonganPolri);
-                jmlmenu++;
-            }
-
-            if (akses.getsatuan_polri() == true) {
-                Panelmenu.add(btnSatuanPolri);
-                jmlmenu++;
-            }
-
-            if (akses.getjabatan_polri() == true) {
-                Panelmenu.add(btnJabatanPolri);
-                jmlmenu++;
-            }
-
-            if (akses.getpangkat_polri() == true) {
-                Panelmenu.add(btnPangkatPolri);
-                jmlmenu++;
-            }
-        }
-
-        if (akses.getcacat_fisik() == true) {
-            Panelmenu.add(btnCacatFisik);
-            jmlmenu++;
-        }
-
-        if (akses.getpasien() == true) {
-            Panelmenu.add(btnPasien);
-            jmlmenu++;
-        }
-
-        if (akses.getkelahiran_bayi() == true) {
-            Panelmenu.add(btnLahir);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_pasien() == true) {
-            Panelmenu.add(btnCatatanPasien);
-            jmlmenu++;
-        }
-
-        if (akses.getpasien_meninggal() == true) {
-            Panelmenu.add(btnPasienMati);
-            jmlmenu++;
-        }
-
-        if (akses.getdiagnosa_pasien() == true) {
-            Panelmenu.add(btnDiagnosa);
-            jmlmenu++;
-        }
-
-        if (akses.getinsiden_keselamatan() == true) {
-            Panelmenu.add(btnInsidenKeselamatan);
-            jmlmenu++;
-        }
-
-        if (akses.getdata_HAIs() == true) {
-            Panelmenu.add(btnDataHAIs);
-            jmlmenu++;
-        }
-
-        if (akses.getklasifikasi_pasien_ranap() == true) {
-            Panelmenu.add(btnKlasifikasiPasienRanap);
-            jmlmenu++;
-        }
-
-        if (akses.getsoap_perawatan() == true) {
-            Panelmenu.add(btnSOAPPerawatan);
-            jmlmenu++;
-        }
-
-        if (tampilkantni.equals("Yes")) {
-            if (akses.getsoap_ralan_polri() == true) {
-                Panelmenu.add(btnSOAPRalanAnggotaPolri);
-                jmlmenu++;
-            }
-
-            if (akses.getsoap_ranap_polri() == true) {
-                Panelmenu.add(btnSOAPRanapAnggotaPolri);
-                jmlmenu++;
-            }
-
-            if (akses.getsoap_ralan_tni() == true) {
-                Panelmenu.add(btnSOAPRalanAnggotaTNI);
-                jmlmenu++;
-            }
-
-            if (akses.getsoap_ranap_tni() == true) {
-                Panelmenu.add(btnSOAPRanapAnggotaTNI);
-                jmlmenu++;
-            }
-        }
-
-        if (akses.getriwayat_kamar_pasien() == true) {
-            Panelmenu.add(btnRiwayatKamarPasien);
-            jmlmenu++;
-        }
-
-        if (akses.getinsiden_keselamatan_pasien() == true) {
-            Panelmenu.add(btnInsidenKeselamatanPasien);
-            jmlmenu++;
-        }
-
-        if (akses.getpeminjaman_berkas() == true) {
-            Panelmenu.add(btnSirkulasiBerkas);
-            jmlmenu++;
-        }
-
-        if (akses.getresume_pasien() == true) {
-            Panelmenu.add(btnResume);
-            jmlmenu++;
-        }
-
-        if (akses.getretensi_rm() == true) {
-            Panelmenu.add(btnRetensiRM);
-            jmlmenu++;
-        }
-
-        if (akses.getmutasi_berkas() == true) {
-            Panelmenu.add(btnMutasiBerkas);
-            jmlmenu++;
-        }
-
-        if (akses.getberkas_digital_perawatan() == true) {
-            Panelmenu.add(btnBerkasDigitalPerawatan);
-            jmlmenu++;
-        }
-
-        if (akses.getpengaduan_pasien() == true) {
-            Panelmenu.add(btnPengaduan);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_triase_pemeriksaan() == true) {
-            Panelmenu.add(btnMasterTriasePemeriksaan);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_triase_macamkasus() == true) {
-            Panelmenu.add(btnMasterTriaseMacamKasus);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_triase_skala1() == true) {
-            Panelmenu.add(btnMasterTriaseSkala1);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_triase_skala2() == true) {
-            Panelmenu.add(btnMasterTriaseSkala2);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_triase_skala3() == true) {
-            Panelmenu.add(btnMasterTriaseSkala3);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_triase_skala4() == true) {
-            Panelmenu.add(btnMasterTriaseSkala4);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_triase_skala5() == true) {
-            Panelmenu.add(btnMasterTriaseSkala5);
-            jmlmenu++;
-        }
-
-        if (akses.getdata_triase_igd() == true) {
-            Panelmenu.add(btnDataTriaseIGD);
-            jmlmenu++;
-        }
-
-        if (akses.getdata_resume_pasien() == true) {
-            Panelmenu.add(btnResumePasien);
-            jmlmenu++;
-            Panelmenu.add(btnResumePasienRanap);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_gizi() == true) {
-            Panelmenu.add(btnSkriningGiziLanjut);
-            jmlmenu++;
-        }
-
-        if (akses.getasuhan_gizi() == true) {
-            Panelmenu.add(btnAsuhanGizi);
-            jmlmenu++;
-        }
-
-        if (akses.getmonitoring_asuhan_gizi() == true) {
-            Panelmenu.add(btnMonitoringAsuhanGizi);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_adime_gizi() == true) {
-            Panelmenu.add(btnCatatanADIMEGizi);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_nutrisi_dewasa() == true) {
-            Panelmenu.add(btnSkriningNutrisiDewasa);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_nutrisi_lansia() == true) {
-            Panelmenu.add(btnSkriningNutrisiLansia);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_nutrisi_anak() == true) {
-            Panelmenu.add(btnSkriningNutrisiAnak);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_gizi_kehamilan() == true) {
-            Panelmenu.add(btnSkriningGiziKehamilan);
-            jmlmenu++;
-        }
-
-        if (akses.gettemplate_hasil_radiologi() == true) {
-            Panelmenu.add(btnMasterTemplateHasilRadiologi);
-            jmlmenu++;
-        }
-
-        if (akses.gettemplate_laporan_operasi() == true) {
-            Panelmenu.add(btnMasterTemplateLaporanOperasi);
-            jmlmenu++;
-        }
-
-        if (akses.gettemplate_pemeriksaan() == true) {
-            Panelmenu.add(btnMasterTemplatePemeriksaanDokter);
-            jmlmenu++;
-        }
-
-        if (akses.gettemplate_pelaksanaan_informasi_edukasi() == true) {
-            Panelmenu.add(btnMasterTemplateInformasiEdukasi);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_masalah_keperawatan() == true) {
-            Panelmenu.add(btnMasterMasalahKeperawatan);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_rencana_keperawatan() == true) {
-            Panelmenu.add(btnMasterRencanaKeperawatan);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_masalah_keperawatan_gigi() == true) {
-            Panelmenu.add(btnMasterMasalahKeperawatanGigi);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_rencana_keperawatan_gigi() == true) {
-            Panelmenu.add(btnMasterRencanaKeperawatanGigi);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_masalah_keperawatan_anak() == true) {
-            Panelmenu.add(btnMasterMasalahKeperawatanAnak);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_rencana_keperawatan_anak() == true) {
-            Panelmenu.add(btnMasterRencanaKeperawatanAnak);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_masalah_keperawatan_mata() == true) {
-            Panelmenu.add(btnMasterMasalahKeperawatanMata);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_rencana_keperawatan_mata() == true) {
-            Panelmenu.add(btnMasterRencanaKeperawatanMata);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_masalah_keperawatan_igd() == true) {
-            Panelmenu.add(btnMasterMasalahKeperawatanIGD);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_rencana_keperawatan_igd() == true) {
-            Panelmenu.add(btnMasterRencanaKeperawatanIGD);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_masalah_keperawatan_psikiatri() == true) {
-            Panelmenu.add(btnMasterMasalahKeperawatanPsikiatri);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_rencana_keperawatan_psikiatri() == true) {
-            Panelmenu.add(btnMasterRencanaKeperawatanPsikiatri);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_masalah_keperawatan_geriatri() == true) {
-            Panelmenu.add(btnMasterMasalahKeperawatanGeriatri);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_rencana_keperawatan_geriatri() == true) {
-            Panelmenu.add(btnMasterRencanaKeperawatanGeriatri);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_masalah_keperawatan_neonatus() == true) {
-            Panelmenu.add(btnMasterMasalahKeperawatanNeonatus);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_rencana_keperawatan_neonatus() == true) {
-            Panelmenu.add(btnMasterRencanaKeperawatanNeonatus);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_imunisasi() == true) {
-            Panelmenu.add(btnMasterImunisasi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_keperawatan_ralan() == true) {
-            Panelmenu.add(btnPenilaianAwalKeperawatanRalan);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_keperawatan_ranap() == true) {
-            Panelmenu.add(btnPenilaianAwalKeperawatanRanap);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_keperawatan_igd() == true) {
-            Panelmenu.add(btnPenilaianAwalKeperawatanIGD);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_keperawatan_gigi() == true) {
-            Panelmenu.add(btnPenilaianAwalKeperawatanGigi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_keperawatan_kebidanan() == true) {
-            Panelmenu.add(btnPenilaianAwalKeperawatanKebidanan);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_keperawatan_ranapkebidanan() == true) {
-            Panelmenu.add(btnPenilaianAwalKeperawatanKebidananRanap);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_keperawatan_anak() == true) {
-            Panelmenu.add(btnPenilaianAwalRalanBayi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_keperawatan_ranap_bayi() == true) {
-            Panelmenu.add(btnPenilaianAwalKeperawatanRanapBayiAnak);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_keperawatan_psikiatri() == true) {
-            Panelmenu.add(btnPenilaianAwalKeperawatanRalanPsikiatri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_keperawatan_ralan_geriatri() == true) {
-            Panelmenu.add(btnPenilaianAwalKeperawatanRalanGeriatri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_keperawatan_ranap_neonatus() == true) {
-            Panelmenu.add(btnPenilaianAwalKeperawatanRanapNeonatus);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_igd() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisIGD);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_medis_ralan_gawat_darurat_psikiatri() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanIGDPsikiatri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalan);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ranap() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRanap);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ranap_neonatus() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRanapNeonatus);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_bayi_baru_lahir() == true) {
-            Panelmenu.add(btnPenilaianBayiBaruLahir);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_anak() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanBayi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_kebidanan() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanKandungan);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ranap_kebidanan() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRanapKandungan);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_jantung() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanJantung);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ranap_jantung() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRanapJantung);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_urologi() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanUrologi);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_pemeriksaan_usg() == true) {
-            Panelmenu.add(btnHasilPemeriksaanUSG);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_usg_urologi() == true) {
-            Panelmenu.add(btnHasilUSGUrologi);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_usg_gynecologi() == true) {
-            Panelmenu.add(btnHasilUSGGynecologi);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_usg_neonatus() == true) {
-            Panelmenu.add(btnHasilUSGNeonatus);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_tht() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanTHT);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_psikiatri() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanPsikiatri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_medis_ranap_psikiatrik() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRanapPsikiatri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_penyakit_dalam() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanPenyakitDalam);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_mata() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanMata);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_neurologi() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanNeurologi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_orthopedi() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanOrthopedi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_bedah() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanBedah);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_bedah_mulut() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanBedahMulut);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_geriatri() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanGeriatri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_kulit_kelamin() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanKulitKelamin);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_awal_medis_ralan_paru() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanParu);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_medis_ralan_rehab_medik() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisRalanRehabMedik);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_medis_ralan_hemodialisa() == true) {
-            Panelmenu.add(btnPenilaianAwalMedisHemodialisa);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_pemeriksaan_ekg() == true) {
-            Panelmenu.add(btnHasilPemeriksaanEKG);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_pemeriksaan_treadmill() == true) {
-            Panelmenu.add(btnHasilPemeriksaanTreadmill);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_pemeriksaan_slit_lamp() == true) {
-            Panelmenu.add(btnHasilPemeriksaanSlitLamp);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_pemeriksaan_oct() == true) {
-            Panelmenu.add(btnHasilPemeriksaanOCT);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_pemeriksaan_echo() == true) {
-            Panelmenu.add(btnHasilPemeriksaanECHO);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_pemeriksaan_echo_pediatrik() == true) {
-            Panelmenu.add(btnHasilPemeriksaanECHOPediatrik);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_endoskopi_faring_laring() == true) {
-            Panelmenu.add(btnHasilEndoskopiFaringLaring);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_endoskopi_hidung() == true) {
-            Panelmenu.add(btnHasilEndoskopiHidung);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_endoskopi_telinga() == true) {
-            Panelmenu.add(btnHasilEndoskopiTelinga);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_tambahan_pasien_geriatri() == true) {
-            Panelmenu.add(btnPenilaianTambahanGeriatri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_tambahan_bunuh_diri() == true) {
-            Panelmenu.add(btnPenilaianTambahanBunuhDiri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_tambahan_perilaku_kekerasan() == true) {
-            Panelmenu.add(btnPenilaianTambahanPerilakuKekerasan);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_tambahan_beresiko_melarikan_diri() == true) {
-            Panelmenu.add(btnPenilaianTambahanMelarikanDiri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_pasien_terminal() == true) {
-            Panelmenu.add(btnPenilaianPasienTerminal);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_korban_kekerasan() == true) {
-            Panelmenu.add(btnPenilaianKorbanKekerasan);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_pasien_penyakit_menular() == true) {
-            Panelmenu.add(btnPenilaianPasienPenyakitMenular);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_pasien_imunitas_rendah() == true) {
-            Panelmenu.add(btnPenilaianPasienImunitasRendah);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_derajat_dehidrasi() == true) {
-            Panelmenu.add(btnPenilaianDerajatDehidrasi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_pasien_keracunan() == true) {
-            Panelmenu.add(btnPenilaianPasienKeracunan);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_level_kecemasan_ranap_anak() == true) {
-            Panelmenu.add(btnPenilaianLevelKecemasanRanapAnak);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_observasi_igd() == true) {
-            Panelmenu.add(btnCatatanObservasiIGD);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_observasi_ranap() == true) {
-            Panelmenu.add(btnCatatanObservasiRanap);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_observasi_ranap_kebidanan() == true) {
-            Panelmenu.add(btnCatatanObservasiRanapKebidanan);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_observasi_ranap_postpartum() == true) {
-            Panelmenu.add(btnCatatanObservasiRanapPostPartum);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_observasi_bayi() == true) {
-            Panelmenu.add(btnCatatanObservasiBayi);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_observasi_chbp() == true) {
-            Panelmenu.add(btnCatatanObservasiCHBP);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_observasi_induksi_persalinan() == true) {
-            Panelmenu.add(btnCatatanObservasiInduksiPersalinan);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_observasi_restrain_nonfarma() == true) {
-            Panelmenu.add(btnCatatanObservasiRestrainNonFramakologi);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_observasi_ventilator() == true) {
-            Panelmenu.add(btnCatatanObservasiVentilator);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_observasi_hemodialisa() == true) {
-            Panelmenu.add(btnCatatanObservasiHemodialisa);
-            jmlmenu++;
-        }
-
-        if (akses.getbalance_cairan() == true) {
-            Panelmenu.add(btnCatatanKeseimbanganCairan);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_cairan_hemodialisa() == true) {
-            Panelmenu.add(btnCatatanCairanHemodialisa);
-            jmlmenu++;
-        }
-
-        if (akses.getfollow_up_dbd() == true) {
-            Panelmenu.add(btnDataFollowUpDBD);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_keperawatan_ralan() == true) {
-            Panelmenu.add(btnCatatanKeperawatanRalan);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_keperawatan_ranap() == true) {
-            Panelmenu.add(btnCatatanKeperawatanRanap);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_persalinan() == true) {
-            Panelmenu.add(btnCatatanPersalinan);
-            jmlmenu++;
-        }
-
-        if (akses.getmonitoring_reaksi_tranfusi() == true) {
-            Panelmenu.add(btnMonitoringReaksiTranfusi);
-            jmlmenu++;
-        }
-
-        if (akses.getpemantauan_pews_anak() == true) {
-            Panelmenu.add(btnPemantauanPEWSAnak);
-            jmlmenu++;
-        }
-
-        if (akses.getpemantauan_pews_dewasa() == true) {
-            Panelmenu.add(btnPemantauanPEWSDewasa);
-            jmlmenu++;
-        }
-
-        if (akses.getpemantauan_meows_obstetri() == true) {
-            Panelmenu.add(btnPemantauanMEOWS);
-            jmlmenu++;
-        }
-
-        if (akses.getpemantauan_ews_neonatus() == true) {
-            Panelmenu.add(btnPemantauanEWSNeonatus);
-            jmlmenu++;
-        }
-
-        if (akses.gethemodialisa() == true) {
-            Panelmenu.add(btnHemodialisa);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_fisioterapi() == true) {
-            Panelmenu.add(btnFisioterapi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_terapi_wicara() == true) {
-            Panelmenu.add(btnPenilaianTerapiWicara);
-            jmlmenu++;
-        }
-
-        if (akses.getpenatalaksanaan_terapi_okupasi() == true) {
-            Panelmenu.add(btnPenatalaksanaanTerapiOkupasi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_psikologi() == true) {
-            Panelmenu.add(btnPenilaianPsikologi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_psikologi_klinis() == true) {
-            Panelmenu.add(btnPenilaianPsikologiKlinis);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_pre_induksi() == true) {
-            Panelmenu.add(btnPenilaianPreInduksi);
-            jmlmenu++;
-        }
-
-        if (akses.getchecklist_pre_operasi() == true) {
-            Panelmenu.add(btnChecklistPreOperasi);
-            jmlmenu++;
-        }
-
-        if (akses.getsignin_sebelum_anestesi() == true) {
-            Panelmenu.add(btnSignInSebelumAnestesi);
-            jmlmenu++;
-        }
-
-        if (akses.gettimeout_sebelum_insisi() == true) {
-            Panelmenu.add(btnTimeOutSebelumInsisi);
-            jmlmenu++;
-        }
-
-        if (akses.getsignout_sebelum_menutup_luka() == true) {
-            Panelmenu.add(btnSignOutSebelumMenutupLuka);
-            jmlmenu++;
-        }
-
-        if (akses.getchecklist_post_operasi() == true) {
-            Panelmenu.add(btnChecklistPostOperasi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_pre_operasi() == true) {
-            Panelmenu.add(btnPenilaianPreOperasi);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_pre_anestesi() == true) {
-            Panelmenu.add(btnPenilaianPreAnastesi);
-            jmlmenu++;
-        }
-
-        if (akses.getchecklist_kesiapan_anestesi() == true) {
-            Panelmenu.add(btnChecklistKesiapanAnestesi);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_anestesi_sedasi() == true) {
-            Panelmenu.add(btnCatatanAnastesiSedasi);
-            jmlmenu++;
-        }
-
-        if (akses.getskor_aldrette_pasca_anestesi() == true) {
-            Panelmenu.add(btnSkorAldrettePascaAnestesi);
-            jmlmenu++;
-        }
-
-        if (akses.getskor_steward_pasca_anestesi() == true) {
-            Panelmenu.add(btnSkorStewardPascaAnestesi);
-            jmlmenu++;
-        }
-
-        if (akses.getskor_bromage_pasca_anestesi() == true) {
-            Panelmenu.add(btnSkorBromagePascaAnestesi);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_pengkajian_paska_operasi() == true) {
-            Panelmenu.add(btnCatatanPengkajianPaskaOperasi);
-            jmlmenu++;
-        }
-
-        if (akses.getchecklist_kriteria_masuk_hcu() == true) {
-            Panelmenu.add(btnChecklistKriteriaMasukHCU);
-            jmlmenu++;
-        }
-
-        if (akses.getchecklist_kriteria_keluar_hcu() == true) {
-            Panelmenu.add(btnChecklistKriteriaKeluarHCU);
-            jmlmenu++;
-        }
-
-        if (akses.getkriteria_masuk_nicu() == true) {
-            Panelmenu.add(btnChecklistKriteriaMasukNICU);
-            jmlmenu++;
-        }
-
-        if (akses.getkriteria_keluar_nicu() == true) {
-            Panelmenu.add(btnChecklistKriteriaKeluarNICU);
-            jmlmenu++;
-        }
-
-        if (akses.getkriteria_masuk_picu() == true) {
-            Panelmenu.add(btnChecklistKriteriaMasukPICU);
-            jmlmenu++;
-        }
-
-        if (akses.getkriteria_keluar_picu() == true) {
-            Panelmenu.add(btnChecklistKriteriaKeluarPICU);
-            jmlmenu++;
-        }
-
-        if (akses.getchecklist_kriteria_masuk_icu() == true) {
-            Panelmenu.add(btnChecklistKriteriaMasukICU);
-            jmlmenu++;
-        }
-
-        if (akses.getchecklist_kriteria_keluar_icu() == true) {
-            Panelmenu.add(btnChecklistKriteriaKeluarICU);
-            jmlmenu++;
-        }
-
-        if (akses.getperencanaan_pemulangan() == true) {
-            Panelmenu.add(btnPerencanaanPemulangan);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_lanjutan_resiko_jatuh_dewasa() == true) {
-            Panelmenu.add(btnPenilaianRisikoJatuhDewasa);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_lanjutan_resiko_jatuh_anak() == true) {
-            Panelmenu.add(btnPenilaianRisikoJatuhAnak);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_lanjutan_resiko_jatuh_lansia() == true) {
-            Panelmenu.add(btnPenilaianRisikoJatuhLansia);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_lanjutan_resiko_jatuh_geriatri() == true) {
-            Panelmenu.add(btnPenilaianRisikoJatuhGeriatri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_risiko_jatuh_neonatus() == true) {
-            Panelmenu.add(btnPenilaianRisikoJatuhNeonatus);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_lanjutan_resiko_jatuh_psikiatri() == true) {
-            Panelmenu.add(btnPenilaianRisikoJatuhPsikiatri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_lanjutan_skrining_fungsional() == true) {
-            Panelmenu.add(btnPenilaianLanjutanSkriningFungsional);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_ulang_nyeri() == true) {
-            Panelmenu.add(btnPenilaianUlangNyeri);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_risiko_dekubitus() == true) {
-            Panelmenu.add(btnPenilaianRisikoDekubitus);
-            jmlmenu++;
-        }
-
-        if (akses.getlayanan_kedokteran_fisik_rehabilitasi() == true) {
-            Panelmenu.add(btnLayananKedokteranFisikRehabilitasi);
-            jmlmenu++;
-        }
-
-        if (akses.getlayanan_program_kfr() == true) {
-            Panelmenu.add(btnLayananProgramKFR);
-            jmlmenu++;
-        }
-
-        if (akses.getuji_fungsi_kfr() == true) {
-            Panelmenu.add(btnUjiFungsiKFR);
-            jmlmenu++;
-        }
-
-        if (akses.gethasil_tindakan_eswl() == true) {
-            Panelmenu.add(btnDokumentasiTindakanESWL);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_kesimpulan_anjuran_mcu() == true) {
-            Panelmenu.add(btnMasterKesimpulanAnjuranMCU);
-            jmlmenu++;
-        }
-
-        if (akses.getpenilaian_mcu() == true) {
-            Panelmenu.add(btnPenilaianMCU);
-            jmlmenu++;
-        }
-
-        if (akses.getkonseling_farmasi() == true) {
-            Panelmenu.add(btnKonselingFarmasi);
-            jmlmenu++;
-        }
-
-        if (akses.getpelayanan_informasi_obat() == true) {
-            Panelmenu.add(btnPelayananInformasiObat);
-            jmlmenu++;
-        }
-
-        if (akses.getkonsultasi_medik() == true) {
-            Panelmenu.add(btnKonsultasiMedik);
-            jmlmenu++;
-        }
-
-        if (akses.getkonsultasi_perawat() == true) {
-            Panelmenu.add(btnKonsultasiPerawat);
-            jmlmenu++;
-        }
-
-        if (akses.gettransfer_pasien_antar_ruang() == true) {
-            Panelmenu.add(btnTransferPasienAntarRuang);
-            jmlmenu++;
-        }
-
-        if (akses.getpengkajian_restrain() == true) {
-            Panelmenu.add(btnPengkajianRestrain);
-            jmlmenu++;
-        }
-
-        if (akses.getcatatan_cek_gds() == true) {
-            Panelmenu.add(btnCatatanCekGDS);
-            jmlmenu++;
-        }
-
-        if (akses.getrekonsiliasi_obat() == true) {
-            Panelmenu.add(btnRekonsiliasiObat);
-            jmlmenu++;
-        }
-
-        if (akses.getchecklist_pemberian_fibrinolitik() == true) {
-            Panelmenu.add(btnChecklistPemberianFibrinolitik);
-            jmlmenu++;
-        }
-
-        if (akses.getmpp_skrining() == true) {
-            Panelmenu.add(btnSkriningManagerPelayananPasien);
-            jmlmenu++;
-            Panelmenu.add(btnSkriningMPPFormA);
-            jmlmenu++;
-            Panelmenu.add(btnSkriningMPPFormB);
-            jmlmenu++;
-        }
-
-        if (akses.getedukasi_pasien_keluarga_rj() == true) {
-            Panelmenu.add(btnEdukasiPasienKeluargaRJ);
-            jmlmenu++;
-        }
-
-        if (akses.getpelaksanaan_informasi_edukasi() == true) {
-            Panelmenu.add(btnPelaksanaanInformasiEdukasi);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_perilaku_merokok_sekolah_remaja() == true) {
-            Panelmenu.add(btnSkriningMerokokUsiaSekolah);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_kekerasan_pada_perempuan() == true) {
-            Panelmenu.add(btnSkriningKekerasanPadaPerempuan);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_obesitas() == true) {
-            Panelmenu.add(btnSkriningObesitas);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_risiko_kanker_payudara() == true) {
-            Panelmenu.add(btnSkriningRisikoKankerPayudara);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_risiko_kanker_paru() == true) {
-            Panelmenu.add(btnSkriningRisikoKankerParu);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_risiko_kanker_serviks() == true) {
-            Panelmenu.add(btnSkriningRisikoKankerServiks);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_kesehatan_gigi_mulut_remaja() == true) {
-            Panelmenu.add(btnSkriningKesehatanGigiMulutRemaja);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_kesehatan_gigi_mulut_balita() == true) {
-            Panelmenu.add(btnSkriningKesehatanGigiMulutBalita);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_kesehatan_gigi_mulut_lansia() == true) {
-            Panelmenu.add(btnSkriningKesehatanGigiMulutLansia);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_kesehatan_gigi_mulut_dewasa() == true) {
-            Panelmenu.add(btnSkriningKesehatanGigiMulutDewasa);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_anemia() == true) {
-            Panelmenu.add(btnSkriningAnemia);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_hipertensi() == true) {
-            Panelmenu.add(btnSkriningHipertensi);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_kesehatan_penglihatan() == true) {
-            Panelmenu.add(btnSkriningKesehatanPenglihatan);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_indra_pendengaran() == true) {
-            Panelmenu.add(btnSkriningIndraPendengaran);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_tbc() == true) {
-            Panelmenu.add(btnSkriningTBC);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_puma() == true) {
-            Panelmenu.add(btnSkriningPUMA);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_adiksi_nikotin() == true) {
-            Panelmenu.add(btnSkriningAdiksiNikotin);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_thalassemia() == true) {
-            Panelmenu.add(btnSkriningThalassemia);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_instrumen_sdq() == true) {
-            Panelmenu.add(btnSkriningInstrumenSDQ);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_instrumen_srq() == true) {
-            Panelmenu.add(btnSkriningInstrumenSRQ);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_instrumen_acrs() == true) {
-            Panelmenu.add(btnSkriningInstrumenACRS);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_instrumen_mental_emosional() == true) {
-            Panelmenu.add(btnSkriningInstrumenMentalEmosional);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_instrumen_amt() == true) {
-            Panelmenu.add(btnSkriningInstrumenAMT);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_instrumen_esat() == true) {
-            Panelmenu.add(btnSkriningInstrumenESAT);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_pneumonia_severity_index() == true) {
-            Panelmenu.add(btnSkriningPneumoniaSeverityIndex);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_curb65() == true) {
-            Panelmenu.add(btnSkriningCURB65);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_kanker_kolorektal() == true) {
-            Panelmenu.add(btnSkriningKankerKolorektal);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_diabetes_melitus() == true) {
-            Panelmenu.add(btnSkriningDiabetesMelitus);
-            jmlmenu++;
-        }
-
-        if (akses.getskrining_frailty_syndrome() == true) {
-            Panelmenu.add(btnSkriningFrailtySyndrome);
-            jmlmenu++;
-        }
-
-        if (akses.getlaporan_tindakan() == true) {
-            Panelmenu.add(btnLaporanTindakan);
-            jmlmenu++;
-        }
-
-        if (akses.getpengambilan_utd2() == true) {
-            Panelmenu.add(btnPengambilanUTD2);
-            jmlmenu++;
-        }
-
-        if (akses.getutd_medis_rusak() == true) {
-            Panelmenu.add(btnUTDMedisRusak);
-            jmlmenu++;
-        }
-
-        if (akses.getpengambilan_penunjang_utd2() == true) {
-            Panelmenu.add(btnPengambilanPenunjangUTD2);
-            jmlmenu++;
-        }
-
-        if (akses.getutd_penunjang_rusak() == true) {
-            Panelmenu.add(btnUTDPenunjangRusak);
-            jmlmenu++;
-        }
-
-        if (akses.getutd_komponen_darah() == true) {
-            Panelmenu.add(btnUTDKomponenDarah);
-            jmlmenu++;
-        }
-
-        if (akses.getutd_pendonor() == true) {
-            Panelmenu.add(btnPendonorDarah);
-            jmlmenu++;
-        }
-
-        if (akses.getutd_donor() == true) {
-            Panelmenu.add(btnUTDDonorDarah);
-            jmlmenu++;
-        }
-
-        if (akses.getutd_cekal_darah() == true) {
-            Panelmenu.add(btnUTDCekalDarah);
-            jmlmenu++;
-        }
-
-        if (akses.getutd_pemisahan_darah() == true) {
-            Panelmenu.add(btnUTDPemisahanDarah);
-            jmlmenu++;
-        }
-
-        if (akses.getutd_stok_darah() == true) {
-            Panelmenu.add(btnUTDStokDarah);
-            jmlmenu++;
-        }
-
-        if (akses.getutd_penyerahan_darah() == true) {
-            Panelmenu.add(btnUTDPenyerahanDarah);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_poli() == true) {
-            Panelmenu.add(btnGrafikKunjunganPoli);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_perdokter() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerDokter);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_perpekerjaan() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerPekerjaan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_perpendidikan() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerPendidikan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_pertahun() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerTahun);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_perbulan() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_pertanggal() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_demografi() == true) {
-            Panelmenu.add(btnGrafikDemografiRegistrasi);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_statusdaftartahun() == true) {
-            Panelmenu.add(btnGrafikStatusRegPerTahun);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_statusdaftartahun2() == true) {
-            Panelmenu.add(btnGrafikStatusRegPerTahun2);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_statusdaftarbulan() == true) {
-            Panelmenu.add(btnGrafikStatusRegPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_statusdaftarbulan2() == true) {
-            Panelmenu.add(btnGrafikStatusRegPerBulan2);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_statusdaftartanggal() == true) {
-            Panelmenu.add(btnGrafikStatusRegPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_statusdaftartanggal2() == true) {
-            Panelmenu.add(btnGrafikStatusRegPerTanggal2);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_statusbataltahun() == true) {
-            Panelmenu.add(btnGrafikStatusRegBatalPerTahun);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_statusbatalbulan() == true) {
-            Panelmenu.add(btnGrafikStatusRegBatalPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_statusbataltanggal() == true) {
-            Panelmenu.add(btnGrafikStatusRegBatalPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_percarabayar() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerCarabayar);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_ranaptahun() == true) {
-            Panelmenu.add(btnGrafikKunjunganRanapPerTahun);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_lab_ralantahun() == true) {
-            Panelmenu.add(btnGrafikLabRalanPerTahun);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_rad_ralantahun() == true) {
-            Panelmenu.add(btnGrafikRadRalanPerTahun);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_per_perujuk() == true) {
-            Panelmenu.add(btnGrafikPerPerujuk);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_lab_ralanbulan() == true) {
-            Panelmenu.add(btnGrafikLabRalanPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_rad_ralanbulan() == true) {
-            Panelmenu.add(btnGrafikRadRalanPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_lab_ralanhari() == true) {
-            Panelmenu.add(btnGrafikLabRalanPerHari);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_rad_ralanhari() == true) {
-            Panelmenu.add(btnGrafikRadRalanPerHari);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_ikp_pertahun() == true) {
-            Panelmenu.add(btnGrafikKejadianIKPPerTahun);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_ikp_perbulan() == true) {
-            Panelmenu.add(btnGrafikKejadianIKPPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_ikp_pertanggal() == true) {
-            Panelmenu.add(btnGrafikKejadianIKPPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_ikp_jenis() == true) {
-            Panelmenu.add(btnGrafikKejadianIKPPerJenis);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_ikp_dampak() == true) {
-            Panelmenu.add(btnGrafikKejadianIKPPerDampak);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_per_agama() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerAgama);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_per_umur() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerUmur);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_suku() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerSuku);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_bahasa() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerBahasa);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_per_cacat() == true) {
-            Panelmenu.add(btnGrafikKunjunganPerCacat);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tb_periodelaporan() == true) {
-            Panelmenu.add(btnGrafikTBLaporanPeriode);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tb_rujukan() == true) {
-            Panelmenu.add(btnGrafikTBRujukan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tb_riwayat() == true) {
-            Panelmenu.add(btnGrafikTBRiwayat);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tb_tipediagnosis() == true) {
-            Panelmenu.add(btnGrafikTBTipeDiagnosis);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tb_statushiv() == true) {
-            Panelmenu.add(btnGrafikTBSTatusHIV);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tb_skoringanak() == true) {
-            Panelmenu.add(btnGrafikTBSkoringAnak);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tb_konfirmasiskoring5() == true) {
-            Panelmenu.add(btnGrafikTBKonfirmasiSkoring5);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tb_konfirmasiskoring6() == true) {
-            Panelmenu.add(btnGrafikTBKonfirmasiSkoring6);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tb_sumberobat() == true) {
-            Panelmenu.add(btnGrafikTBSumberObat);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tb_hasilakhirpengobatan() == true) {
-            Panelmenu.add(btnGrafikTBHasilAkhirPengobatan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tb_hasilteshiv() == true) {
-            Panelmenu.add(btnGrafikTBHasilTesHIV);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_air_pdam_pertanggal() == true) {
-            Panelmenu.add(btnGrafikPemakaianAirPDAMPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_air_pdam_perbulan() == true) {
-            Panelmenu.add(btnGrafikPemakaianAirPDAMPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_air_tanah_pertanggal() == true) {
-            Panelmenu.add(btnGrafikPemakaianAirTanahPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_air_tanah_perbulan() == true) {
-            Panelmenu.add(btnGrafikPemakaianAirTanahPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_limbahb3_pertanggal() == true) {
-            Panelmenu.add(btnGrafikLimbahB3MedisPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_limbahb3_perbulan() == true) {
-            Panelmenu.add(btnGrafikLimbahB3MedisPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_limbahdomestik_pertanggal() == true) {
-            Panelmenu.add(btnGrafikLimbahDomestikPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_limbahdomestik_perbulan() == true) {
-            Panelmenu.add(btnGrafikLimbahDomestikPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_k3_pertahun() == true) {
-            Panelmenu.add(btnGrafikK3PerTahun);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_k3_perbulan() == true) {
-            Panelmenu.add(btnGrafikK3PerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_k3_pertanggal() == true) {
-            Panelmenu.add(btnGrafikK3PerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_k3_perjeniscidera() == true) {
-            Panelmenu.add(btnGrafikK3PerJenisCidera);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_k3_perpenyebab() == true) {
-            Panelmenu.add(btnGrafikK3PerPenyebab);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_k3_perjenisluka() == true) {
-            Panelmenu.add(btnGrafikK3PerJenisLuka);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_k3_lokasikejadian() == true) {
-            Panelmenu.add(btnGrafikK3PerLokasiKejadian);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_k3_dampakcidera() == true) {
-            Panelmenu.add(btnGrafikK3PerDampakCidera);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_k3_perjenispekerjaan() == true) {
-            Panelmenu.add(btnGrafikK3PerJenisPekerjaan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_k3_perbagiantubuh() == true) {
-            Panelmenu.add(btnGrafikK3PerBagianTubuh);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_ranapbulan() == true) {
-            Panelmenu.add(btnGrafikKunjunganRanapBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_ranaptanggal() == true) {
-            Panelmenu.add(btnGrafikKunjunganRanapTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kunjungan_ranap_peruang() == true) {
-            Panelmenu.add(btnGrafikKunjunganRanapRuang);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_jenjang_jabatanpegawai() == true) {
-            Panelmenu.add(btnGrafikJenjangJabatanPegawai);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_bidangpegawai() == true) {
-            Panelmenu.add(btnGrafikBidangPegawai);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_departemenpegawai() == true) {
-            Panelmenu.add(btnGrafikDepartemenPegawai);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_pendidikanpegawai() == true) {
-            Panelmenu.add(btnGrafikPendidikanPegawai);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_sttswppegawai() == true) {
-            Panelmenu.add(btnGrafikStatusWPPegawai);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_sttskerjapegawai() == true) {
-            Panelmenu.add(btnGrafikStatusKerjaPegawai);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_sttspulangranap() == true) {
-            Panelmenu.add(btnGrafikStatusPulangRanap);
-            jmlmenu++;
-        }
-
-        if (akses.getitem_apotek_jenis() == true) {
-            Panelmenu.add(btnGrafikItemApotekPerJenis);
-            jmlmenu++;
-        }
-
-        if (akses.getitem_apotek_kategori() == true) {
-            Panelmenu.add(btnGrafikItemApotekPerKategori);
-            jmlmenu++;
-        }
-
-        if (akses.getitem_apotek_golongan() == true) {
-            Panelmenu.add(btnGrafikItemApotekPerGolongan);
-            jmlmenu++;
-        }
-
-        if (akses.getitem_apotek_industrifarmasi() == true) {
-            Panelmenu.add(btnGrafikItemApotekPerIndustriFarmasi);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_pengajuan_aset_urgensi() == true) {
-            Panelmenu.add(btnGrafikPengajuanAsetUrgensi);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_pengajuan_aset_status() == true) {
-            Panelmenu.add(btnGrafikPengajuanAsetStatus);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_pengajuan_aset_departemen() == true) {
-            Panelmenu.add(btnGrafikPengajuanAsetDepartemen);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_kelompok_jabatanpegawai() == true) {
-            Panelmenu.add(btnGrafikKelompokJabatanPegawai);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_resiko_kerjapegawai() == true) {
-            Panelmenu.add(btnGrafikRisikoKerjaPegawai);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_emergency_indexpegawai() == true) {
-            Panelmenu.add(btnGrafikEmergencyIndexPegawai);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_inventaris_ruang() == true) {
-            Panelmenu.add(btnGrafikInventarisRuang);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_inventaris_jenis() == true) {
-            Panelmenu.add(btnGrafikInventarisJenis);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_HAIs_pasienbangsal() == true) {
-            Panelmenu.add(btnGrafikHAIsPasienRuang);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_HAIs_pasienbulan() == true) {
-            Panelmenu.add(btnGrafikHAIsPasienBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_HAIs_laju_vap() == true) {
-            Panelmenu.add(btnGrafikHAIsLajuVAP);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_HAIs_laju_iad() == true) {
-            Panelmenu.add(btnGrafikHAIsLajuIAD);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_HAIs_laju_pleb() == true) {
-            Panelmenu.add(btnGrafikHAIsLajuPleb);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_HAIs_laju_isk() == true) {
-            Panelmenu.add(btnGrafikHAIsLajuISK);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_HAIs_laju_ilo() == true) {
-            Panelmenu.add(btnGrafikHAIsLajuILO);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_HAIs_laju_hap() == true) {
-            Panelmenu.add(btnGrafikHAIsLajuHAP);
-            jmlmenu++;
-        }
-
-        if (akses.getpenerimaan_obat_perbulan() == true) {
-            Panelmenu.add(btnGrafikPenerimaanObatPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_harian_hemodialisa() == true) {
-            Panelmenu.add(btnGrafikHemodialisaPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_bulanan_hemodialisa() == true) {
-            Panelmenu.add(btnGrafikHemodialisaPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_tahunan_hemodialisa() == true) {
-            Panelmenu.add(btnGrafikHemodialisaPerTahun);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_bulanan_meninggal() == true) {
-            Panelmenu.add(btnGrafikMeninggalPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_inventaris_kategori() == true) {
-            Panelmenu.add(btnGrafikInventarisKategori);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_inventaris_merk() == true) {
-            Panelmenu.add(btnGrafikInventarisMerk);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_inventaris_produsen() == true) {
-            Panelmenu.add(btnGrafikInventarisProdusen);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_porsidiet_pertanggal() == true) {
-            Panelmenu.add(btnGrafikPorsiDietPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_porsidiet_perbulan() == true) {
-            Panelmenu.add(btnGrafikPorsiDietPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_porsidiet_pertahun() == true) {
-            Panelmenu.add(btnGrafikPorsiDietPerTahun);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_porsidiet_perbangsal() == true) {
-            Panelmenu.add(btnGrafikPorsiDietPerRuang);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_perbaikan_inventaris_pertanggal() == true) {
-            Panelmenu.add(btnGrafikPerbaikanInventarisPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_perbaikan_inventaris_perbulan() == true) {
-            Panelmenu.add(btnGrafikPerbaikanInventarisPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_perbaikan_inventaris_pertahun() == true) {
-            Panelmenu.add(btnGrafikPerbaikanInventarisPerTahun);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_perbaikan_inventaris_perpelaksana_status() == true) {
-            Panelmenu.add(btnGrafikPerbaikanInventarisPerPelaksanaStatus);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_limbahb3cair_pertanggal() == true) {
-            Panelmenu.add(btnGrafikLimbahB3MedisCairPerTanggal);
-            jmlmenu++;
-        }
-
-        if (akses.getgrafik_limbahb3cair_perbulan() == true) {
-            Panelmenu.add(btnGrafikLimbahB3MedisCairPerBulan);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_indeks() == true) {
-            Panelmenu.add(btnSuratIndeks);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_map() == true) {
-            Panelmenu.add(btnSuratMap);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_almari() == true) {
-            Panelmenu.add(btnSuratAlmari);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_rak() == true) {
-            Panelmenu.add(btnSuratRak);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_ruang() == true) {
-            Panelmenu.add(btnSuratRuang);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_klasifikasi() == true) {
-            Panelmenu.add(btnSuratKlasifikasi);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_status() == true) {
-            Panelmenu.add(btnSuratStatus);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_sifat() == true) {
-            Panelmenu.add(btnSuratSifat);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_balas() == true) {
-            Panelmenu.add(btnSuratBalas);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_masuk() == true) {
-            Panelmenu.add(btnSuratMasuk);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_keluar() == true) {
-            Panelmenu.add(btnSuratKeluar);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_sakit() == true) {
-            Panelmenu.add(btnSuratSakit);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_sakit_pihak_2() == true) {
-            Panelmenu.add(btnSuratSakitPihak2);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_hamil() == true) {
-            Panelmenu.add(btnSuratHamil);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_cuti_hamil() == true) {
-            Panelmenu.add(btnSuratCutiHamil);
-            jmlmenu++;
-        }
-
-        if (akses.getskdp_bpjs() == true) {
-            Panelmenu.add(btnSKDPBPJS);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_bebas_narkoba() == true) {
-            Panelmenu.add(btnSuratBebasNarkoba);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_keterangan_covid() == true) {
-            Panelmenu.add(btnSuratKeteranganCovid);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_keterangan_rawat_inap() == true) {
-            Panelmenu.add(btnSuratKeteranganRawatInap);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_keterangan_sehat() == true) {
-            Panelmenu.add(btnSuratKeteranganSehat);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_bebas_tbc() == true) {
-            Panelmenu.add(btnSuratBebasTBC);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_buta_warna() == true) {
-            Panelmenu.add(btnSuratButaWarna);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_bebas_tato() == true) {
-            Panelmenu.add(btnSuratBebasTato);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_keterangan_layak_terbang() == true) {
-            Panelmenu.add(btnSuratKeteranganLayakTerbang);
-            jmlmenu++;
-        }
-        
-        if(akses.getsurat_keterangan_berobat()==true){
-            Panelmenu.add(btnSuratKeteranganBerobat);
-            jmlmenu++;
-        }
-        
-        if(akses.getsurat_kewaspadaan_kesehatan()==true){
-            Panelmenu.add(btnSuratKewaspadaanKesehatan);
-            jmlmenu++;
-        }
-
-        if (akses.getpengumuman_epasien() == true) {
-            Panelmenu.add(btnPengumumanEPasien);
-            jmlmenu++;
-        }
-
-        if (akses.gettemplate_persetujuan_penolakan_tindakan() == true) {
-            Panelmenu.add(btnTemplatePersetujuanPenolakanTindakan);
-            jmlmenu++;
-        }
-
-        if (akses.getpersetujuan_penolakan_tindakan() == true) {
-            Panelmenu.add(btnPersetujuanPenolakanTindakan);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_pulang_atas_permintaan_sendiri() == true) {
-            Panelmenu.add(btnPersetujuanPulangAtasPermintanSendiri);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_pernyataan_pasien_umum() == true) {
-            Panelmenu.add(btnPernyataanPasienUmum);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_persetujuan_umum() == true) {
-            Panelmenu.add(btnPersetujuanUmum);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_persetujuan_rawat_inap() == true) {
-            Panelmenu.add(btnPersetujuanRawatInap);
-            jmlmenu++;
-        }
-
-        if (akses.getpersetujuan_penundaan_pelayanan() == true) {
-            Panelmenu.add(btnPersetujuanPenundaanPelayanan);
-            jmlmenu++;
-        }
-
-        if (akses.getmaster_menolak_anjuran_medis() == true) {
-            Panelmenu.add(btnMasterMenolakAnjuranMedis);
-            jmlmenu++;
-        }
-
-        if (akses.getpenolakan_anjuran_medis() == true) {
-            Panelmenu.add(btnPenolakanAnjuranMedis);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_persetujuan_pemeriksaan_hiv() == true) {
-            Panelmenu.add(btnPersetujuanPemeriksaanHIV);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_pernyataan_memilih_dpjp() == true) {
-            Panelmenu.add(btnSuratPernyataanMemilihDPJP);
-            jmlmenu++;
-        }
-
-        if (akses.getserah_terima_anggota_tubuh_barang() == true) {
-            Panelmenu.add(btnSuratSerahTerimaBarangAnggotaTubuh);
-            jmlmenu++;
-        }
-
-        if (akses.getpermintaan_binrohtal() == true) {
-            Panelmenu.add(btnSuratPermintaanBinrohtal);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_permintaan_perlindungan_dari_kekerasan() == true) {
-            Panelmenu.add(btnSuratPermintaanPerlindunganDariKekerasan);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_permohonan_privasi() == true) {
-            Panelmenu.add(btnSuratPermohonanPrivasi);
-            jmlmenu++;
-        }
-
-        if (akses.getsurat_permintaan_second_opinion() == true) {
-            Panelmenu.add(btnSuratPermintaanSecondOpinion);
-            jmlmenu++;
-        }
-        
-        if(akses.getsurat_penolakan_resusitasi()==true){
-            Panelmenu.add(btnSuratPenolakanResusitasi);
-            jmlmenu++;
-        }
-
-        if (akses.getruang_perpustakaan() == true) {
-            Panelmenu.add(btnRuangPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getkategori_perpustakaan() == true) {
-            Panelmenu.add(btnKategoriPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getjenis_perpustakaan() == true) {
-            Panelmenu.add(btnJenisPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getpengarang_perpustakaan() == true) {
-            Panelmenu.add(btnPengarangPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getpenerbit_perpustakaan() == true) {
-            Panelmenu.add(btnPenerbitPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getkoleksi_perpustakaan() == true) {
-            Panelmenu.add(btnKoleksiPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getinventaris_perpustakaan() == true) {
-            Panelmenu.add(btnInventarisPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getset_peminjaman_perpustakaan() == true) {
-            Panelmenu.add(btnPengaturanPeminjamanPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getdenda_perpustakaan() == true) {
-            Panelmenu.add(btnDendaPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getanggota_perpustakaan() == true) {
-            Panelmenu.add(btnAnggotaPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getpeminjaman_perpustakaan() == true) {
-            Panelmenu.add(btnPeminjamanPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getbayar_denda_perpustakaan() == true) {
-            Panelmenu.add(btnBayarDendaPerpustakaan);
-            jmlmenu++;
-        }
-
-        if (akses.getebook_perpustakaan() == true) {
-            Panelmenu.add(btnEbookPerpustakaan);
-            jmlmenu++;
-        }
-
-        Panelmenu.add(btnPenelitianPerpustakaan);
+    {
+        Panelmenu.add(btnKirimServiceRequestRadiologiSatuSehat);
         jmlmenu++;
+    }
 
-        Panelmenu.add(btnCariEbook);
+    if(akses.getsatu_sehat_kirim_specimen_radiologi()==true)
+    {
+        Panelmenu.add(btnKirimSpecimenRadiologiSatuSehat);
         jmlmenu++;
+    }
 
-        Panelmenu.add(btnCariInventarisPerpustakaan);
+    if(akses.getsatu_sehat_kirim_observation_radiologi()==true)
+    {
+        Panelmenu.add(btnKirimObservationRadiologiSatuSehat);
         jmlmenu++;
+    }
+
+    if(akses.getsatu_sehat_kirim_diagnosticreport_radiologi()==true)
+    {
+        Panelmenu.add(btnKirimDiagnosticReportSatuSehat);
+        jmlmenu++;
+    }
+
+    if(akses.getsatu_sehat_kirim_servicerequest_lab()==true)
+    {
+        Panelmenu.add(btnKirimServiceRequestLabPKSatuSehat);
+        jmlmenu++;
+    }
+
+    if(akses.getsatu_sehat_kirim_specimen_lab()==true)
+    {
+        Panelmenu.add(btnKirimSpecimenLabPKSatuSehat);
+        jmlmenu++;
+    }
+
+    if(akses.getsatu_sehat_kirim_observation_lab()==true)
+    {
+        Panelmenu.add(btnKirimObservationLabPKSatuSehat);
+        jmlmenu++;
+    }
 
-        if (akses.getpcra_icra_jenis_aktivitas_proyek() == true) {
-            Panelmenu.add(btnPCRAICRAJenisAktivitasProyek);
-            jmlmenu++;
-        }
-
-        if (akses.getpcra_icra_lokasi_kelompok_risiko_area() == true) {
-            Panelmenu.add(btnPCRAICRALokasiKelompokRisiko);
-            jmlmenu++;
-        }
-
-        if (akses.getpcra_icra_kelas_risiko_pencegahan() == true) {
-            Panelmenu.add(btnPCRAICRAKelasRisikoPencegahan);
-            jmlmenu++;
-        }
-
-        if (akses.getpcra_icra_tindakan_pengendalian() == true) {
-            Panelmenu.add(btnPCRAICRATindakanPengendalian);
-            jmlmenu++;
-        }
-
-        if (akses.getpcra_icra_identifkasi_risiko_infeksi() == true) {
-            Panelmenu.add(btnPCRAICRAIdentifikasiRisikoInfeksi);
-            jmlmenu++;
-        }
-
-        if (akses.getpcra_icra_identifkasi_risiko_keselamatan() == true) {
-            Panelmenu.add(btnPCRAICRAIdentifikasiRisikoKeselamatan);
-            jmlmenu++;
-        }
-
-        if (akses.getpcra_icra_identifkasi_risiko_kebakaran() == true) {
-            Panelmenu.add(btnPCRAICRAIdentifikasiRisikoKebakaran);
-            jmlmenu++;
-        }
-
-        if (akses.getpcra_icra_identifkasi_risiko_utilitas() == true) {
-            Panelmenu.add(btnPCRAICRAIdentifikasiRisikoUtilitas);
-            jmlmenu++;
-        }
-
-        if (akses.getpcra_icra_persyaratan_harus_dipenuhi() == true) {
-            Panelmenu.add(btnPCRAICRAPersyaratanHarusDipenuhi);
-            jmlmenu++;
-        }
-
-        if (akses.getpcra_icra_pengkajian_risiko_prakonstruksi() == true) {
-            Panelmenu.add(btnPCRAICRAPengkajianRisikoPraKonstruksi);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_suplier() == true) {
-            Panelmenu.add(btnSuplierToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_jenis() == true) {
-            Panelmenu.add(btnJenisToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_barang() == true) {
-            Panelmenu.add(btnBarangToko);
-            jmlmenu++;
-        }
-
-        if (akses.getstok_opname_toko() == true) {
-            Panelmenu.add(btnStokOpnameToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_riwayat_barang() == true) {
-            Panelmenu.add(btnRiwayatBarangToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_pengajuan_barang() == true) {
-            Panelmenu.add(btnPengajuanBarangToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_surat_pemesanan() == true) {
-            Panelmenu.add(btnSuratPemesananToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_penerimaan_barang() == true) {
-            Panelmenu.add(btnPenerimaanBarangToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_pengadaan_barang() == true) {
-            Panelmenu.add(btnPengadaanBarangToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_member() == true) {
-            Panelmenu.add(btnMemberToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_penjualan() == true) {
-            Panelmenu.add(btnPenjualanToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_piutang() == true) {
-            Panelmenu.add(btnPiutangToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_retur_beli() == true) {
-            Panelmenu.add(btnReturKeSuplierToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_retur_jual() == true) {
-            Panelmenu.add(btnReturJualToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_retur_piutang() == true) {
-            Panelmenu.add(btnReturPiutangToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_hutang() == true) {
-            Panelmenu.add(btnHutangToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_bayar_pemesanan() == true) {
-            Panelmenu.add(btnBayarPesanToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_pendapatan_harian() == true) {
-            Panelmenu.add(btnPendapatanHarianToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_penjualan_harian() == true) {
-            Panelmenu.add(btnPenjualanHarianToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_piutang_harian() == true) {
-            Panelmenu.add(btnPiutangHarianToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_keuntungan_barang() == true) {
-            Panelmenu.add(btnKeuntunganBarangToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_bayar_piutang() == true) {
-            Panelmenu.add(btnBayarPiutangToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_sirkulasi() == true) {
-            Panelmenu.add(btnSirkulasiBarangToko);
-            jmlmenu++;
-        }
-
-        if (akses.gettoko_sirkulasi2() == true) {
-            Panelmenu.add(btnSirkulasiBarangToko2);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_pengeluaran_penerima_dankes() == true) {
-            Panelmenu.add(btnZISPengeluaranPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_penghasilan_penerima_dankes() == true) {
-            Panelmenu.add(btnZISPenghasilanPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_ukuran_rumah_penerima_dankes() == true) {
-            Panelmenu.add(btnZISUkuranRumahPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_dinding_rumah_penerima_dankes() == true) {
-            Panelmenu.add(btnZISDindingRumahPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_lantai_rumah_penerima_dankes() == true) {
-            Panelmenu.add(btnZISLantaiRumahPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_atap_rumah_penerima_dankes() == true) {
-            Panelmenu.add(btnZISAtapRumahPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_kepemilikan_rumah_penerima_dankes() == true) {
-            Panelmenu.add(btnZISKepemilikanRumahPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_kamar_mandi_penerima_dankes() == true) {
-            Panelmenu.add(btnZISKamarMandiPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_dapur_rumah_penerima_dankes() == true) {
-            Panelmenu.add(btnZISDapurRumahPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_kursi_rumah_penerima_dankes() == true) {
-            Panelmenu.add(btnZISKursiRumahPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_kategori_phbs_penerima_dankes() == true) {
-            Panelmenu.add(btnZISKategoriPHBSPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_elektronik_penerima_dankes() == true) {
-            Panelmenu.add(btnZISElektronikPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_ternak_penerima_dankes() == true) {
-            Panelmenu.add(btnZISTernakPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_jenis_simpanan_penerima_dankes() == true) {
-            Panelmenu.add(btnZISJenisSimpananPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_kategori_asnaf_penerima_dankes() == true) {
-            Panelmenu.add(btnZISKategoriAsnafPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getzis_patologis_penerima_dankes() == true) {
-            Panelmenu.add(btnZISPatologisPenerimaDankes);
-            jmlmenu++;
-        }
-
-        if (akses.getaplikasi() == true) {
-            Panelmenu.add(btnSetupAplikasi);
-            jmlmenu++;
-        }
-
-        if (akses.getadmin() == true) {
-            Panelmenu.add(btnAdmin);
-            jmlmenu++;
-        }
-
-        if (akses.getsetup_pjlab() == true) {
-            Panelmenu.add(btnSetPenjab);
-            jmlmenu++;
-        }
-
-        if (akses.getsetup_otolokasi() == true) {
-            Panelmenu.add(btnSetupOtoLokasi);
-            jmlmenu++;
-        }
-
-        if (akses.getsetup_jam_kamin() == true) {
-            Panelmenu.add(btnSetupJamInap);
-            jmlmenu++;
-        }
-
-        if (akses.getset_harga_kamar() == true) {
-            Panelmenu.add(btnSetHargaKamar);
-            jmlmenu++;
-        }
-
-        if (akses.getsetup_embalase() == true) {
-            Panelmenu.add(btnSetupEmbalase);
-            jmlmenu++;
-        }
-
-        if (akses.getuser() == true) {
-            Panelmenu.add(btnUser);
-            jmlmenu++;
-        }
-
-        if (akses.gete_eksekutif() == true) {
-            Panelmenu.add(btnEEksekutif);
-            jmlmenu++;
-        }
-
-        if (akses.gettracer_login() == true) {
-            Panelmenu.add(btnTracker);
-            jmlmenu++;
-        }
+    if(akses.getsatu_sehat_kirim_diagnosticreport_lab()==true)
+    {
+        Panelmenu.add(btnKirimDiagnosticReportLabPKSatuSehat);
+        jmlmenu++;
+    }
 
-        if (akses.getvakum() == true) {
-            Panelmenu.add(btnVakum);
-            jmlmenu++;
-        }
+    if(akses.getsatu_sehat_kirim_servicerequest_labmb()==true)
+    {
+        Panelmenu.add(btnKirimServiceRequestLabMBSatuSehat);
+        jmlmenu++;
+    }
 
-        if (akses.getdisplay() == true) {
-            Panelmenu.add(btnDisplay);
-            jmlmenu++;
-        }
+    if(akses.getsatu_sehat_kirim_specimen_labmb()==true)
+    {
+        Panelmenu.add(btnKirimSpecimenLabMBSatuSehat);
+        jmlmenu++;
+    }
 
-        if (akses.getdisplay_apotek() == true) {
-            Panelmenu.add(btnDisplayApotek);
-            jmlmenu++;
-        }
+    if(akses.getsatu_sehat_kirim_observation_labmb()==true)
+    {
+        Panelmenu.add(btnKirimObservationLabMBSatuSehat);
+        jmlmenu++;
+    }
 
-        if (akses.getset_harga_obat() == true) {
-            Panelmenu.add(btnSetupHarga);
-            jmlmenu++;
-        }
+    if(akses.getsatu_sehat_kirim_diagnosticreport_labmb()==true)
+    {
+        Panelmenu.add(btnKirimDiagnosticReportLabMBSatuSehat);
+        jmlmenu++;
+    }
 
-        if (akses.getset_harga_obat_ralan() == true) {
-            Panelmenu.add(btnSetObatRalan);
-            jmlmenu++;
-        }
+    if(akses.getsatu_sehat_kirim_careplan()==true)
+    {
+        Panelmenu.add(btnKirimCarePlanSatuSehat);
+        jmlmenu++;
+    }
 
-        if (akses.getset_harga_obat_ranap() == true) {
-            Panelmenu.add(btnSetObatRanap);
-            jmlmenu++;
-        }
+    if(akses.getreferensi_poli_mobilejknfktp()==true)
+    {
+        Panelmenu.add(btnReferensiPoliMobileJKNFKTP);
+        jmlmenu++;
+    }
 
-        if (akses.getset_penggunaan_tarif() == true) {
-            Panelmenu.add(btnSetupTarif);
-            jmlmenu++;
-        }
+    if(akses.getreferensi_dokter_mobilejknfktp()==true)
+    {
+        Panelmenu.add(btnReferensiDokterMobileJKNFKTP);
+        jmlmenu++;
+    }
 
-        if (akses.getset_oto_ralan() == true) {
-            Panelmenu.add(btnSetOtoRalan);
-            jmlmenu++;
-        }
+    if(akses.getduta_parkir_rekap_keluar()==true)
+    {
+        Panelmenu.add(btnRekapKeluarDutaParking);
+        jmlmenu++;
+    }
 
-        if (akses.getbiaya_harian() == true) {
-            Panelmenu.add(btnSetBiayaHarian);
-            jmlmenu++;
-        }
+    if(akses.getperusahaan_pasien()==true)
+    {
+        Panelmenu.add(btnPerusahaan);
+        jmlmenu++;
+    }
 
-        if (akses.getbiaya_masuk_sekali() == true) {
-            Panelmenu.add(btnSetBiayaMasukSekali);
-            jmlmenu++;
-        }
+    if(akses.getsuku_bangsa()==true)
+    {
+        Panelmenu.add(btnSuku);
+        jmlmenu++;
+    }
 
-        if (akses.getset_no_rm() == true) {
-            Panelmenu.add(btnSetupRM);
-            jmlmenu++;
-        }
+    if(akses.getbahasa_pasien()==true)
+    {
+        Panelmenu.add(btnBahasa);
+        jmlmenu++;
+    }
 
-        if (akses.getset_nota() == true) {
-            Panelmenu.add(btnSetupNota);
+    if(tampilkantni.equals("Yes"))
+    {
+        if (akses.getgolongan_tni() == true) {
+            Panelmenu.add(btnGolonganTNI);
             jmlmenu++;
         }
 
-        if (akses.getclosing_kasir() == true) {
-            Panelmenu.add(btnClosingKasir);
+        if (akses.getsatuan_tni() == true) {
+            Panelmenu.add(btnSatuanTNI);
             jmlmenu++;
         }
 
-        if (akses.getketerlambatan_presensi() == true) {
-            Panelmenu.add(btnKeterlambatanPresensi);
+        if (akses.getjabatan_tni() == true) {
+            Panelmenu.add(btnJabatanTNI);
             jmlmenu++;
         }
 
-        if (akses.getset_input_parsial() == true) {
-            Panelmenu.add(btnSetInputParsial);
+        if (akses.getpangkat_tni() == true) {
+            Panelmenu.add(btnPangkatTNI);
             jmlmenu++;
         }
 
-        if (akses.getpassword_asuransi() == true) {
-            Panelmenu.add(btnPasswordAsuransi);
+        if (akses.getgolongan_polri() == true) {
+            Panelmenu.add(btnGolonganPolri);
             jmlmenu++;
         }
 
-        if (akses.gettoko_set_harga() == true) {
-            Panelmenu.add(btnSetHargaToko);
+        if (akses.getsatuan_polri() == true) {
+            Panelmenu.add(btnSatuanPolri);
             jmlmenu++;
         }
 
-        if (akses.getjam_diet_pasien() == true) {
-            Panelmenu.add(btnJamDietPasien);
+        if (akses.getjabatan_polri() == true) {
+            Panelmenu.add(btnJabatanPolri);
             jmlmenu++;
         }
 
-        if (akses.getruang_ok() == true) {
-            Panelmenu.add(btnRuangOperasi);
+        if (akses.getpangkat_polri() == true) {
+            Panelmenu.add(btnPangkatPolri);
             jmlmenu++;
         }
     }
+
+    if(akses.getcacat_fisik()==true)
+    {
+        Panelmenu.add(btnCacatFisik);
+        jmlmenu++;
+    }
+
+    if(akses.getpasien()==true)
+    {
+        Panelmenu.add(btnPasien);
+        jmlmenu++;
+    }
+
+    if(akses.getkelahiran_bayi()==true)
+    {
+        Panelmenu.add(btnLahir);
+        jmlmenu++;
+    }
+
+    if(akses.getcatatan_pasien()==true)
+    {
+        Panelmenu.add(btnCatatanPasien);
+        jmlmenu++;
+    }
+
+    if(akses.getpasien_meninggal()==true)
+    {
+        Panelmenu.add(btnPasienMati);
+        jmlmenu++;
+    }
+
+    if(akses.getdiagnosa_pasien()==true)
+    {
+        Panelmenu.add(btnDiagnosa);
+        jmlmenu++;
+    }
+
+    if(akses.getinsiden_keselamatan()==true)
+    {
+        Panelmenu.add(btnInsidenKeselamatan);
+        jmlmenu++;
+    }
+
+    if(akses.getdata_HAIs()==true)
+    {
+        Panelmenu.add(btnDataHAIs);
+        jmlmenu++;
+    }
+
+    if(akses.getklasifikasi_pasien_ranap()==true)
+    {
+        Panelmenu.add(btnKlasifikasiPasienRanap);
+        jmlmenu++;
+    }
+
+    if(akses.getsoap_perawatan()==true)
+    {
+        Panelmenu.add(btnSOAPPerawatan);
+        jmlmenu++;
+    }
+
+    if(tampilkantni.equals("Yes"))
+    {
+        if (akses.getsoap_ralan_polri() == true) {
+            Panelmenu.add(btnSOAPRalanAnggotaPolri);
+            jmlmenu++;
+        }
+
+        if (akses.getsoap_ranap_polri() == true) {
+            Panelmenu.add(btnSOAPRanapAnggotaPolri);
+            jmlmenu++;
+        }
+
+        if (akses.getsoap_ralan_tni() == true) {
+            Panelmenu.add(btnSOAPRalanAnggotaTNI);
+            jmlmenu++;
+        }
+
+        if (akses.getsoap_ranap_tni() == true) {
+            Panelmenu.add(btnSOAPRanapAnggotaTNI);
+            jmlmenu++;
+        }
+    }
+
+    if(akses.getriwayat_kamar_pasien()==true)
+    {
+        Panelmenu.add(btnRiwayatKamarPasien);
+        jmlmenu++;
+    }
+
+    if(akses.getinsiden_keselamatan_pasien()==true)
+    {
+        Panelmenu.add(btnInsidenKeselamatanPasien);
+        jmlmenu++;
+    }
+
+    if(akses.getpeminjaman_berkas()==true)
+    {
+        Panelmenu.add(btnSirkulasiBerkas);
+        jmlmenu++;
+    }
+
+    if(akses.getresume_pasien()==true)
+    {
+        Panelmenu.add(btnResume);
+        jmlmenu++;
+    }
+
+    if(akses.getretensi_rm()==true)
+    {
+        Panelmenu.add(btnRetensiRM);
+        jmlmenu++;
+    }
+
+    if(akses.getmutasi_berkas()==true)
+    {
+        Panelmenu.add(btnMutasiBerkas);
+        jmlmenu++;
+    }
+
+    if(akses.getberkas_digital_perawatan()==true)
+    {
+        Panelmenu.add(btnBerkasDigitalPerawatan);
+        jmlmenu++;
+    }
+
+    if(akses.getpengaduan_pasien()==true)
+    {
+        Panelmenu.add(btnPengaduan);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_triase_pemeriksaan()==true)
+    {
+        Panelmenu.add(btnMasterTriasePemeriksaan);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_triase_macamkasus()==true)
+    {
+        Panelmenu.add(btnMasterTriaseMacamKasus);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_triase_skala1()==true)
+    {
+        Panelmenu.add(btnMasterTriaseSkala1);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_triase_skala2()==true)
+    {
+        Panelmenu.add(btnMasterTriaseSkala2);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_triase_skala3()==true)
+    {
+        Panelmenu.add(btnMasterTriaseSkala3);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_triase_skala4()==true)
+    {
+        Panelmenu.add(btnMasterTriaseSkala4);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_triase_skala5()==true)
+    {
+        Panelmenu.add(btnMasterTriaseSkala5);
+        jmlmenu++;
+    }
+
+    if(akses.getdata_triase_igd()==true)
+    {
+        Panelmenu.add(btnDataTriaseIGD);
+        jmlmenu++;
+    }
+
+    if(akses.getdata_resume_pasien()==true)
+    {
+        Panelmenu.add(btnResumePasien);
+        jmlmenu++;
+        Panelmenu.add(btnResumePasienRanap);
+        jmlmenu++;
+    }
+
+    if(akses.getskrining_gizi()==true)
+    {
+        Panelmenu.add(btnSkriningGiziLanjut);
+        jmlmenu++;
+    }
+
+    if(akses.getasuhan_gizi()==true)
+    {
+        Panelmenu.add(btnAsuhanGizi);
+        jmlmenu++;
+    }
+
+    if(akses.getmonitoring_asuhan_gizi()==true)
+    {
+        Panelmenu.add(btnMonitoringAsuhanGizi);
+        jmlmenu++;
+    }
+
+    if(akses.getcatatan_adime_gizi()==true)
+    {
+        Panelmenu.add(btnCatatanADIMEGizi);
+        jmlmenu++;
+    }
+
+    if(akses.getskrining_nutrisi_dewasa()==true)
+    {
+        Panelmenu.add(btnSkriningNutrisiDewasa);
+        jmlmenu++;
+    }
+
+    if(akses.getskrining_nutrisi_lansia()==true)
+    {
+        Panelmenu.add(btnSkriningNutrisiLansia);
+        jmlmenu++;
+    }
+
+    if(akses.getskrining_nutrisi_anak()==true)
+    {
+        Panelmenu.add(btnSkriningNutrisiAnak);
+        jmlmenu++;
+    }
+
+    if(akses.getskrining_gizi_kehamilan()==true)
+    {
+        Panelmenu.add(btnSkriningGiziKehamilan);
+        jmlmenu++;
+    }
+
+    if(akses.gettemplate_hasil_radiologi()==true)
+    {
+        Panelmenu.add(btnMasterTemplateHasilRadiologi);
+        jmlmenu++;
+    }
+
+    if(akses.gettemplate_laporan_operasi()==true)
+    {
+        Panelmenu.add(btnMasterTemplateLaporanOperasi);
+        jmlmenu++;
+    }
+
+    if(akses.gettemplate_pemeriksaan()==true)
+    {
+        Panelmenu.add(btnMasterTemplatePemeriksaanDokter);
+        jmlmenu++;
+    }
+
+    if(akses.gettemplate_pelaksanaan_informasi_edukasi()==true)
+    {
+        Panelmenu.add(btnMasterTemplateInformasiEdukasi);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_masalah_keperawatan()==true)
+    {
+        Panelmenu.add(btnMasterMasalahKeperawatan);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_rencana_keperawatan()==true)
+    {
+        Panelmenu.add(btnMasterRencanaKeperawatan);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_masalah_keperawatan_gigi()==true)
+    {
+        Panelmenu.add(btnMasterMasalahKeperawatanGigi);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_rencana_keperawatan_gigi()==true)
+    {
+        Panelmenu.add(btnMasterRencanaKeperawatanGigi);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_masalah_keperawatan_anak()==true)
+    {
+        Panelmenu.add(btnMasterMasalahKeperawatanAnak);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_rencana_keperawatan_anak()==true)
+    {
+        Panelmenu.add(btnMasterRencanaKeperawatanAnak);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_masalah_keperawatan_mata()==true)
+    {
+        Panelmenu.add(btnMasterMasalahKeperawatanMata);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_rencana_keperawatan_mata()==true)
+    {
+        Panelmenu.add(btnMasterRencanaKeperawatanMata);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_masalah_keperawatan_igd()==true)
+    {
+        Panelmenu.add(btnMasterMasalahKeperawatanIGD);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_rencana_keperawatan_igd()==true)
+    {
+        Panelmenu.add(btnMasterRencanaKeperawatanIGD);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_masalah_keperawatan_psikiatri()==true)
+    {
+        Panelmenu.add(btnMasterMasalahKeperawatanPsikiatri);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_rencana_keperawatan_psikiatri()==true)
+    {
+        Panelmenu.add(btnMasterRencanaKeperawatanPsikiatri);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_masalah_keperawatan_geriatri()==true)
+    {
+        Panelmenu.add(btnMasterMasalahKeperawatanGeriatri);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_rencana_keperawatan_geriatri()==true)
+    {
+        Panelmenu.add(btnMasterRencanaKeperawatanGeriatri);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_masalah_keperawatan_neonatus()==true)
+    {
+        Panelmenu.add(btnMasterMasalahKeperawatanNeonatus);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_rencana_keperawatan_neonatus()==true)
+    {
+        Panelmenu.add(btnMasterRencanaKeperawatanNeonatus);
+        jmlmenu++;
+    }
+
+    if(akses.getmaster_imunisasi()==true)
+    {
+        Panelmenu.add(btnMasterImunisasi);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_keperawatan_ralan()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalKeperawatanRalan);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_keperawatan_ranap()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalKeperawatanRanap);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_keperawatan_igd()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalKeperawatanIGD);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_keperawatan_gigi()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalKeperawatanGigi);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_keperawatan_kebidanan()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalKeperawatanKebidanan);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_keperawatan_ranapkebidanan()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalKeperawatanKebidananRanap);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_keperawatan_anak()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalRalanBayi);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_keperawatan_ranap_bayi()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalKeperawatanRanapBayiAnak);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_keperawatan_psikiatri()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalKeperawatanRalanPsikiatri);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_keperawatan_ralan_geriatri()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalKeperawatanRalanGeriatri);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_keperawatan_ranap_neonatus()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalKeperawatanRanapNeonatus);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_medis_igd()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisIGD);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_medis_ralan_gawat_darurat_psikiatri()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisRalanIGDPsikiatri);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_medis_ralan()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisRalan);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_medis_ranap()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisRanap);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_medis_ranap_neonatus()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisRanapNeonatus);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_bayi_baru_lahir()==true)
+    {
+        Panelmenu.add(btnPenilaianBayiBaruLahir);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_medis_ralan_anak()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisRalanBayi);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_medis_ralan_kebidanan()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisRalanKandungan);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_medis_ranap_kebidanan()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisRanapKandungan);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_medis_ralan_jantung()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisRalanJantung);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_medis_ranap_jantung()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisRanapJantung);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_medis_ralan_urologi()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisRalanUrologi);
+        jmlmenu++;
+    }
+
+    if(akses.gethasil_pemeriksaan_usg()==true)
+    {
+        Panelmenu.add(btnHasilPemeriksaanUSG);
+        jmlmenu++;
+    }
+
+    if(akses.gethasil_usg_urologi()==true)
+    {
+        Panelmenu.add(btnHasilUSGUrologi);
+        jmlmenu++;
+    }
+
+    if(akses.gethasil_usg_gynecologi()==true)
+    {
+        Panelmenu.add(btnHasilUSGGynecologi);
+        jmlmenu++;
+    }
+
+    if(akses.gethasil_usg_neonatus()==true)
+    {
+        Panelmenu.add(btnHasilUSGNeonatus);
+        jmlmenu++;
+    }
+
+    if(akses.getpenilaian_awal_medis_ralan_tht()==true)
+    {
+        Panelmenu.add(btnPenilaianAwalMedisRalanTHT);
+        jmlmenu++;
+    }
+
+    Panelmenu.add(btnPenilaianAwalMedisRalanPsikiatri);jmlmenu++;
+    }
+
+    if(akses.getpenilaian_medis_ranap_psikiatrik()==true){Panelmenu.add(btnPenilaianAwalMedisRanapPsikiatri);jmlmenu++;}
+
+    if(akses.getpenilaian_awal_medis_ralan_penyakit_dalam()==true){Panelmenu.add(btnPenilaianAwalMedisRalanPenyakitDalam);jmlmenu++;}
+
+    if(akses.getpenilaian_awal_medis_ralan_mata()==true){Panelmenu.add(btnPenilaianAwalMedisRalanMata);jmlmenu++;}
+
+    if(akses.getpenilaian_awal_medis_ralan_neurologi()==true){Panelmenu.add(btnPenilaianAwalMedisRalanNeurologi);jmlmenu++;}
+
+    if(akses.getpenilaian_awal_medis_ralan_orthopedi()==true){Panelmenu.add(btnPenilaianAwalMedisRalanOrthopedi);jmlmenu++;}
+
+    if(akses.getpenilaian_awal_medis_ralan_bedah()==true){Panelmenu.add(btnPenilaianAwalMedisRalanBedah);jmlmenu++;}
+
+    if(akses.getpenilaian_awal_medis_ralan_bedah_mulut()==true){Panelmenu.add(btnPenilaianAwalMedisRalanBedahMulut);jmlmenu++;}
+
+    if(akses.getpenilaian_awal_medis_ralan_geriatri()==true){Panelmenu.add(btnPenilaianAwalMedisRalanGeriatri);jmlmenu++;}
+
+    if(akses.getpenilaian_awal_medis_ralan_kulit_kelamin()==true){Panelmenu.add(btnPenilaianAwalMedisRalanKulitKelamin);jmlmenu++;}
+
+    if(akses.getpenilaian_awal_medis_ralan_paru()==true){Panelmenu.add(btnPenilaianAwalMedisRalanParu);jmlmenu++;}
+
+    if(akses.getpenilaian_medis_ralan_rehab_medik()==true){Panelmenu.add(btnPenilaianAwalMedisRalanRehabMedik);jmlmenu++;}
+
+    if(akses.getpenilaian_medis_ralan_hemodialisa()==true){Panelmenu.add(btnPenilaianAwalMedisHemodialisa);jmlmenu++;}
+
+    if(akses.gethasil_pemeriksaan_ekg()==true){Panelmenu.add(btnHasilPemeriksaanEKG);jmlmenu++;}
+
+    if(akses.gethasil_pemeriksaan_treadmill()==true){Panelmenu.add(btnHasilPemeriksaanTreadmill);jmlmenu++;}
+
+    if(akses.gethasil_pemeriksaan_slit_lamp()==true){Panelmenu.add(btnHasilPemeriksaanSlitLamp);jmlmenu++;}
+
+    if(akses.gethasil_pemeriksaan_oct()==true){Panelmenu.add(btnHasilPemeriksaanOCT);jmlmenu++;}
+
+    if(akses.gethasil_pemeriksaan_echo()==true){Panelmenu.add(btnHasilPemeriksaanECHO);jmlmenu++;}
+
+    if(akses.gethasil_pemeriksaan_echo_pediatrik()==true){Panelmenu.add(btnHasilPemeriksaanECHOPediatrik);jmlmenu++;}
+
+    if(akses.gethasil_endoskopi_faring_laring()==true){Panelmenu.add(btnHasilEndoskopiFaringLaring);jmlmenu++;}
+
+    if(akses.gethasil_endoskopi_hidung()==true){Panelmenu.add(btnHasilEndoskopiHidung);jmlmenu++;}
+
+    if(akses.gethasil_endoskopi_telinga()==true){Panelmenu.add(btnHasilEndoskopiTelinga);jmlmenu++;}
+
+    if(akses.getpenilaian_tambahan_pasien_geriatri()==true){Panelmenu.add(btnPenilaianTambahanGeriatri);jmlmenu++;}
+
+    if(akses.getpenilaian_tambahan_bunuh_diri()==true){Panelmenu.add(btnPenilaianTambahanBunuhDiri);jmlmenu++;}
+
+    if(akses.getpenilaian_tambahan_perilaku_kekerasan()==true){Panelmenu.add(btnPenilaianTambahanPerilakuKekerasan);jmlmenu++;}
+
+    if(akses.getpenilaian_tambahan_beresiko_melarikan_diri()==true){Panelmenu.add(btnPenilaianTambahanMelarikanDiri);jmlmenu++;}
+
+    if(akses.getpenilaian_pasien_terminal()==true){Panelmenu.add(btnPenilaianPasienTerminal);jmlmenu++;}
+
+    if(akses.getpenilaian_korban_kekerasan()==true){Panelmenu.add(btnPenilaianKorbanKekerasan);jmlmenu++;}
+
+    if(akses.getpenilaian_pasien_penyakit_menular()==true){Panelmenu.add(btnPenilaianPasienPenyakitMenular);jmlmenu++;}
+
+    if(akses.getpenilaian_pasien_imunitas_rendah()==true){Panelmenu.add(btnPenilaianPasienImunitasRendah);jmlmenu++;}
+
+    if(akses.getpenilaian_derajat_dehidrasi()==true){Panelmenu.add(btnPenilaianDerajatDehidrasi);jmlmenu++;}
+
+    if(akses.getpenilaian_pasien_keracunan()==true){Panelmenu.add(btnPenilaianPasienKeracunan);jmlmenu++;}
+
+    if(akses.getpenilaian_level_kecemasan_ranap_anak()==true){Panelmenu.add(btnPenilaianLevelKecemasanRanapAnak);jmlmenu++;}
+
+    if(akses.getcatatan_observasi_igd()==true){Panelmenu.add(btnCatatanObservasiIGD);jmlmenu++;}
+
+    if(akses.getcatatan_observasi_ranap()==true){Panelmenu.add(btnCatatanObservasiRanap);jmlmenu++;}
+
+    if(akses.getcatatan_observasi_ranap_kebidanan()==true){Panelmenu.add(btnCatatanObservasiRanapKebidanan);jmlmenu++;}
+
+    if(akses.getcatatan_observasi_ranap_postpartum()==true){Panelmenu.add(btnCatatanObservasiRanapPostPartum);jmlmenu++;}
+
+    if(akses.getcatatan_observasi_ruang_ok()==true){Panelmenu.add(btnCatatanObservasiRuangOperasi);jmlmenu++;}
+
+    if(akses.getcatatan_observasi_bayi()==true){Panelmenu.add(btnCatatanObservasiBayi);jmlmenu++;}
+
+    if(akses.getcatatan_observasi_chbp()==true){Panelmenu.add(btnCatatanObservasiCHBP);jmlmenu++;}
+
+    if(akses.getcatatan_observasi_induksi_persalinan()==true){Panelmenu.add(btnCatatanObservasiInduksiPersalinan);jmlmenu++;}
+
+    if(akses.getcatatan_observasi_restrain_nonfarma()==true){Panelmenu.add(btnCatatanObservasiRestrainNonFramakologi);jmlmenu++;}
+
+    if(akses.getcatatan_observasi_ventilator()==true){Panelmenu.add(btnCatatanObservasiVentilator);jmlmenu++;}
+
+    if(akses.getcatatan_observasi_hemodialisa()==true){Panelmenu.add(btnCatatanObservasiHemodialisa);jmlmenu++;}
+
+    if(akses.getbalance_cairan()==true){Panelmenu.add(btnCatatanKeseimbanganCairan);jmlmenu++;}
+
+    if(akses.getcatatan_cairan_hemodialisa()==true){Panelmenu.add(btnCatatanCairanHemodialisa);jmlmenu++;}
+
+    if(akses.getfollow_up_dbd()==true){Panelmenu.add(btnDataFollowUpDBD);jmlmenu++;}
+
+    if(akses.getcatatan_keperawatan_ralan()==true){Panelmenu.add(btnCatatanKeperawatanRalan);jmlmenu++;}
+
+    if(akses.getcatatan_keperawatan_ranap()==true){Panelmenu.add(btnCatatanKeperawatanRanap);jmlmenu++;}
+
+    if(akses.getcatatan_persalinan()==true){Panelmenu.add(btnCatatanPersalinan);jmlmenu++;}
+
+    if(akses.getmonitoring_reaksi_tranfusi()==true){Panelmenu.add(btnMonitoringReaksiTranfusi);jmlmenu++;}
+
+    if(akses.getpemantauan_pews_anak()==true){Panelmenu.add(btnPemantauanPEWSAnak);jmlmenu++;}
+
+    if(akses.getpemantauan_pews_dewasa()==true){Panelmenu.add(btnPemantauanPEWSDewasa);jmlmenu++;}
+
+    if(akses.getpemantauan_meows_obstetri()==true){Panelmenu.add(btnPemantauanMEOWS);jmlmenu++;}
+
+    if(akses.getpemantauan_ews_neonatus()==true){Panelmenu.add(btnPemantauanEWSNeonatus);jmlmenu++;}
+
+    if(akses.gethemodialisa()==true){Panelmenu.add(btnHemodialisa);jmlmenu++;}
+
+    if(akses.getpenilaian_fisioterapi()==true){Panelmenu.add(btnFisioterapi);jmlmenu++;}
+
+    if(akses.getpenilaian_terapi_wicara()==true){Panelmenu.add(btnPenilaianTerapiWicara);jmlmenu++;}
+
+    if(akses.getpenatalaksanaan_terapi_okupasi()==true){Panelmenu.add(btnPenatalaksanaanTerapiOkupasi);jmlmenu++;}
+
+    if(akses.getpenilaian_psikologi()==true){Panelmenu.add(btnPenilaianPsikologi);jmlmenu++;}
+
+    if(akses.getpenilaian_psikologi_klinis()==true){Panelmenu.add(btnPenilaianPsikologiKlinis);jmlmenu++;}
+
+    if(akses.getpenilaian_pre_induksi()==true){Panelmenu.add(btnPenilaianPreInduksi);jmlmenu++;}
+
+    if(akses.getchecklist_pre_operasi()==true){Panelmenu.add(btnChecklistPreOperasi);jmlmenu++;}
+
+    if(akses.getsignin_sebelum_anestesi()==true){Panelmenu.add(btnSignInSebelumAnestesi);jmlmenu++;}
+
+    if(akses.gettimeout_sebelum_insisi()==true){Panelmenu.add(btnTimeOutSebelumInsisi);jmlmenu++;}
+
+    if(akses.getsignout_sebelum_menutup_luka()==true){Panelmenu.add(btnSignOutSebelumMenutupLuka);jmlmenu++;}
+
+    if(akses.getchecklist_post_operasi()==true){Panelmenu.add(btnChecklistPostOperasi);jmlmenu++;}
+
+    if(akses.getpenilaian_pre_operasi()==true){Panelmenu.add(btnPenilaianPreOperasi);jmlmenu++;}
+
+    if(akses.getpenilaian_pre_anestesi()==true){Panelmenu.add(btnPenilaianPreAnastesi);jmlmenu++;}
+
+    if(akses.getchecklist_kesiapan_anestesi()==true){Panelmenu.add(btnChecklistKesiapanAnestesi);jmlmenu++;}
+
+    if(akses.getcatatan_anestesi_sedasi()==true){Panelmenu.add(btnCatatanAnastesiSedasi);jmlmenu++;}
+
+    if(akses.getskor_aldrette_pasca_anestesi()==true){Panelmenu.add(btnSkorAldrettePascaAnestesi);jmlmenu++;}
+
+    if(akses.getskor_steward_pasca_anestesi()==true){Panelmenu.add(btnSkorStewardPascaAnestesi);jmlmenu++;}
+
+    if(akses.getskor_bromage_pasca_anestesi()==true){Panelmenu.add(btnSkorBromagePascaAnestesi);jmlmenu++;}
+
+    if(akses.getcatatan_pengkajian_paska_operasi()==true){Panelmenu.add(btnCatatanPengkajianPaskaOperasi);jmlmenu++;}
+
+    if(akses.getchecklist_kriteria_masuk_hcu()==true){Panelmenu.add(btnChecklistKriteriaMasukHCU);jmlmenu++;}
+
+    if(akses.getchecklist_kriteria_keluar_hcu()==true){Panelmenu.add(btnChecklistKriteriaKeluarHCU);jmlmenu++;}
+
+    if(akses.getkriteria_masuk_nicu()==true){Panelmenu.add(btnChecklistKriteriaMasukNICU);jmlmenu++;}
+
+    if(akses.getkriteria_keluar_nicu()==true){Panelmenu.add(btnChecklistKriteriaKeluarNICU);jmlmenu++;}
+
+    if(akses.getkriteria_masuk_picu()==true){Panelmenu.add(btnChecklistKriteriaMasukPICU);jmlmenu++;}
+
+    if(akses.getkriteria_keluar_picu()==true){Panelmenu.add(btnChecklistKriteriaKeluarPICU);jmlmenu++;}
+
+    if(akses.getchecklist_kriteria_masuk_icu()==true){Panelmenu.add(btnChecklistKriteriaMasukICU);jmlmenu++;}
+
+    if(akses.getchecklist_kriteria_keluar_icu()==true){Panelmenu.add(btnChecklistKriteriaKeluarICU);jmlmenu++;}
+
+    if(akses.getchecklist_kriteria_masuk_isolasi()==true){Panelmenu.add(btnChecklistKriteriaMasukIsolasi);jmlmenu++;}
+
+    if(akses.getperencanaan_pemulangan()==true){Panelmenu.add(btnPerencanaanPemulangan);jmlmenu++;}
+
+    if(akses.getpenilaian_lanjutan_resiko_jatuh_dewasa()==true){Panelmenu.add(btnPenilaianRisikoJatuhDewasa);jmlmenu++;}
+
+    if(akses.getpenilaian_lanjutan_resiko_jatuh_anak()==true){Panelmenu.add(btnPenilaianRisikoJatuhAnak);jmlmenu++;}
+
+    if(akses.getpenilaian_lanjutan_resiko_jatuh_lansia()==true){Panelmenu.add(btnPenilaianRisikoJatuhLansia);jmlmenu++;}
+
+    if(akses.getpenilaian_lanjutan_resiko_jatuh_geriatri()==true){Panelmenu.add(btnPenilaianRisikoJatuhGeriatri);jmlmenu++;}
+
+    if(akses.getpenilaian_risiko_jatuh_neonatus()==true){Panelmenu.add(btnPenilaianRisikoJatuhNeonatus);jmlmenu++;}
+
+    if(akses.getpenilaian_lanjutan_resiko_jatuh_psikiatri()==true){Panelmenu.add(btnPenilaianRisikoJatuhPsikiatri);jmlmenu++;}
+
+    if(akses.getpenilaian_lanjutan_skrining_fungsional()==true){Panelmenu.add(btnPenilaianLanjutanSkriningFungsional);jmlmenu++;}
+
+    if(akses.getpenilaian_ulang_nyeri()==true){Panelmenu.add(btnPenilaianUlangNyeri);jmlmenu++;}
+
+    if(akses.getintervensi_nyeri_farmakologi()==true){Panelmenu.add(btnIntervensiNyeriFarmakologi);jmlmenu++;}
+
+    if(akses.getintervensi_nyeri_nonfarmakologi()==true){Panelmenu.add(btnIntervensiNyeriNonFarmakologi);jmlmenu++;}
+
+    if(akses.getpenilaian_risiko_dekubitus()==true){Panelmenu.add(btnPenilaianRisikoDekubitus);jmlmenu++;}
+
+    if(akses.getlayanan_kedokteran_fisik_rehabilitasi()==true){Panelmenu.add(btnLayananKedokteranFisikRehabilitasi);jmlmenu++;}
+
+    if(akses.getlayanan_program_kfr()==true){Panelmenu.add(btnLayananProgramKFR);jmlmenu++;}
+
+    if(akses.getuji_fungsi_kfr()==true){Panelmenu.add(btnUjiFungsiKFR);jmlmenu++;}
+
+    if(akses.gethasil_tindakan_eswl()==true){Panelmenu.add(btnDokumentasiTindakanESWL);jmlmenu++;}
+
+    if(akses.getmaster_kesimpulan_anjuran_mcu()==true){Panelmenu.add(btnMasterKesimpulanAnjuranMCU);jmlmenu++;}
+
+    if(akses.getpenilaian_mcu()==true){Panelmenu.add(btnPenilaianMCU);jmlmenu++;}
+
+    if(akses.getkonseling_farmasi()==true){Panelmenu.add(btnKonselingFarmasi);jmlmenu++;}
+
+    if(akses.getpelayanan_informasi_obat()==true){Panelmenu.add(btnPelayananInformasiObat);jmlmenu++;}
+
+    if(akses.getkonsultasi_medik()==true){Panelmenu.add(btnKonsultasiMedik);jmlmenu++;}
+
+    if(akses.getkonsultasi_perawat()==true){Panelmenu.add(btnKonsultasiPerawat);jmlmenu++;}
+
+    if(akses.gettransfer_pasien_antar_ruang()==true){Panelmenu.add(btnTransferPasienAntarRuang);jmlmenu++;}
+
+    if(akses.getpengkajian_restrain()==true){Panelmenu.add(btnPengkajianRestrain);jmlmenu++;}
+
+    if(akses.getcatatan_cek_gds()==true){Panelmenu.add(btnCatatanCekGDS);jmlmenu++;}
+
+    if(akses.getrekonsiliasi_obat()==true){Panelmenu.add(btnRekonsiliasiObat);jmlmenu++;}
+
+    if(akses.getchecklist_pemberian_fibrinolitik()==true){Panelmenu.add(btnChecklistPemberianFibrinolitik);jmlmenu++;}
+
+    if(akses.getmpp_skrining()==true){Panelmenu.add(btnSkriningManagerPelayananPasien);jmlmenu++;Panelmenu.add(btnSkriningMPPFormA);jmlmenu++;Panelmenu.add(btnSkriningMPPFormB);jmlmenu++;}
+
+    if(akses.getedukasi_pasien_keluarga_rj()==true){Panelmenu.add(btnEdukasiPasienKeluargaRJ);jmlmenu++;}
+
+    if(akses.getpelaksanaan_informasi_edukasi()==true){Panelmenu.add(btnPelaksanaanInformasiEdukasi);jmlmenu++;}
+
+    if(akses.getskrining_perilaku_merokok_sekolah_remaja()==true){Panelmenu.add(btnSkriningMerokokUsiaSekolah);jmlmenu++;}
+
+    if(akses.getskrining_kekerasan_pada_perempuan()==true){Panelmenu.add(btnSkriningKekerasanPadaPerempuan);jmlmenu++;}
+
+    if(akses.getskrining_obesitas()==true){Panelmenu.add(btnSkriningObesitas);jmlmenu++;}
+
+    if(akses.getskrining_risiko_kanker_payudara()==true){Panelmenu.add(btnSkriningRisikoKankerPayudara);jmlmenu++;}
+
+    if(akses.getskrining_risiko_kanker_paru()==true){Panelmenu.add(btnSkriningRisikoKankerParu);jmlmenu++;}
+
+    if(akses.getskrining_risiko_kanker_serviks()==true){Panelmenu.add(btnSkriningRisikoKankerServiks);jmlmenu++;}
+
+    if(akses.getskrining_kesehatan_gigi_mulut_remaja()==true){Panelmenu.add(btnSkriningKesehatanGigiMulutRemaja);jmlmenu++;}
+
+    if(akses.getskrining_kesehatan_gigi_mulut_balita()==true){Panelmenu.add(btnSkriningKesehatanGigiMulutBalita);jmlmenu++;}
+
+    if(akses.getskrining_kesehatan_gigi_mulut_lansia()==true){Panelmenu.add(btnSkriningKesehatanGigiMulutLansia);jmlmenu++;}
+
+    if(akses.getskrining_kesehatan_gigi_mulut_dewasa()==true){Panelmenu.add(btnSkriningKesehatanGigiMulutDewasa);jmlmenu++;}
+
+    if(akses.getskrining_anemia()==true){Panelmenu.add(btnSkriningAnemia);jmlmenu++;}
+
+    if(akses.getskrining_hipertensi()==true){Panelmenu.add(btnSkriningHipertensi);jmlmenu++;}
+
+    if(akses.getskrining_kesehatan_penglihatan()==true){Panelmenu.add(btnSkriningKesehatanPenglihatan);jmlmenu++;}
+
+    if(akses.getskrining_indra_pendengaran()==true){Panelmenu.add(btnSkriningIndraPendengaran);jmlmenu++;}
+
+    if(akses.getskrining_tbc()==true){Panelmenu.add(btnSkriningTBC);jmlmenu++;}
+
+    if(akses.getskrining_puma()==true){Panelmenu.add(btnSkriningPUMA);jmlmenu++;}
+
+    if(akses.getskrining_adiksi_nikotin()==true){Panelmenu.add(btnSkriningAdiksiNikotin);jmlmenu++;}
+
+    if(akses.getskrining_thalassemia()==true){Panelmenu.add(btnSkriningThalassemia);jmlmenu++;}
+
+    if(akses.getskrining_instrumen_sdq()==true){Panelmenu.add(btnSkriningInstrumenSDQ);jmlmenu++;}
+
+    if(akses.getskrining_instrumen_srq()==true){Panelmenu.add(btnSkriningInstrumenSRQ);jmlmenu++;}
+
+    if(akses.getskrining_instrumen_acrs()==true){Panelmenu.add(btnSkriningInstrumenACRS);jmlmenu++;}
+
+    if(akses.getskrining_instrumen_mental_emosional()==true){Panelmenu.add(btnSkriningInstrumenMentalEmosional);jmlmenu++;}
+
+    if(akses.getskrining_instrumen_amt()==true){Panelmenu.add(btnSkriningInstrumenAMT);jmlmenu++;}
+
+    if(akses.getskrining_instrumen_esat()==true){Panelmenu.add(btnSkriningInstrumenESAT);jmlmenu++;}
+
+    if(akses.getskrining_pneumonia_severity_index()==true){Panelmenu.add(btnSkriningPneumoniaSeverityIndex);jmlmenu++;}
+
+    if(akses.getskrining_curb65()==true){Panelmenu.add(btnSkriningCURB65);jmlmenu++;}
+
+    if(akses.getskrining_kanker_kolorektal()==true){Panelmenu.add(btnSkriningKankerKolorektal);jmlmenu++;}
+
+    if(akses.getskrining_diabetes_melitus()==true){Panelmenu.add(btnSkriningDiabetesMelitus);jmlmenu++;}
+
+    if(akses.getskrining_frailty_syndrome()==true){Panelmenu.add(btnSkriningFrailtySyndrome);jmlmenu++;}
+
+    if(akses.getlaporan_tindakan()==true){Panelmenu.add(btnLaporanTindakan);jmlmenu++;}
+
+    if(akses.getpengambilan_utd2()==true){Panelmenu.add(btnPengambilanUTD2);jmlmenu++;}
+
+    if(akses.getutd_medis_rusak()==true){Panelmenu.add(btnUTDMedisRusak);jmlmenu++;}
+
+    if(akses.getpengambilan_penunjang_utd2()==true){Panelmenu.add(btnPengambilanPenunjangUTD2);jmlmenu++;}
+
+    if(akses.getutd_penunjang_rusak()==true){Panelmenu.add(btnUTDPenunjangRusak);jmlmenu++;}
+
+    if(akses.getutd_komponen_darah()==true){Panelmenu.add(btnUTDKomponenDarah);jmlmenu++;}
+
+    if(akses.getutd_pendonor()==true){Panelmenu.add(btnPendonorDarah);jmlmenu++;}
+
+    if(akses.getutd_donor()==true){Panelmenu.add(btnUTDDonorDarah);jmlmenu++;}
+
+    if(akses.getutd_cekal_darah()==true){Panelmenu.add(btnUTDCekalDarah);jmlmenu++;}
+
+    if(akses.getutd_pemisahan_darah()==true){Panelmenu.add(btnUTDPemisahanDarah);jmlmenu++;}
+
+    if(akses.getutd_stok_darah()==true){Panelmenu.add(btnUTDStokDarah);jmlmenu++;}
+
+    if(akses.getutd_penyerahan_darah()==true){Panelmenu.add(btnUTDPenyerahanDarah);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_poli()==true){Panelmenu.add(btnGrafikKunjunganPoli);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_perdokter()==true){Panelmenu.add(btnGrafikKunjunganPerDokter);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_perpekerjaan()==true){Panelmenu.add(btnGrafikKunjunganPerPekerjaan);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_perpendidikan()==true){Panelmenu.add(btnGrafikKunjunganPerPendidikan);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_pertahun()==true){Panelmenu.add(btnGrafikKunjunganPerTahun);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_perbulan()==true){Panelmenu.add(btnGrafikKunjunganPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_pertanggal()==true){Panelmenu.add(btnGrafikKunjunganPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_demografi()==true){Panelmenu.add(btnGrafikDemografiRegistrasi);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_statusdaftartahun()==true){Panelmenu.add(btnGrafikStatusRegPerTahun);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_statusdaftartahun2()==true){Panelmenu.add(btnGrafikStatusRegPerTahun2);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_statusdaftarbulan()==true){Panelmenu.add(btnGrafikStatusRegPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_statusdaftarbulan2()==true){Panelmenu.add(btnGrafikStatusRegPerBulan2);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_statusdaftartanggal()==true){Panelmenu.add(btnGrafikStatusRegPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_statusdaftartanggal2()==true){Panelmenu.add(btnGrafikStatusRegPerTanggal2);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_statusbataltahun()==true){Panelmenu.add(btnGrafikStatusRegBatalPerTahun);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_statusbatalbulan()==true){Panelmenu.add(btnGrafikStatusRegBatalPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_statusbataltanggal()==true){Panelmenu.add(btnGrafikStatusRegBatalPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_percarabayar()==true){Panelmenu.add(btnGrafikKunjunganPerCarabayar);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_ranaptahun()==true){Panelmenu.add(btnGrafikKunjunganRanapPerTahun);jmlmenu++;}
+
+    if(akses.getgrafik_lab_ralantahun()==true){Panelmenu.add(btnGrafikLabRalanPerTahun);jmlmenu++;}
+
+    if(akses.getgrafik_rad_ralantahun()==true){Panelmenu.add(btnGrafikRadRalanPerTahun);jmlmenu++;}
+
+    if(akses.getgrafik_per_perujuk()==true){Panelmenu.add(btnGrafikPerPerujuk);jmlmenu++;}
+
+    if(akses.getgrafik_lab_ralanbulan()==true){Panelmenu.add(btnGrafikLabRalanPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_rad_ralanbulan()==true){Panelmenu.add(btnGrafikRadRalanPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_lab_ralanhari()==true){Panelmenu.add(btnGrafikLabRalanPerHari);jmlmenu++;}
+
+    if(akses.getgrafik_rad_ralanhari()==true){Panelmenu.add(btnGrafikRadRalanPerHari);jmlmenu++;}
+
+    if(akses.getgrafik_ikp_pertahun()==true){Panelmenu.add(btnGrafikKejadianIKPPerTahun);jmlmenu++;}
+
+    if(akses.getgrafik_ikp_perbulan()==true){Panelmenu.add(btnGrafikKejadianIKPPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_ikp_pertanggal()==true){Panelmenu.add(btnGrafikKejadianIKPPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_ikp_jenis()==true){Panelmenu.add(btnGrafikKejadianIKPPerJenis);jmlmenu++;}
+
+    if(akses.getgrafik_ikp_dampak()==true){Panelmenu.add(btnGrafikKejadianIKPPerDampak);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_per_agama()==true){Panelmenu.add(btnGrafikKunjunganPerAgama);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_per_umur()==true){Panelmenu.add(btnGrafikKunjunganPerUmur);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_suku()==true){Panelmenu.add(btnGrafikKunjunganPerSuku);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_bahasa()==true){Panelmenu.add(btnGrafikKunjunganPerBahasa);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_per_cacat()==true){Panelmenu.add(btnGrafikKunjunganPerCacat);jmlmenu++;}
+
+    if(akses.getgrafik_tb_periodelaporan()==true){Panelmenu.add(btnGrafikTBLaporanPeriode);jmlmenu++;}
+
+    if(akses.getgrafik_tb_rujukan()==true){Panelmenu.add(btnGrafikTBRujukan);jmlmenu++;}
+
+    if(akses.getgrafik_tb_riwayat()==true){Panelmenu.add(btnGrafikTBRiwayat);jmlmenu++;}
+
+    if(akses.getgrafik_tb_tipediagnosis()==true){Panelmenu.add(btnGrafikTBTipeDiagnosis);jmlmenu++;}
+
+    if(akses.getgrafik_tb_statushiv()==true){Panelmenu.add(btnGrafikTBSTatusHIV);jmlmenu++;}
+
+    if(akses.getgrafik_tb_skoringanak()==true){Panelmenu.add(btnGrafikTBSkoringAnak);jmlmenu++;}
+
+    if(akses.getgrafik_tb_konfirmasiskoring5()==true){Panelmenu.add(btnGrafikTBKonfirmasiSkoring5);jmlmenu++;}
+
+    if(akses.getgrafik_tb_konfirmasiskoring6()==true){Panelmenu.add(btnGrafikTBKonfirmasiSkoring6);jmlmenu++;}
+
+    if(akses.getgrafik_tb_sumberobat()==true){Panelmenu.add(btnGrafikTBSumberObat);jmlmenu++;}
+
+    if(akses.getgrafik_tb_hasilakhirpengobatan()==true){Panelmenu.add(btnGrafikTBHasilAkhirPengobatan);jmlmenu++;}
+
+    if(akses.getgrafik_tb_hasilteshiv()==true){Panelmenu.add(btnGrafikTBHasilTesHIV);jmlmenu++;}
+
+    if(akses.getgrafik_air_pdam_pertanggal()==true){Panelmenu.add(btnGrafikPemakaianAirPDAMPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_air_pdam_perbulan()==true){Panelmenu.add(btnGrafikPemakaianAirPDAMPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_air_tanah_pertanggal()==true){Panelmenu.add(btnGrafikPemakaianAirTanahPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_air_tanah_perbulan()==true){Panelmenu.add(btnGrafikPemakaianAirTanahPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_limbahb3_pertanggal()==true){Panelmenu.add(btnGrafikLimbahB3MedisPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_limbahb3_perbulan()==true){Panelmenu.add(btnGrafikLimbahB3MedisPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_limbahdomestik_pertanggal()==true){Panelmenu.add(btnGrafikLimbahDomestikPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_limbahdomestik_perbulan()==true){Panelmenu.add(btnGrafikLimbahDomestikPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_k3_pertahun()==true){Panelmenu.add(btnGrafikK3PerTahun);jmlmenu++;}
+
+    if(akses.getgrafik_k3_perbulan()==true){Panelmenu.add(btnGrafikK3PerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_k3_pertanggal()==true){Panelmenu.add(btnGrafikK3PerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_k3_perjeniscidera()==true){Panelmenu.add(btnGrafikK3PerJenisCidera);jmlmenu++;}
+
+    if(akses.getgrafik_k3_perpenyebab()==true){Panelmenu.add(btnGrafikK3PerPenyebab);jmlmenu++;}
+
+    if(akses.getgrafik_k3_perjenisluka()==true){Panelmenu.add(btnGrafikK3PerJenisLuka);jmlmenu++;}
+
+    if(akses.getgrafik_k3_lokasikejadian()==true){Panelmenu.add(btnGrafikK3PerLokasiKejadian);jmlmenu++;}
+
+    if(akses.getgrafik_k3_dampakcidera()==true){Panelmenu.add(btnGrafikK3PerDampakCidera);jmlmenu++;}
+
+    if(akses.getgrafik_k3_perjenispekerjaan()==true){Panelmenu.add(btnGrafikK3PerJenisPekerjaan);jmlmenu++;}
+
+    if(akses.getgrafik_k3_perbagiantubuh()==true){Panelmenu.add(btnGrafikK3PerBagianTubuh);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_ranapbulan()==true){Panelmenu.add(btnGrafikKunjunganRanapBulan);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_ranaptanggal()==true){Panelmenu.add(btnGrafikKunjunganRanapTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_kunjungan_ranap_peruang()==true){Panelmenu.add(btnGrafikKunjunganRanapRuang);jmlmenu++;}
+
+    if(akses.getgrafik_jenjang_jabatanpegawai()==true){Panelmenu.add(btnGrafikJenjangJabatanPegawai);jmlmenu++;}
+
+    if(akses.getgrafik_bidangpegawai()==true){Panelmenu.add(btnGrafikBidangPegawai);jmlmenu++;}
+
+    if(akses.getgrafik_departemenpegawai()==true){Panelmenu.add(btnGrafikDepartemenPegawai);jmlmenu++;}
+
+    if(akses.getgrafik_pendidikanpegawai()==true){Panelmenu.add(btnGrafikPendidikanPegawai);jmlmenu++;}
+
+    if(akses.getgrafik_sttswppegawai()==true){Panelmenu.add(btnGrafikStatusWPPegawai);jmlmenu++;}
+
+    if(akses.getgrafik_sttskerjapegawai()==true){Panelmenu.add(btnGrafikStatusKerjaPegawai);jmlmenu++;}
+
+    if(akses.getgrafik_sttspulangranap()==true){Panelmenu.add(btnGrafikStatusPulangRanap);jmlmenu++;}
+
+    if(akses.getitem_apotek_jenis()==true){Panelmenu.add(btnGrafikItemApotekPerJenis);jmlmenu++;}
+
+    if(akses.getitem_apotek_kategori()==true){Panelmenu.add(btnGrafikItemApotekPerKategori);jmlmenu++;}
+
+    if(akses.getitem_apotek_golongan()==true){Panelmenu.add(btnGrafikItemApotekPerGolongan);jmlmenu++;}
+
+    if(akses.getitem_apotek_industrifarmasi()==true){Panelmenu.add(btnGrafikItemApotekPerIndustriFarmasi);jmlmenu++;}
+
+    if(akses.getgrafik_pengajuan_aset_urgensi()==true){Panelmenu.add(btnGrafikPengajuanAsetUrgensi);jmlmenu++;}
+
+    if(akses.getgrafik_pengajuan_aset_status()==true){Panelmenu.add(btnGrafikPengajuanAsetStatus);jmlmenu++;}
+
+    if(akses.getgrafik_pengajuan_aset_departemen()==true){Panelmenu.add(btnGrafikPengajuanAsetDepartemen);jmlmenu++;}
+
+    if(akses.getgrafik_kelompok_jabatanpegawai()==true){Panelmenu.add(btnGrafikKelompokJabatanPegawai);jmlmenu++;}
+
+    if(akses.getgrafik_resiko_kerjapegawai()==true){Panelmenu.add(btnGrafikRisikoKerjaPegawai);jmlmenu++;}
+
+    if(akses.getgrafik_emergency_indexpegawai()==true){Panelmenu.add(btnGrafikEmergencyIndexPegawai);jmlmenu++;}
+
+    if(akses.getgrafik_inventaris_ruang()==true){Panelmenu.add(btnGrafikInventarisRuang);jmlmenu++;}
+
+    if(akses.getgrafik_inventaris_jenis()==true){Panelmenu.add(btnGrafikInventarisJenis);jmlmenu++;}
+
+    if(akses.getgrafik_HAIs_pasienbangsal()==true){Panelmenu.add(btnGrafikHAIsPasienRuang);jmlmenu++;}
+
+    if(akses.getgrafik_HAIs_pasienbulan()==true){Panelmenu.add(btnGrafikHAIsPasienBulan);jmlmenu++;}
+
+    if(akses.getgrafik_HAIs_laju_vap()==true){Panelmenu.add(btnGrafikHAIsLajuVAP);jmlmenu++;}
+
+    if(akses.getgrafik_HAIs_laju_iad()==true){Panelmenu.add(btnGrafikHAIsLajuIAD);jmlmenu++;}
+
+    if(akses.getgrafik_HAIs_laju_pleb()==true){Panelmenu.add(btnGrafikHAIsLajuPleb);jmlmenu++;}
+
+    if(akses.getgrafik_HAIs_laju_isk()==true){Panelmenu.add(btnGrafikHAIsLajuISK);jmlmenu++;}
+
+    if(akses.getgrafik_HAIs_laju_ilo()==true){Panelmenu.add(btnGrafikHAIsLajuILO);jmlmenu++;}
+
+    if(akses.getgrafik_HAIs_laju_hap()==true){Panelmenu.add(btnGrafikHAIsLajuHAP);jmlmenu++;}
+
+    if(akses.getpenerimaan_obat_perbulan()==true){Panelmenu.add(btnGrafikPenerimaanObatPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_harian_hemodialisa()==true){Panelmenu.add(btnGrafikHemodialisaPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_bulanan_hemodialisa()==true){Panelmenu.add(btnGrafikHemodialisaPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_tahunan_hemodialisa()==true){Panelmenu.add(btnGrafikHemodialisaPerTahun);jmlmenu++;}
+
+    if(akses.getgrafik_bulanan_meninggal()==true){Panelmenu.add(btnGrafikMeninggalPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_inventaris_kategori()==true){Panelmenu.add(btnGrafikInventarisKategori);jmlmenu++;}
+
+    if(akses.getgrafik_inventaris_merk()==true){Panelmenu.add(btnGrafikInventarisMerk);jmlmenu++;}
+
+    if(akses.getgrafik_inventaris_produsen()==true){Panelmenu.add(btnGrafikInventarisProdusen);jmlmenu++;}
+
+    if(akses.getgrafik_porsidiet_pertanggal()==true){Panelmenu.add(btnGrafikPorsiDietPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_porsidiet_perbulan()==true){Panelmenu.add(btnGrafikPorsiDietPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_porsidiet_pertahun()==true){Panelmenu.add(btnGrafikPorsiDietPerTahun);jmlmenu++;}
+
+    if(akses.getgrafik_porsidiet_perbangsal()==true){Panelmenu.add(btnGrafikPorsiDietPerRuang);jmlmenu++;}
+
+    if(akses.getgrafik_perbaikan_inventaris_pertanggal()==true){Panelmenu.add(btnGrafikPerbaikanInventarisPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_perbaikan_inventaris_perbulan()==true){Panelmenu.add(btnGrafikPerbaikanInventarisPerBulan);jmlmenu++;}
+
+    if(akses.getgrafik_perbaikan_inventaris_pertahun()==true){Panelmenu.add(btnGrafikPerbaikanInventarisPerTahun);jmlmenu++;}
+
+    if(akses.getgrafik_perbaikan_inventaris_perpelaksana_status()==true){Panelmenu.add(btnGrafikPerbaikanInventarisPerPelaksanaStatus);jmlmenu++;}
+
+    if(akses.getgrafik_limbahb3cair_pertanggal()==true){Panelmenu.add(btnGrafikLimbahB3MedisCairPerTanggal);jmlmenu++;}
+
+    if(akses.getgrafik_limbahb3cair_perbulan()==true){Panelmenu.add(btnGrafikLimbahB3MedisCairPerBulan);jmlmenu++;}
+
+    if(akses.getsurat_indeks()==true){Panelmenu.add(btnSuratIndeks);jmlmenu++;}
+
+    if(akses.getsurat_map()==true){Panelmenu.add(btnSuratMap);jmlmenu++;}
+
+    if(akses.getsurat_almari()==true){Panelmenu.add(btnSuratAlmari);jmlmenu++;}
+
+    if(akses.getsurat_rak()==true){Panelmenu.add(btnSuratRak);jmlmenu++;}
+
+    if(akses.getsurat_ruang()==true){Panelmenu.add(btnSuratRuang);jmlmenu++;}
+
+    if(akses.getsurat_klasifikasi()==true){Panelmenu.add(btnSuratKlasifikasi);jmlmenu++;}
+
+    if(akses.getsurat_status()==true){Panelmenu.add(btnSuratStatus);jmlmenu++;}
+
+    if(akses.getsurat_sifat()==true){Panelmenu.add(btnSuratSifat);jmlmenu++;}
+
+    if(akses.getsurat_balas()==true){Panelmenu.add(btnSuratBalas);jmlmenu++;}
+
+    if(akses.getsurat_masuk()==true){Panelmenu.add(btnSuratMasuk);jmlmenu++;}
+
+    if(akses.getsurat_keluar()==true){Panelmenu.add(btnSuratKeluar);jmlmenu++;}
+
+    if(akses.getsurat_sakit()==true){Panelmenu.add(btnSuratSakit);jmlmenu++;}
+
+    if(akses.getsurat_sakit_pihak_2()==true){Panelmenu.add(btnSuratSakitPihak2);jmlmenu++;}
+
+    if(akses.getsurat_hamil()==true){Panelmenu.add(btnSuratHamil);jmlmenu++;}
+
+    if(akses.getsurat_cuti_hamil()==true){Panelmenu.add(btnSuratCutiHamil);jmlmenu++;}
+
+    if(akses.getskdp_bpjs()==true){Panelmenu.add(btnSKDPBPJS);jmlmenu++;}
+
+    if(akses.getsurat_bebas_narkoba()==true){Panelmenu.add(btnSuratBebasNarkoba);jmlmenu++;}
+
+    if(akses.getsurat_keterangan_covid()==true){Panelmenu.add(btnSuratKeteranganCovid);jmlmenu++;}
+
+    if(akses.getsurat_keterangan_rawat_inap()==true){Panelmenu.add(btnSuratKeteranganRawatInap);jmlmenu++;}
+
+    if(akses.getsurat_keterangan_sehat()==true){Panelmenu.add(btnSuratKeteranganSehat);jmlmenu++;}
+
+    if(akses.getsurat_bebas_tbc()==true){Panelmenu.add(btnSuratBebasTBC);jmlmenu++;}
+
+    if(akses.getsurat_buta_warna()==true){Panelmenu.add(btnSuratButaWarna);jmlmenu++;}
+
+    if(akses.getsurat_bebas_tato()==true){Panelmenu.add(btnSuratBebasTato);jmlmenu++;}
+
+    if(akses.getsurat_keterangan_layak_terbang()==true){Panelmenu.add(btnSuratKeteranganLayakTerbang);jmlmenu++;}
+
+    if(akses.getsurat_keterangan_berobat()==true){Panelmenu.add(btnSuratKeteranganBerobat);jmlmenu++;}
+
+    if(akses.getsurat_kewaspadaan_kesehatan()==true){Panelmenu.add(btnSuratKewaspadaanKesehatan);jmlmenu++;}
+
+    if(akses.getpengumuman_epasien()==true){Panelmenu.add(btnPengumumanEPasien);jmlmenu++;}
+
+    if(akses.gettemplate_persetujuan_penolakan_tindakan()==true){Panelmenu.add(btnTemplatePersetujuanPenolakanTindakan);jmlmenu++;}
+
+    if(akses.getpersetujuan_penolakan_tindakan()==true){Panelmenu.add(btnPersetujuanPenolakanTindakan);jmlmenu++;}
+
+    if(akses.getsurat_pulang_atas_permintaan_sendiri()==true){Panelmenu.add(btnPersetujuanPulangAtasPermintanSendiri);jmlmenu++;}
+
+    if(akses.getsurat_pernyataan_pasien_umum()==true){Panelmenu.add(btnPernyataanPasienUmum);jmlmenu++;}
+
+    if(akses.getsurat_persetujuan_umum()==true){Panelmenu.add(btnPersetujuanUmum);jmlmenu++;}
+
+    if(akses.getsurat_persetujuan_rawat_inap()==true){Panelmenu.add(btnPersetujuanRawatInap);jmlmenu++;}
+
+    if(akses.getpersetujuan_penundaan_pelayanan()==true){Panelmenu.add(btnPersetujuanPenundaanPelayanan);jmlmenu++;}
+
+    if(akses.getmaster_menolak_anjuran_medis()==true){Panelmenu.add(btnMasterMenolakAnjuranMedis);jmlmenu++;}
+
+    if(akses.getpenolakan_anjuran_medis()==true){Panelmenu.add(btnPenolakanAnjuranMedis);jmlmenu++;}
+
+    if(akses.getsurat_persetujuan_pemeriksaan_hiv()==true){Panelmenu.add(btnPersetujuanPemeriksaanHIV);jmlmenu++;}
+
+    if(akses.getsurat_pernyataan_memilih_dpjp()==true){Panelmenu.add(btnSuratPernyataanMemilihDPJP);jmlmenu++;}
+
+    if(akses.getserah_terima_anggota_tubuh_barang()==true){Panelmenu.add(btnSuratSerahTerimaBarangAnggotaTubuh);jmlmenu++;}
+
+    if(akses.getpermintaan_binrohtal()==true){Panelmenu.add(btnSuratPermintaanBinrohtal);jmlmenu++;}
+
+    if(akses.getsurat_permintaan_perlindungan_dari_kekerasan()==true){Panelmenu.add(btnSuratPermintaanPerlindunganDariKekerasan);jmlmenu++;}
+
+    if(akses.getsurat_permohonan_privasi()==true){Panelmenu.add(btnSuratPermohonanPrivasi);jmlmenu++;}
+
+    if(akses.getsurat_permintaan_second_opinion()==true){Panelmenu.add(btnSuratPermintaanSecondOpinion);jmlmenu++;}
+
+    if(akses.getsurat_penolakan_resusitasi()==true){Panelmenu.add(btnSuratPenolakanResusitasi);jmlmenu++;}
+
+    if(akses.getsurat_pengajuan_cuti_pasien()==true){Panelmenu.add(btnSuratPengajuanCutiPerawatan);jmlmenu++;}
+
+    if(akses.getruang_perpustakaan()==true){Panelmenu.add(btnRuangPerpustakaan);jmlmenu++;}
+
+    if(akses.getkategori_perpustakaan()==true){Panelmenu.add(btnKategoriPerpustakaan);jmlmenu++;}
+
+    if(akses.getjenis_perpustakaan()==true){Panelmenu.add(btnJenisPerpustakaan);jmlmenu++;}
+
+    if(akses.getpengarang_perpustakaan()==true){Panelmenu.add(btnPengarangPerpustakaan);jmlmenu++;}
+
+    if(akses.getpenerbit_perpustakaan()==true){Panelmenu.add(btnPenerbitPerpustakaan);jmlmenu++;}
+
+    if(akses.getkoleksi_perpustakaan()==true){Panelmenu.add(btnKoleksiPerpustakaan);jmlmenu++;}
+
+    if(akses.getinventaris_perpustakaan()==true){Panelmenu.add(btnInventarisPerpustakaan);jmlmenu++;}
+
+    if(akses.getset_peminjaman_perpustakaan()==true){Panelmenu.add(btnPengaturanPeminjamanPerpustakaan);jmlmenu++;}
+
+    if(akses.getdenda_perpustakaan()==true){Panelmenu.add(btnDendaPerpustakaan);jmlmenu++;}
+
+    if(akses.getanggota_perpustakaan()==true){Panelmenu.add(btnAnggotaPerpustakaan);jmlmenu++;}
+
+    if(akses.getpeminjaman_perpustakaan()==true){Panelmenu.add(btnPeminjamanPerpustakaan);jmlmenu++;}
+
+    if(akses.getbayar_denda_perpustakaan()==true){Panelmenu.add(btnBayarDendaPerpustakaan);jmlmenu++;}
+
+    if(akses.getebook_perpustakaan()==true){Panelmenu.add(btnEbookPerpustakaan);jmlmenu++;}
+
+    Panelmenu.add(btnPenelitianPerpustakaan);jmlmenu++;
+
+    Panelmenu.add(btnCariEbook);jmlmenu++;
+
+    Panelmenu.add(btnCariInventarisPerpustakaan);jmlmenu++;
+
+    if(akses.getpcra_icra_jenis_aktivitas_proyek()==true){Panelmenu.add(btnPCRAICRAJenisAktivitasProyek);jmlmenu++;}
+
+    if(akses.getpcra_icra_lokasi_kelompok_risiko_area()==true){Panelmenu.add(btnPCRAICRALokasiKelompokRisiko);jmlmenu++;}
+
+    if(akses.getpcra_icra_kelas_risiko_pencegahan()==true){Panelmenu.add(btnPCRAICRAKelasRisikoPencegahan);jmlmenu++;}
+
+    if(akses.getpcra_icra_tindakan_pengendalian()==true){Panelmenu.add(btnPCRAICRATindakanPengendalian);jmlmenu++;}
+
+    if(akses.getpcra_icra_identifkasi_risiko_infeksi()==true){Panelmenu.add(btnPCRAICRAIdentifikasiRisikoInfeksi);jmlmenu++;}
+
+    if(akses.getpcra_icra_identifkasi_risiko_keselamatan()==true){Panelmenu.add(btnPCRAICRAIdentifikasiRisikoKeselamatan);jmlmenu++;}
+
+    if(akses.getpcra_icra_identifkasi_risiko_kebakaran()==true){Panelmenu.add(btnPCRAICRAIdentifikasiRisikoKebakaran);jmlmenu++;}
+
+    if(akses.getpcra_icra_identifkasi_risiko_utilitas()==true){Panelmenu.add(btnPCRAICRAIdentifikasiRisikoUtilitas);jmlmenu++;}
+
+    if(akses.getpcra_icra_persyaratan_harus_dipenuhi()==true){Panelmenu.add(btnPCRAICRAPersyaratanHarusDipenuhi);jmlmenu++;}
+
+    if(akses.getpcra_icra_pengkajian_risiko_prakonstruksi()==true){Panelmenu.add(btnPCRAICRAPengkajianRisikoPraKonstruksi);jmlmenu++;}
+
+    if(akses.gettoko_suplier()==true){Panelmenu.add(btnSuplierToko);jmlmenu++;}
+
+    if(akses.gettoko_jenis()==true){Panelmenu.add(btnJenisToko);jmlmenu++;}
+
+    if(akses.gettoko_barang()==true){Panelmenu.add(btnBarangToko);jmlmenu++;}
+
+    if(akses.getstok_opname_toko()==true){Panelmenu.add(btnStokOpnameToko);jmlmenu++;}
+
+    if(akses.gettoko_riwayat_barang()==true){Panelmenu.add(btnRiwayatBarangToko);jmlmenu++;}
+
+    if(akses.gettoko_pengajuan_barang()==true){Panelmenu.add(btnPengajuanBarangToko);jmlmenu++;}
+
+    if(akses.gettoko_surat_pemesanan()==true){Panelmenu.add(btnSuratPemesananToko);jmlmenu++;}
+
+    if(akses.gettoko_penerimaan_barang()==true){Panelmenu.add(btnPenerimaanBarangToko);jmlmenu++;}
+
+    if(akses.gettoko_pengadaan_barang()==true){Panelmenu.add(btnPengadaanBarangToko);jmlmenu++;}
+
+    if(akses.gettoko_member()==true){Panelmenu.add(btnMemberToko);jmlmenu++;}
+
+    if(akses.gettoko_penjualan()==true){Panelmenu.add(btnPenjualanToko);jmlmenu++;}
+
+    if(akses.gettoko_piutang()==true){Panelmenu.add(btnPiutangToko);jmlmenu++;}
+
+    if(akses.gettoko_retur_beli()==true){Panelmenu.add(btnReturKeSuplierToko);jmlmenu++;}
+
+    if(akses.gettoko_retur_jual()==true){Panelmenu.add(btnReturJualToko);jmlmenu++;}
+
+    if(akses.gettoko_retur_piutang()==true){Panelmenu.add(btnReturPiutangToko);jmlmenu++;}
+
+    if(akses.gettoko_hutang()==true){Panelmenu.add(btnHutangToko);jmlmenu++;}
+
+    if(akses.gettoko_bayar_pemesanan()==true){Panelmenu.add(btnBayarPesanToko);jmlmenu++;}
+
+    if(akses.gettoko_pendapatan_harian()==true){Panelmenu.add(btnPendapatanHarianToko);jmlmenu++;}
+
+    if(akses.gettoko_penjualan_harian()==true){Panelmenu.add(btnPenjualanHarianToko);jmlmenu++;}
+
+    if(akses.gettoko_piutang_harian()==true){Panelmenu.add(btnPiutangHarianToko);jmlmenu++;}
+
+    if(akses.gettoko_keuntungan_barang()==true){Panelmenu.add(btnKeuntunganBarangToko);jmlmenu++;}
+
+    if(akses.gettoko_bayar_piutang()==true){Panelmenu.add(btnBayarPiutangToko);jmlmenu++;}
+
+    if(akses.gettoko_sirkulasi()==true){Panelmenu.add(btnSirkulasiBarangToko);jmlmenu++;}
+
+    if(akses.gettoko_sirkulasi2()==true){Panelmenu.add(btnSirkulasiBarangToko2);jmlmenu++;}
+
+    if(akses.getzis_pengeluaran_penerima_dankes()==true){Panelmenu.add(btnZISPengeluaranPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_penghasilan_penerima_dankes()==true){Panelmenu.add(btnZISPenghasilanPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_ukuran_rumah_penerima_dankes()==true){Panelmenu.add(btnZISUkuranRumahPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_dinding_rumah_penerima_dankes()==true){Panelmenu.add(btnZISDindingRumahPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_lantai_rumah_penerima_dankes()==true){Panelmenu.add(btnZISLantaiRumahPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_atap_rumah_penerima_dankes()==true){Panelmenu.add(btnZISAtapRumahPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_kepemilikan_rumah_penerima_dankes()==true){Panelmenu.add(btnZISKepemilikanRumahPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_kamar_mandi_penerima_dankes()==true){Panelmenu.add(btnZISKamarMandiPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_dapur_rumah_penerima_dankes()==true){Panelmenu.add(btnZISDapurRumahPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_kursi_rumah_penerima_dankes()==true){Panelmenu.add(btnZISKursiRumahPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_kategori_phbs_penerima_dankes()==true){Panelmenu.add(btnZISKategoriPHBSPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_elektronik_penerima_dankes()==true){Panelmenu.add(btnZISElektronikPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_ternak_penerima_dankes()==true){Panelmenu.add(btnZISTernakPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_jenis_simpanan_penerima_dankes()==true){Panelmenu.add(btnZISJenisSimpananPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_kategori_asnaf_penerima_dankes()==true){Panelmenu.add(btnZISKategoriAsnafPenerimaDankes);jmlmenu++;}
+
+    if(akses.getzis_patologis_penerima_dankes()==true){Panelmenu.add(btnZISPatologisPenerimaDankes);jmlmenu++;}
+
+    if(akses.getaplikasi()==true){Panelmenu.add(btnSetupAplikasi);jmlmenu++;}
+
+    if(akses.getadmin()==true){Panelmenu.add(btnAdmin);jmlmenu++;}
+
+    if(akses.getsetup_pjlab()==true){Panelmenu.add(btnSetPenjab);jmlmenu++;}
+
+    if(akses.getsetup_otolokasi()==true){Panelmenu.add(btnSetupOtoLokasi);jmlmenu++;}
+
+    if(akses.getsetup_jam_kamin()==true){Panelmenu.add(btnSetupJamInap);jmlmenu++;}
+
+    if(akses.getset_harga_kamar()==true){Panelmenu.add(btnSetHargaKamar);jmlmenu++;}
+
+    if(akses.getsetup_embalase()==true){Panelmenu.add(btnSetupEmbalase);jmlmenu++;}
+
+    if(akses.getuser()==true){Panelmenu.add(btnUser);jmlmenu++;}
+
+    if(akses.gete_eksekutif()==true){Panelmenu.add(btnEEksekutif);jmlmenu++;}
+
+    if(akses.gettracer_login()==true){Panelmenu.add(btnTracker);jmlmenu++;}
+
+    if(akses.getvakum()==true){Panelmenu.add(btnVakum);jmlmenu++;}
+
+    if(akses.getdisplay()==true){Panelmenu.add(btnDisplay);jmlmenu++;}
+
+    if(akses.getdisplay_apotek()==true){Panelmenu.add(btnDisplayApotek);jmlmenu++;}
+
+    if(akses.getset_harga_obat()==true){Panelmenu.add(btnSetupHarga);jmlmenu++;}
+
+    if(akses.getset_harga_obat_ralan()==true){Panelmenu.add(btnSetObatRalan);jmlmenu++;}
+
+    if(akses.getset_harga_obat_ranap()==true){Panelmenu.add(btnSetObatRanap);jmlmenu++;}
+
+    if(akses.getset_penggunaan_tarif()==true){Panelmenu.add(btnSetupTarif);jmlmenu++;}
+
+    if(akses.getset_oto_ralan()==true){Panelmenu.add(btnSetOtoRalan);jmlmenu++;}
+
+    if(akses.getbiaya_harian()==true){Panelmenu.add(btnSetBiayaHarian);jmlmenu++;}
+
+    if(akses.getbiaya_masuk_sekali()==true){Panelmenu.add(btnSetBiayaMasukSekali);jmlmenu++;}
+
+    if(akses.getset_no_rm()==true){Panelmenu.add(btnSetupRM);jmlmenu++;}
+
+    if(akses.getset_nota()==true){Panelmenu.add(btnSetupNota);jmlmenu++;}
+
+    if(akses.getclosing_kasir()==true){Panelmenu.add(btnClosingKasir);jmlmenu++;}
+
+    if(akses.getketerlambatan_presensi()==true){Panelmenu.add(btnKeterlambatanPresensi);jmlmenu++;}
+
+    if(akses.getset_input_parsial()==true){Panelmenu.add(btnSetInputParsial);jmlmenu++;}
+
+    if(akses.getpassword_asuransi()==true){Panelmenu.add(btnPasswordAsuransi);jmlmenu++;}
+
+    if(akses.gettoko_set_harga()==true){Panelmenu.add(btnSetHargaToko);jmlmenu++;}
+
+    if(akses.getjam_diet_pasien()==true){Panelmenu.add(btnJamDietPasien);jmlmenu++;}
+
+    if(akses.getruang_ok()==true){Panelmenu.add(btnRuangOperasi);jmlmenu++;}}
 
     private void isCariIsi() {
         jmlmenu = 0;
@@ -41457,6 +40732,46 @@ public class frmUtama extends javax.swing.JFrame {
             }
         }
 
+        if (akses.getsatu_sehat_mapping_kptl_tindakan_ralan() == true) {
+            if (btnMapingTarifTindakanRalanKPTLSatuSehat.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnMapingTarifTindakanRalanKPTLSatuSehat);
+                jmlmenu++;
+            }
+        }
+
+        if (akses.getsatu_sehat_mapping_kptl_tindakan_ranap() == true) {
+            if (btnMapingTarifTindakanRanapKPTLSatuSehat.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnMapingTarifTindakanRanapKPTLSatuSehat);
+                jmlmenu++;
+            }
+        }
+
+        if (akses.getsatu_sehat_mapping_kptl_tindakan_radiologi() == true) {
+            if (btnMapingTarifTindakanRadiologiKPTLSatuSehat.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnMapingTarifTindakanRadiologiKPTLSatuSehat);
+                jmlmenu++;
+            }
+        }
+
+        if (akses.getsatu_sehat_mapping_kptl_tindakan_laborat() == true) {
+            if (btnMapingTarifTindakanLabKPTLSatuSehat.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnMapingTarifTindakanLabKPTLSatuSehat);
+                jmlmenu++;
+            }
+        }
+
+        if (akses.getsatu_sehat_mapping_kptl_tindakan_operasi() == true) {
+            if (btnMapingTarifTindakanOperasiKPTLSatuSehat.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnMapingTarifTindakanOperasiKPTLSatuSehat);
+                jmlmenu++;
+            }
+        }
+
         if (akses.getsatu_sehat_mapping_radiologi() == true) {
             if (btnMappingRadiologiSatuSehat.getText().toLowerCase().trim()
                     .contains(TCari.getText().toLowerCase().trim())) {
@@ -42348,6 +41663,13 @@ public class frmUtama extends javax.swing.JFrame {
             }
         }
 
+        if (akses.gethasil_pemeriksaan_usg_abdomen() == true) {
+            if (btnHasilUSGAbdomen.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnHasilUSGAbdomen);
+                jmlmenu++;
+            }
+        }
+
         if (akses.getpenilaian_awal_medis_ralan_tht() == true) {
             if (btnPenilaianAwalMedisRalanTHT.getText().toLowerCase().trim()
                     .contains(TCari.getText().toLowerCase().trim())) {
@@ -42643,6 +41965,14 @@ public class frmUtama extends javax.swing.JFrame {
             if (btnCatatanObservasiRanapPostPartum.getText().toLowerCase().trim()
                     .contains(TCari.getText().toLowerCase().trim())) {
                 Panelmenu.add(btnCatatanObservasiRanapPostPartum);
+                jmlmenu++;
+            }
+        }
+
+        if (akses.getcatatan_observasi_ruang_ok() == true) {
+            if (btnCatatanObservasiRuangOperasi.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnCatatanObservasiRuangOperasi);
                 jmlmenu++;
             }
         }
@@ -42991,6 +42321,14 @@ public class frmUtama extends javax.swing.JFrame {
             }
         }
 
+        if (akses.getchecklist_kriteria_masuk_isolasi() == true) {
+            if (btnChecklistKriteriaMasukIsolasi.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnChecklistKriteriaMasukIsolasi);
+                jmlmenu++;
+            }
+        }
+
         if (akses.getperencanaan_pemulangan() == true) {
             if (btnPerencanaanPemulangan.getText().toLowerCase().trim()
                     .contains(TCari.getText().toLowerCase().trim())) {
@@ -43058,6 +42396,22 @@ public class frmUtama extends javax.swing.JFrame {
         if (akses.getpenilaian_ulang_nyeri() == true) {
             if (btnPenilaianUlangNyeri.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())) {
                 Panelmenu.add(btnPenilaianUlangNyeri);
+                jmlmenu++;
+            }
+        }
+
+        if (akses.getintervensi_nyeri_farmakologi() == true) {
+            if (btnIntervensiNyeriFarmakologi.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnIntervensiNyeriFarmakologi);
+                jmlmenu++;
+            }
+        }
+
+        if (akses.getintervensi_nyeri_nonfarmakologi() == true) {
+            if (btnIntervensiNyeriNonFarmakologi.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnIntervensiNyeriNonFarmakologi);
                 jmlmenu++;
             }
         }
@@ -44574,16 +43928,18 @@ public class frmUtama extends javax.swing.JFrame {
                 jmlmenu++;
             }
         }
-        
-        if(akses.getsurat_keterangan_berobat()==true){
-            if(btnSuratKeteranganBerobat.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
+
+        if (akses.getsurat_keterangan_berobat() == true) {
+            if (btnSuratKeteranganBerobat.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
                 Panelmenu.add(btnSuratKeteranganBerobat);
                 jmlmenu++;
             }
         }
-        
-        if(akses.getsurat_kewaspadaan_kesehatan()==true){
-            if(btnSuratKewaspadaanKesehatan.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
+
+        if (akses.getsurat_kewaspadaan_kesehatan() == true) {
+            if (btnSuratKewaspadaanKesehatan.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
                 Panelmenu.add(btnSuratKewaspadaanKesehatan);
                 jmlmenu++;
             }
@@ -44721,15 +44077,24 @@ public class frmUtama extends javax.swing.JFrame {
             }
         }
 
-        if(akses.getsurat_penolakan_resusitasi()==true){
-            if(btnSuratPenolakanResusitasi.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
-                Panelmenu.add(btnSuratPenolakanResusitasi);                 
+        if (akses.getsurat_penolakan_resusitasi() == true) {
+            if (btnSuratPenolakanResusitasi.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnSuratPenolakanResusitasi);
                 jmlmenu++;
             }
         }
-        
-        if(akses.getruang_perpustakaan()==true){
-            if(btnRuangPerpustakaan.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
+
+        if (akses.getsurat_pengajuan_cuti_pasien() == true) {
+            if (btnSuratPengajuanCutiPerawatan.getText().toLowerCase().trim()
+                    .contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnSuratPengajuanCutiPerawatan);
+                jmlmenu++;
+            }
+        }
+
+        if (akses.getruang_perpustakaan() == true) {
+            if (btnRuangPerpustakaan.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())) {
                 Panelmenu.add(btnRuangPerpustakaan);
                 jmlmenu++;
             }
@@ -48412,7 +47777,7 @@ public class frmUtama extends javax.swing.JFrame {
         btnTelaahResep = new widget.ButtonBig();
         btnTelaahResep.setIcon(new javax.swing.ImageIcon(
                 getClass().getResource("/48x48/5868989_coronavirus_drug_medic_medical_medicine_icon.png")));
-        btnTelaahResep.setText("Telaah Resep & Obat");
+        btnTelaahResep.setText("Pengkajian Resep & Obat");
         btnTelaahResep.setIconTextGap(0);
         btnTelaahResep.setName("btnTelaahResep");
         btnTelaahResep.setPreferredSize(new java.awt.Dimension(200, 90));
@@ -51788,18 +51153,28 @@ public class frmUtama extends javax.swing.JFrame {
         btnSuratPermohonanPrivasi.addActionListener(this::btnSuratPermohonanPrivasiActionPerformed);
 
         btnSuratPermintaanSecondOpinion = new widget.ButtonBig();
-        btnSuratPermintaanSecondOpinion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/conversation_3601377.png"))); 
+        btnSuratPermintaanSecondOpinion
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/conversation_3601377.png")));
         btnSuratPermintaanSecondOpinion.setText("Surat Permintaan Second Opinion");
         btnSuratPermintaanSecondOpinion.setIconTextGap(0);
         btnSuratPermintaanSecondOpinion.setName("btnSuratPermintaanSecondOpinion");
         btnSuratPermintaanSecondOpinion.setPreferredSize(new java.awt.Dimension(200, 90));
         btnSuratPermintaanSecondOpinion.addActionListener(this::btnSuratPermintaanSecondOpinionActionPerformed);
-        
+
         btnSuratPenolakanResusitasi = new widget.ButtonBig();
         btnSuratPenolakanResusitasi.setName("btnSuratPenolakanResusitasi");
         btnSuratPenolakanResusitasi.setPreferredSize(new java.awt.Dimension(200, 90));
         btnSuratPenolakanResusitasi.addActionListener(this::btnSuratPenolakanResusitasiActionPerformed);
-        
+
+        btnSuratPengajuanCutiPerawatan = new widget.ButtonBig();
+        btnSuratPengajuanCutiPerawatan
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/writing_2593639.png")));
+        btnSuratPengajuanCutiPerawatan.setText("Surat Pegajuan Cuti Perawatan");
+        btnSuratPengajuanCutiPerawatan.setIconTextGap(0);
+        btnSuratPengajuanCutiPerawatan.setName("btnSuratPengajuanCutiPerawatan");
+        btnSuratPengajuanCutiPerawatan.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSuratPengajuanCutiPerawatan.addActionListener(this::btnSuratPengajuanCutiPerawatanActionPerformed);
+
         btnPCRAICRAJenisAktivitasProyek = new widget.ButtonBig();
         btnPCRAICRAJenisAktivitasProyek
                 .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/construction_12539761.png")));
@@ -51967,13 +51342,108 @@ public class frmUtama extends javax.swing.JFrame {
         btnKonsultasiPerawat.setName("btnKonsultasiPerawat");
         btnKonsultasiPerawat.setPreferredSize(new java.awt.Dimension(200, 90));
         btnKonsultasiPerawat.addActionListener(this::btnKonsultasiPerawatActionPerformed);
-        
+
         btnSuratKeteranganBerobat = new widget.ButtonBig();
-        btnSuratKeteranganBerobat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/register_11421976.png"))); 
+        btnSuratKeteranganBerobat
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/register_11421976.png")));
         btnSuratKeteranganBerobat.setText("Surat Keterangan Berobat");
         btnSuratKeteranganBerobat.setIconTextGap(0);
         btnSuratKeteranganBerobat.setName("btnSuratKeteranganBerobat");
         btnSuratKeteranganBerobat.setPreferredSize(new java.awt.Dimension(200, 90));
         btnSuratKeteranganBerobat.addActionListener(this::btnSuratKeteranganBerobatActionPerformed);
+
+        btnCatatanObservasiRuangOperasi = new widget.ButtonBig();
+        btnCatatanObservasiRuangOperasi
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/surgery-room_17774320.png")));
+        btnCatatanObservasiRuangOperasi.setText("Catatan Observasi Ruang Operasi");
+        btnCatatanObservasiRuangOperasi.setIconTextGap(0);
+        btnCatatanObservasiRuangOperasi.setName("btnCatatanObservasiRuangOperasi");
+        btnCatatanObservasiRuangOperasi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnCatatanObservasiRuangOperasi.addActionListener(this::btnCatatanObservasiRuangOperasiActionPerformed);
+
+        btnHasilUSGAbdomen = new widget.ButtonBig();
+        btnHasilUSGAbdomen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/abs_3500353.png")));
+        btnHasilUSGAbdomen.setText("Hasil USG Abdomen");
+        btnHasilUSGAbdomen.setIconTextGap(0);
+        btnHasilUSGAbdomen.setName("btnHasilUSGAbdomen");
+        btnHasilUSGAbdomen.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnHasilUSGAbdomen.addActionListener(this::btnHasilUSGAbdomenActionPerformed);
+
+        btnIntervensiNyeriFarmakologi = new widget.ButtonBig();
+        btnIntervensiNyeriFarmakologi
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/vitamin_17348719.png")));
+        btnIntervensiNyeriFarmakologi.setText("Intervensi Nyeri Farmakologi");
+        btnIntervensiNyeriFarmakologi.setIconTextGap(0);
+        btnIntervensiNyeriFarmakologi.setName("btnIntervensiNyeriFarmakologi");
+        btnIntervensiNyeriFarmakologi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnIntervensiNyeriFarmakologi.addActionListener(this::btnIntervensiNyeriFarmakologiActionPerformed);
+
+        btnIntervensiNyeriNonFarmakologi = new widget.ButtonBig();
+        btnIntervensiNyeriNonFarmakologi
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/music_9881578.png")));
+        btnIntervensiNyeriNonFarmakologi.setText("Intervensi Nyeri Non Farmakologi");
+        btnIntervensiNyeriNonFarmakologi.setIconTextGap(0);
+        btnIntervensiNyeriNonFarmakologi.setName("btnIntervensiNyeriNonFarmakologi");
+        btnIntervensiNyeriNonFarmakologi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnIntervensiNyeriNonFarmakologi.addActionListener(this::btnIntervensiNyeriNonFarmakologiActionPerformed);
+
+        btnChecklistKriteriaMasukIsolasi = new widget.ButtonBig();
+        btnChecklistKriteriaMasukIsolasi
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/isolation-2.png")));
+        btnChecklistKriteriaMasukIsolasi.setText("Check List Kriteria Masuk Isolasi");
+        btnChecklistKriteriaMasukIsolasi.setIconTextGap(0);
+        btnChecklistKriteriaMasukIsolasi.setName("btnChecklistKriteriaMasukIsolasi");
+        btnChecklistKriteriaMasukIsolasi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnChecklistKriteriaMasukIsolasi.addActionListener(this::btnChecklistKriteriaMasukIsolasiActionPerformed);
+
+        btnMapingTarifTindakanRalanKPTLSatuSehat = new widget.ButtonBig();
+        btnMapingTarifTindakanRalanKPTLSatuSehat
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnMapingTarifTindakanRalanKPTLSatuSehat.setText("Mapping Tindakan Ralan KPTL Satu Sehat");
+        btnMapingTarifTindakanRalanKPTLSatuSehat.setIconTextGap(0);
+        btnMapingTarifTindakanRalanKPTLSatuSehat.setName("btnMapingTarifTindakanRalanKPTLSatuSehat");
+        btnMapingTarifTindakanRalanKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMapingTarifTindakanRalanKPTLSatuSehat
+                .addActionListener(this::btnMapingTarifTindakanRalanKPTLSatuSehatActionPerformed);
+
+        btnMapingTarifTindakanRanapKPTLSatuSehat = new widget.ButtonBig();
+        btnMapingTarifTindakanRanapKPTLSatuSehat
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnMapingTarifTindakanRanapKPTLSatuSehat.setText("Mapping Tindakan Ranap KPTL Satu Sehat");
+        btnMapingTarifTindakanRanapKPTLSatuSehat.setIconTextGap(0);
+        btnMapingTarifTindakanRanapKPTLSatuSehat.setName("btnMapingTarifTindakanRanapKPTLSatuSehat");
+        btnMapingTarifTindakanRanapKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMapingTarifTindakanRanapKPTLSatuSehat
+                .addActionListener(this::btnMapingTarifTindakanRanapKPTLSatuSehatActionPerformed);
+
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat = new widget.ButtonBig();
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setText("Mapping Tindakan Radiologi KPTL Satu Sehat");
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setIconTextGap(0);
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setName("btnMapingTarifTindakanRadiologiKPTLSatuSehat");
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat
+                .addActionListener(this::btnMapingTarifTindakanRadiologiKPTLSatuSehatActionPerformed);
+
+        btnMapingTarifTindakanLabKPTLSatuSehat = new widget.ButtonBig();
+        btnMapingTarifTindakanLabKPTLSatuSehat
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnMapingTarifTindakanLabKPTLSatuSehat.setText("Mapping Tindakan Lab KPTL Satu Sehat");
+        btnMapingTarifTindakanLabKPTLSatuSehat.setIconTextGap(0);
+        btnMapingTarifTindakanLabKPTLSatuSehat.setName("btnMapingTarifTindakanLabKPTLSatuSehat");
+        btnMapingTarifTindakanLabKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMapingTarifTindakanLabKPTLSatuSehat
+                .addActionListener(this::btnMapingTarifTindakanLabKPTLSatuSehatActionPerformed);
+
+        btnMapingTarifTindakanOperasiKPTLSatuSehat = new widget.ButtonBig();
+        btnMapingTarifTindakanOperasiKPTLSatuSehat
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnMapingTarifTindakanOperasiKPTLSatuSehat.setText("Mapping Tindakan Operasi KPTL Satu Sehat");
+        btnMapingTarifTindakanOperasiKPTLSatuSehat.setIconTextGap(0);
+        btnMapingTarifTindakanOperasiKPTLSatuSehat.setName("btnMapingTarifTindakanOperasiKPTLSatuSehat");
+        btnMapingTarifTindakanOperasiKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMapingTarifTindakanOperasiKPTLSatuSehat
+                .addActionListener(this::btnMapingTarifTindakanOperasiKPTLSatuSehatActionPerformed);
     }
 }
