@@ -18,6 +18,7 @@ public final class akses {
     private static final Connection koneksi=koneksiDB.condb();
     private static PreparedStatement ps,ps2;
     private static ResultSet rs,rs2;
+    private static String version = "18-08-2026";
     private static String jenisUser = "", kode="",kdbangsal="",alamatip="",namars="",alamatrs="",kabupatenrs="",propinsirs="",kontakrs="",emailrs="",form="",namauser="",kode_ppk="",kode_ppk_kemenkes=""; 
     private static int jml1=0,jml2=0,lebar=0,tinggi=0;
     private static boolean aktif=false,admin=false,user=false,vakum=false,aplikasi=false,penyakit=false,obat_penyakit=false,dokter=false,jadwal_praktek=false,petugas=false,pasien=false,registrasi=false,
@@ -3977,7 +3978,7 @@ public final class akses {
         akses.satu_sehat_mapping_kptl_tindakan_operasi=false;
         akses.satu_sehat_mapping_kptl_tarif_kamar=false;
     }
-           
+    public static String getVersion() {return akses.version;}        
     public static int getjml1() {return akses.jml1;}    
     public static int getjml2() {return akses.jml2;}    
     public static boolean getadmin(){return akses.admin;}        

@@ -930,69 +930,80 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         if(nmgudang.getText().trim().equals("")||kdgudang.getText().trim().equals("")){
             Valid.textKosong(kdgudang,"Lokasi");
-        }else if(catatan.getText().trim().equals("")){
+            return;
+        }
+        if(catatan.getText().trim().equals("")){
             Valid.textKosong(catatan,"Keterangan");
-        }else if(tbDokter.getRowCount()==0){
+            return;
+        }
+        if(tbDokter.getRowCount()==0){
             JOptionPane.showMessageDialog(null,"Maaf, data kosong..!!!!");
             tbDokter.requestFocus();
-        }else{
-            i= JOptionPane.showConfirmDialog(rootPane,"Eeiiiiiits, udah bener belum data yang mau disimpan..??","Konfirmasi",JOptionPane.YES_NO_OPTION);
-            if (i == JOptionPane.YES_OPTION) {
-                Sequel.AutoComitFalse();
-                sukses=true;
-                for(i=0;i<tbDokter.getRowCount();i++){  
-                    if(!tbDokter.getValueAt(i,0).toString().equals("")){
-                        try {
-                            if(Double.parseDouble(tbDokter.getValueAt(i,0).toString())>=0){
-                                if(Sequel.menyimpantf2("opname","?,?,?,?,?,?,?,?,?,?,?,?,?","Stok Opname",13,new String[]{
-                                        tbDokter.getValueAt(i,1).toString(),tbDokter.getValueAt(i,5).toString(),Valid.SetTgl(Tgl.getSelectedItem()+""),tbDokter.getValueAt(i,6).toString(),
-                                        tbDokter.getValueAt(i,0).toString(),tbDokter.getValueAt(i,7).toString(),tbDokter.getValueAt(i,9).toString(),
-                                        tbDokter.getValueAt(i,8).toString(),tbDokter.getValueAt(i,10).toString(),catatan.getText(),
-                                        kdgudang.getText(),tbDokter.getValueAt(i,11).toString(),tbDokter.getValueAt(i,12).toString()})==true){
-                                    if(aktifkanbatch.equals("yes")){
-                                        Trackobat.catatRiwayat(tbDokter.getValueAt(i,1).toString(),Valid.SetAngka(tbDokter.getValueAt(i,0).toString()),0,"Opname",akses.getkode(),kdgudang.getText(),"Simpan",tbDokter.getValueAt(i,11).toString(),tbDokter.getValueAt(i,12).toString(),catatan.getText());
-                                        Sequel.menyimpan("gudangbarang","'"+tbDokter.getValueAt(i,1).toString()+"','"+kdgudang.getText()+"','"+tbDokter.getValueAt(i,0).toString()+"','"+tbDokter.getValueAt(i,11).toString()+"','"+tbDokter.getValueAt(i,12).toString()+"'", 
-                                                         "stok='"+tbDokter.getValueAt(i,0).toString()+"'","kode_brng='"+tbDokter.getValueAt(i,1).toString()+"' and kd_bangsal='"+kdgudang.getText()+"' and no_batch='"+tbDokter.getValueAt(i,11).toString()+"' and no_faktur='"+tbDokter.getValueAt(i,12).toString()+"'");    
-                                    }else{
-                                        Trackobat.catatRiwayat(tbDokter.getValueAt(i,1).toString(),Valid.SetAngka(tbDokter.getValueAt(i,0).toString()),0,"Opname",akses.getkode(),kdgudang.getText(),"Simpan","","",catatan.getText());
-                                        Sequel.menyimpan("gudangbarang","'"+tbDokter.getValueAt(i,1).toString()+"','"+kdgudang.getText()+"','"+tbDokter.getValueAt(i,0).toString()+"','',''", 
-                                                         "stok='"+tbDokter.getValueAt(i,0).toString()+"'","kode_brng='"+tbDokter.getValueAt(i,1).toString()+"' and kd_bangsal='"+kdgudang.getText()+"' and no_batch='' and no_faktur=''");    
-                                    }                                                                          
-                                }else{
-                                    sukses=false;
-                                    JOptionPane.showMessageDialog(null,tbDokter.getValueAt(i,1).toString()+" "+tbDokter.getValueAt(i,2).toString()+" gagal disimpan...!");
-                                }
-                            }
-                        } catch (Exception e) {
-                            sukses=false;
-                        }
-                    }   
-                }   
-                
-                if(sukses==true){
-                    Sequel.Commit();
-                }else{
-                    sukses=false;
-                    JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
-                    Sequel.RollBack();
-                }
-                Sequel.AutoComitTrue();
-                
-                if(sukses==true){
-                    for(index=0;index<tbDokter.getRowCount();index++){   
-                        tbDokter.setValueAt("",index,0);  
-                        tbDokter.setValueAt(0,index,6);  
-                        tbDokter.setValueAt(0,index,7);  
-                        tbDokter.setValueAt(0,index,8);  
-                        tbDokter.setValueAt(0,index,9);
-                        tbDokter.setValueAt(0,index,10);    
-                    }
-                    ttl=0;
-                    LTotal.setText("0");
-                }
-            }
-            
+            return;
         }
+        
+
+        i= JOptionPane.showConfirmDialog(rootPane,"Eeiiiiiits, udah bener belum data yang mau disimpan..??","Konfirmasi",JOptionPane.YES_NO_OPTION);
+        if (i == JOptionPane.YES_OPTION) {
+            Sequel.AutoComitFalse();
+            sukses=true;
+            for(i=0;i<tbDokter.getRowCount();i++){  
+                if(!tbDokter.getValueAt(i,0).toString().equals("")){
+                    try {
+                        if(Double.parseDouble(tbDokter.getValueAt(i,0).toString())>=0){
+                            if(Sequel.menyimpantf2("opname","?,?,?,?,?,?,?,?,?,?,?,?,?","Stok Opname",13,new String[]{
+                                    tbDokter.getValueAt(i,1).toString(),tbDokter.getValueAt(i,5).toString(),Valid.SetTgl(Tgl.getSelectedItem()+""),tbDokter.getValueAt(i,6).toString(),
+                                    tbDokter.getValueAt(i,0).toString(),tbDokter.getValueAt(i,7).toString(),tbDokter.getValueAt(i,9).toString(),
+                                    tbDokter.getValueAt(i,8).toString(),tbDokter.getValueAt(i,10).toString(),catatan.getText(),
+                                    kdgudang.getText(),tbDokter.getValueAt(i,11).toString(),tbDokter.getValueAt(i,12).toString()})==true){
+                                if(aktifkanbatch.equals("yes")){
+                                    Trackobat.catatRiwayat(tbDokter.getValueAt(i,1).toString(),Valid.SetAngka(tbDokter.getValueAt(i,0).toString()),0,"Opname",akses.getkode(),kdgudang.getText(),"Simpan",tbDokter.getValueAt(i,11).toString(),tbDokter.getValueAt(i,12).toString(),catatan.getText());
+                                    Sequel.menyimpan("gudangbarang","'"+tbDokter.getValueAt(i,1).toString()+"','"+kdgudang.getText()+"','"+tbDokter.getValueAt(i,0).toString()+"','"+tbDokter.getValueAt(i,11).toString()+"','"+tbDokter.getValueAt(i,12).toString()+"'", 
+                                                     "stok='"+tbDokter.getValueAt(i,0).toString()+"'","kode_brng='"+tbDokter.getValueAt(i,1).toString()+"' and kd_bangsal='"+kdgudang.getText()+"' and no_batch='"+tbDokter.getValueAt(i,11).toString()+"' and no_faktur='"+tbDokter.getValueAt(i,12).toString()+"'");    
+                                }else{
+                                    Trackobat.catatRiwayat(tbDokter.getValueAt(i,1).toString(),Valid.SetAngka(tbDokter.getValueAt(i,0).toString()),0,"Opname",akses.getkode(),kdgudang.getText(),"Simpan","","",catatan.getText());
+                                    Sequel.menyimpan("gudangbarang",
+                                                        "'"+tbDokter.getValueAt(i,1).toString()+"'," //kodebarang
+                                                                + "'"+kdgudang.getText()+"',"           //kode gudang
+                                                                        + "'"+tbDokter.getValueAt(i,0).toString()+"'" // stok
+                                                                                + ",'',''", //kosong
+                                                     "stok='"+tbDokter.getValueAt(i,0).toString()+"'","kode_brng='"+tbDokter.getValueAt(i,1).toString()+"' and kd_bangsal='"+kdgudang.getText()+"' and no_batch='' and no_faktur=''");    
+                                }                                                                          
+                            }else{
+                                sukses=false;
+                                JOptionPane.showMessageDialog(null,tbDokter.getValueAt(i,1).toString()+" "+tbDokter.getValueAt(i,2).toString()+" gagal disimpan...!");
+                            }
+                        }
+                    } catch (Exception e) {
+                        sukses=false;
+                    }
+                }   
+            }   
+
+            if(sukses==true){
+                Sequel.Commit();
+            }else{
+                sukses=false;
+                JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
+                Sequel.RollBack();
+            }
+            Sequel.AutoComitTrue();
+
+            if(sukses==true){
+                for(index=0;index<tbDokter.getRowCount();index++){   
+                    tbDokter.setValueAt("",index,0);  
+                    tbDokter.setValueAt(0,index,6);  
+                    tbDokter.setValueAt(0,index,7);  
+                    tbDokter.setValueAt(0,index,8);  
+                    tbDokter.setValueAt(0,index,9);
+                    tbDokter.setValueAt(0,index,10);    
+                }
+                ttl=0;
+                LTotal.setText("0");
+            }
+        }
+            
+
     }//GEN-LAST:event_BtnSimpanActionPerformed
 
     private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed

@@ -7,6 +7,7 @@
 		PROD untuk Production dimana database adalah database yang dipakai live.
 		DEV untuk Development, biasanya memakai database dummy atau lokal.
 	-->
+	<!--entry key="MODE">PROD</entry-->
 	<entry key="MODE">PROD</entry>
 	<!-- setting untuk PROD -->
     <entry key="HOST">192.168.0.245</entry>

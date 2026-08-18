@@ -483,16 +483,21 @@ public final class validasi {
     }
     
     public boolean hapusTabletf(DefaultTableModel tabMode,JTextField nilai_field,String table,String field) {
-        status=true;
+        status=false;
         if(tabMode.getRowCount()==0){
             status=false;
             JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
             nilai_field.requestFocus();
-        }else if(nilai_field.getText().trim().equals("")){
+            return status;
+        }
+        if(nilai_field.getText().trim().equals("")){
             status=false;
             JOptionPane.showMessageDialog(null,"Maaf, Gagal menghapus. Pilih dulu data yang mau dihapus.\nKlik data pada table untuk memilih...!!!!");
-        }else if(! nilai_field.getText().trim().equals("")){            
-            status=sek.meghapustf(table,field,nilai_field.getText());   
+            return status;
+        }
+        if(! nilai_field.getText().trim().equals("")){            
+            status=sek.meghapustf(table,field,nilai_field.getText());  
+            return status;
         }
         return status;
     }

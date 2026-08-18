@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package fungsi;
-
+import fungsi.akses;
 import AESsecurity.EnkripsiAES;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import java.io.FileInputStream;
@@ -99,7 +99,7 @@ public class koneksiDB {
 
                 System.out.println("==========================================");
                 System.out.println("   SIMRS RSANDINI Version 1.1.1 Released  ");
-                System.out.println("                03-07-2026                ");
+                System.out.println("                "+akses.getVersion()+"               ");
                 System.out.println("            Powered by Khanza             ");
                 System.out.println("==========================================");
                 System.out.println("\nConnecting to >> " + host + "[" + db + "]:" + port + "\nConnection successful.");
