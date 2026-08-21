@@ -20154,9 +20154,12 @@ public final class DlgReg extends javax.swing.JDialog {
         MnCatatanPengkajianPaskaOperasi.setPreferredSize(new java.awt.Dimension(260, 26));
         MnCatatanPengkajianPaskaOperasi.addActionListener(this::MnCatatanPengkajianPaskaOperasiActionPerformed);
 
+        MnCatatanObservasiRuangOperasi = new javax.swing.JMenuItem();
+        MnCatatanObservasiRuangOperasi.setBackground(new java.awt.Color(255, 255, 254));
+        MnCatatanObservasiRuangOperasi.setFont(new java.awt.Font("Tahoma", 0, 11));
         MnCatatanObservasiRuangOperasi.setForeground(new java.awt.Color(50, 50, 50));
         MnCatatanObservasiRuangOperasi
-                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png")));
+                .setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); 
         MnCatatanObservasiRuangOperasi.setText("Catatan Observasi Ruang Operasi");
         MnCatatanObservasiRuangOperasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         MnCatatanObservasiRuangOperasi.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
